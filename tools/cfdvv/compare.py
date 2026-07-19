@@ -20,12 +20,26 @@ def _find_coordinate_columns(columns: List[str]) -> List[int]:
     return [i for i in [coord_map["x"], coord_map["y"], coord_map["z"]] if i is not None]
 
 
+# OpenFOAM field name aliases: OpenFOAM sample output uses U:0/U:1/U:2 for vector components
+_OF_ALIASES = {
+    "u": ["U_x", "U:0", "Ux", "U_0", "u_x", "u:0"],
+    "v": ["U_y", "U:1", "Uy", "U_1", "u_y", "u:1"],
+    "w": ["U_z", "U:2", "Uz", "U_2", "u_z", "u:2"],
+    "p": ["p"],
+    "rho": ["rho"],
+    "T": ["T"],
+    "Cp": ["Cp", "CpTotal", "CpTotal"],
+    "Cf": ["Cf"],
+}
+
+
 def _find_field_column(columns: List[str], field_name: str) -> Optional[int]:
     """Find a field column by name. Returns index or None."""
     field_lower = field_name.lower().strip()
+    aliases = [field_lower] + [a.lower() for a in _OF_ALIASES.get(field_lower, [])]
     for i, col in enumerate(columns):
         col_lower = col.lower().strip().strip('"').strip("'")
-        if col_lower == field_lower:
+        if col_lower in aliases:
             return i
     return None
 

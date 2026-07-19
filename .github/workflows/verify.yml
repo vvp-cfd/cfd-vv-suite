@@ -66,7 +66,12 @@ jobs:
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
-          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+          if [ -n "$RESULT" ]; then
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            cfdvv compare .. -r "$RESULT" --no-plot
+          else
+            echo "ERROR: no result file found"
+          fi
       - name: Test Couette (simpleFoam)
         continue-on-error: true
         run: |
@@ -78,7 +83,12 @@ jobs:
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
-          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+          if [ -n "$RESULT" ]; then
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            cfdvv compare .. -r "$RESULT" --no-plot
+          else
+            echo "ERROR: no result file found"
+          fi
       - name: Test Lid-Driven Cavity (simpleFoam)
         continue-on-error: true
         run: |
@@ -90,7 +100,12 @@ jobs:
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
-          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+          if [ -n "$RESULT" ]; then
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            cfdvv compare .. -r "$RESULT" --no-plot
+          else
+            echo "ERROR: no result file found"
+          fi
       - name: Test Taylor-Green (icoFoam)
         continue-on-error: true
         run: |
@@ -102,7 +117,12 @@ jobs:
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
-          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+          if [ -n "$RESULT" ]; then
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            cfdvv compare .. -r "$RESULT" --no-plot
+          else
+            echo "ERROR: no result file found"
+          fi
       - name: Test Sod (foamRun shockFluid)
         continue-on-error: true
         run: |
@@ -114,4 +134,9 @@ jobs:
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
-          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+          if [ -n "$RESULT" ]; then
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            cfdvv compare .. -r "$RESULT" --no-plot
+          else
+            echo "ERROR: no result file found"
+          fi

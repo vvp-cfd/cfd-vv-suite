@@ -47,12 +47,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: openfoam/openfoam11-paraview510:latest
-      options: --user root
     steps:
       - uses: actions/checkout@v4
       - name: Setup Python
         run: |
-          apt-get update && apt-get install -y --no-install-recommends python3-pip
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends python3-pip
           pip3 install --upgrade pip setuptools wheel
           pip3 install tools/
       - name: Test Poiseuille (simpleFoam)
@@ -109,9 +108,7 @@ jobs:
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
-          blockMesh
-          setExprFieldValue -field U -expression "vector(sin(x)*cos(y), -cos(x)*sin(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
-          icoFoam
+          blockMesh && icoFoam
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -123,8 +120,6 @@ jobs:
           fi
       - name: Test Sod (foamRun shockFluid)
         continue-on-error: true
-        env:
-          FOAM_ALLOW_SYSTEM_OPERATIONS: 1
         run: |
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)

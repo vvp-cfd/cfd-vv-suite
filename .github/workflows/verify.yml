@@ -123,6 +123,8 @@ jobs:
           fi
       - name: Test Sod (foamRun shockFluid)
         continue-on-error: true
+        env:
+          FOAM_ALLOW_SYSTEM_OPERATIONS: 1
         run: |
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)

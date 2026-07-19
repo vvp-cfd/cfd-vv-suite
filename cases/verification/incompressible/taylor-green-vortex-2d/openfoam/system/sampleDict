@@ -1,0 +1,9 @@
+FoamFile { version 2.0; format ascii; class dictionary; object sampleDict; }
+setFormat csv;
+fields (U p);
+sets (
+    line_y0 {
+        type uniform; axis x;
+        start (0 3.14159 0.05); end (6.28318 3.14159 0.05); nPoints 64;
+    }
+);

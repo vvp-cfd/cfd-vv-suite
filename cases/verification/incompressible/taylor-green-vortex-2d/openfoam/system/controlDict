@@ -6,6 +6,7 @@ functions {
     sampleDict {
         type sets;
         libs (sampling);
+        writeControl outputTime;
         setFormat csv;
         fields (U p);
         sets (

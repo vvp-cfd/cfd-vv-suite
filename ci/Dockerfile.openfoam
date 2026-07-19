@@ -2,7 +2,7 @@
 # Build:   docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
 # Run:     docker run -v $(pwd)/cases:/cases -v $(pwd)/results:/results cfdvv-openfoam
 
-FROM openfoam/openfoam11-default:latest
+FROM openfoam/openfoam11-paraview510:latest
 
 USER root
 RUN apt-get update && apt-get install -y --no-install-recommends \

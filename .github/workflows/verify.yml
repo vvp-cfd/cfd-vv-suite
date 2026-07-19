@@ -45,14 +45,14 @@ jobs:
 
   openfoam-tests:
     runs-on: ubuntu-latest
-    container: openfoam/openfoam11-default:latest
+    container: openfoam/openfoam11-paraview510:latest
     steps:
       - uses: actions/checkout@v4
       - run: |
-          apt-get update && apt-get install -y --no-install-recommends python3-pip python3-numpy
-          pip3 install -e tools/ --break-system-packages
+          apt-get update && apt-get install -y --no-install-recommends python3-pip
+          pip3 install -e tools/
           . /usr/lib/openfoam/openfoam11/etc/bashrc
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh
           icoFoam
-          cfdvv compare ../.. -r ../reference/analytical/solution.csv --no-plot --tolerance 1e-8
+          cfdvv compare .. -r ../reference/analytical/solution.csv --no-plot --tolerance 1e-8

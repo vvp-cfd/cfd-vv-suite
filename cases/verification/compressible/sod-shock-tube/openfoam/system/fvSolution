@@ -1,10 +1,38 @@
 FoamFile { version 2.0; format ascii; class dictionary; object fvSolution; }
 solvers {
+    p {
+        solver GAMG;
+        tolerance 1e-06;
+        relTol 0.001;
+        smoother GaussSeidel;
+    }
+    pFinal {
+        $p;
+        relTol 0;
+    }
+    "U.*" {
+        solver smoothSolver;
+        smoother GaussSeidel;
+        tolerance 1e-06;
+        relTol 0.001;
+    }
+    "e.*" {
+        solver PBiCGStab;
+        preconditioner DILU;
+        tolerance 1e-06;
+        relTol 0.001;
+        minIter 2;
+    }
     "rho.*" { solver diagonal; }
-    "p.*"   { solver diagonal; }
-    "U.*"   { solver smoothSolver; smoother symGaussSeidel; tolerance 1e-06; }
-    "e.*"   { solver smoothSolver; smoother symGaussSeidel; tolerance 1e-06; }
 }
 PIMPLE {
-    nOuterCorrectors 1;
+    transonic yes;
+    consistent yes;
+    nOuterCorrectors 3;
+    nCorrectors 1;
+    nNonOrthogonalCorrectors 1;
+    residualControl {
+        U 1e-04;
+        e 1e-04;
+    }
 }

@@ -111,7 +111,30 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && blockMesh && setExprFieldValue -field U -expression 'vector(sin(x)*cos(y), -cos(x)*sin(y), 0)' && icoFoam"
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && blockMesh"
+          python3 -c "
+import math, os
+os.chdir('cases/verification/incompressible/taylor-green-vortex-2d/openfoam')
+nx=64; ny=64; h=2*math.pi/nx
+lines=['FoamFile { version 2.0; format ascii; class volVectorField; object U; }',
+       'dimensions [0 1 -1 0 0 0 0];',
+       'internalField nonuniform List<vector> '+str(nx*ny)+'(']
+for j in range(ny):
+    for i in range(nx):
+        xc=(i+0.5)*h; yc=(j+0.5)*h
+        ux=math.sin(xc)*math.cos(yc); uy=-math.cos(xc)*math.sin(yc)
+        lines.append('({:.10g} {:.10g} 0)'.format(ux,uy))
+lines+=[');',
+        'boundaryField {',
+        '    cyc_x0 { type cyclic; }',
+        '    cyc_x1 { type cyclic; }',
+        '    cyc_y0 { type cyclic; }',
+        '    cyc_y1 { type cyclic; }',
+        '    frontAndBack { type empty; }',
+        '}']
+with open('0/U','w') as f: f.write('\n'.join(lines)+'\n')
+"
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && icoFoam"
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)

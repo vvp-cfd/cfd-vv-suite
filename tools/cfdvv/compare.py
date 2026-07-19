@@ -58,13 +58,21 @@ def _match_by_coordinates(
     if ref_coords.shape[1] != result_coords.shape[1]:
         result_coords = result_coords[:, :ref_coords.shape[1]]
 
+    coord_tol = max(tolerance * 10, 1e-6)
+    for coords in (ref_coords, result_coords):
+        for d in range(coords.shape[1]):
+            uniq = np.sort(np.unique(coords[:, d]))
+            if len(uniq) > 1:
+                spacing = np.min(np.diff(uniq))
+                coord_tol = max(coord_tol, spacing * 0.6)
+
     matched_result = []
     matched_ref = []
 
     for i, rc in enumerate(result_coords):
         distances = np.linalg.norm(ref_coords - rc, axis=1)
         j = int(np.argmin(distances))
-        if distances[j] <= tolerance * 10:
+        if distances[j] <= coord_tol:
             matched_result.append(result_values[i])
             matched_ref.append(ref_values[j])
 

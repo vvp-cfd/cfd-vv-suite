@@ -51,16 +51,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
+          set +e
           apt-get update && apt-get install -y --no-install-recommends python3-pip
           pip3 install --upgrade pip setuptools wheel
           pip3 install tools/
           OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           echo "Found OpenFOAM bashrc: $OFRC"
           . "$OFRC"
-          cd cases/verification/incompressible/poiseuille-2d/openfoam
           echo "=== blockMesh ==="
+          cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh
           echo "=== icoFoam ==="
           icoFoam
-          echo "=== compare ==="
+          echo "=== cfdvv compare ==="
           cfdvv compare .. -r ../reference/analytical/solution.csv --no-plot
+          echo "=== DONE ==="

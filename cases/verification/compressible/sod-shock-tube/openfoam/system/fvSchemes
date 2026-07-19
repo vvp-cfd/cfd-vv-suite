@@ -1,4 +1,5 @@
 FoamFile { version 2.0; format ascii; class dictionary; object fvSchemes; }
+fluxScheme Kurganov;
 ddtSchemes { default Euler; }
 gradSchemes { default Gauss linear; }
 divSchemes {
@@ -10,5 +11,10 @@ divSchemes {
     div(phiv,p) Gauss limitedLinear 1;
 }
 laplacianSchemes { default Gauss linear orthogonal; }
-interpolationSchemes { default linear; }
+interpolationSchemes {
+    default linear;
+    reconstruct(rho) vanLeer;
+    reconstruct(U)  vanLeerV;
+    reconstruct(p)  vanLeer;
+}
 snGradSchemes { default orthogonal; }

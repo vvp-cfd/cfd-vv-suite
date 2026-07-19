@@ -4,6 +4,6 @@
 # Requires: OpenFOAM sourced
 set -e
 blockMesh
-icoFoam
+simpleFoam
 postProcess -func sampleDict -latestTime
 echo "Done. Compare with: cfdvv compare . -r reference/analytical/solution.csv"

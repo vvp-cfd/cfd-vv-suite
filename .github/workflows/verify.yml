@@ -112,7 +112,9 @@ jobs:
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
-          blockMesh && icoFoam
+          blockMesh
+          setExprFieldValue -field U -expression "vector(sin(x)*cos(y), -cos(x)*sin(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
+          icoFoam
           postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)

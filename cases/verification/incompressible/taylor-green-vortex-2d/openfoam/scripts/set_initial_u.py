@@ -14,8 +14,8 @@ for j in range(ny):
     for i in range(nx):
         xc = (i + 0.5) * h
         yc = (j + 0.5) * h
-        ux = math.sin(xc) * math.cos(yc)
-        uy = -math.cos(xc) * math.sin(yc)
+        ux = -math.cos(xc) * math.sin(yc)
+        uy = math.sin(xc) * math.cos(yc)
         lines.append('({:.10g} {:.10g} 0)'.format(ux, uy))
 lines += [
     ');',

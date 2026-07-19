@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e; blockMesh
 # Initialize TGV velocity field: u=-cos(x)*sin(y), v=sin(x)*cos(y)
-setExprFieldValue -field U -expression "vector(-cos(x)*sin(y), sin(x)*cos(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
+python3 scripts/set_initial_u.py
+setExprFieldValue -field U -expression "vector(-cos(x)*sin(y), sin(x)*cos(y), 0)" 2>/dev/null || true
 icoFoam
-echo "Taylor-Green done. Compare with: cfdvv compare . -r reference/analytical/solution_t0.csv"
+echo "Taylor-Green done."

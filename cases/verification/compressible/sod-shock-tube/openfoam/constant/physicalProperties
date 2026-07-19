@@ -10,6 +10,6 @@ thermoType {
 }
 mixture {
     specie { nMoles 1; molWeight 8314; }
-    thermodynamics { Cp 3.5; Hf 0; }
+    thermodynamics { Cp 3.5; Hf 0; Tstd 0; }
     transport { mu 0; Pr 1; }
 }

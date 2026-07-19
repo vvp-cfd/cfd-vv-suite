@@ -54,7 +54,10 @@ jobs:
           apt-get update && apt-get install -y --no-install-recommends python3-pip
           pip3 install --upgrade pip setuptools wheel
           pip3 install tools/
-          . /usr/lib/openfoam/openfoam11/etc/bashrc
+          source /usr/lib/openfoam/openfoam11/etc/bashrc 2>/dev/null || \
+            source /opt/openfoam11/etc/bashrc 2>/dev/null || \
+            source /usr/lib/x86_64-linux-gnu/openfoam11/etc/bashrc 2>/dev/null || \
+            . /usr/lib/openfoam/openfoam11/etc/bashrc
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh
           icoFoam

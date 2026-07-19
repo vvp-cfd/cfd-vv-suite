@@ -14,7 +14,7 @@ dimension: 2D
 
 reference:
   type: analytical
-  solution: "Theta-beta-M relation: shock angle 39.31 deg, p2/p1=1.866, rho2/rho1=1.706"
+  solution: "Theta-beta-M relation: shock angle 39.31 deg, p2/p1=1.706, rho2/rho1=1.458"
   source: "Anderson, J.D. Fundamentals of Aerodynamics; Oblique shock relations"
 
 quantities:

@@ -9,7 +9,7 @@ Steady supersonic inviscid flow over a wedge. An attached oblique shock forms at
 For M_inf=2.0, theta=10 deg, gamma=1.4:
 
 - Shock angle beta = 39.31 deg
-- M2 = 1.640, p2/p1 = 1.866, rho2/rho1 = 1.706, T2/T1 = 1.093
+- M2 = 1.640, p2/p1 = 1.706, rho2/rho1 = 1.458, T2/T1 = 1.170
 
 ## Geometry
 

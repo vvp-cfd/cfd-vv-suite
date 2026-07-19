@@ -55,6 +55,9 @@ def _match_by_coordinates(
     if result_coords.shape == ref_coords.shape and np.allclose(result_coords, ref_coords, atol=tolerance):
         return result_values, ref_values
 
+    if ref_coords.shape[1] != result_coords.shape[1]:
+        result_coords = result_coords[:, :ref_coords.shape[1]]
+
     matched_result = []
     matched_ref = []
 
@@ -219,17 +222,21 @@ def compare_case(
             try:
                 res_data, res_cols = _read(result_file)
                 ndim = sum(1 for c in res_cols[:3] if c.lower() in ('x','y','z'))
-                # Count unique coordinates to guess nx, ny, nz
                 unique_counts = []
                 for d in range(ndim):
                     unique_counts.append(len(set(res_data[:, d])))
                 
-                gen_args = [sys.executable, gen_script]
-                for uc in unique_counts:
-                    gen_args.append(str(uc))
+                time_dir = os.path.basename(os.path.dirname(result_file))
+                try:
+                    t = float(time_dir)
+                except ValueError:
+                    t = 0.0
+                
+                nx = unique_counts[0] if len(unique_counts) > 0 else 32
+                ny = unique_counts[1] if len(unique_counts) > 1 else nx
                 
                 tmpfile = os.path.join(tempfile.gettempdir(), "cfdvv_autogen_" + case["id"] + ".csv")
-                gen_args.append(tmpfile)
+                gen_args = [sys.executable, gen_script, str(nx), str(ny), str(t), tmpfile]
                 
                 subprocess.run(gen_args, capture_output=True, timeout=30)
                 if os.path.isfile(tmpfile):

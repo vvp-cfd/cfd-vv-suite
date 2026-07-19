@@ -42,3 +42,18 @@ jobs:
           cfdvv compare cases/verification/incompressible/poiseuille-2d \
             -r cases/verification/incompressible/poiseuille-2d/reference/analytical/solution.csv \
             --no-plot --tolerance 1e-10
+
+  openfoam-tests:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    container: openfoam/openfoam11-default:latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          apt-get update && apt-get install -y --no-install-recommends python3-pip python3-numpy
+          pip3 install -e tools/ --break-system-packages
+          . /usr/lib/openfoam/openfoam11/etc/bashrc
+          cd cases/verification/incompressible/poiseuille-2d/openfoam
+          blockMesh
+          icoFoam
+          cfdvv compare ../.. -r ../reference/analytical/solution.csv --no-plot --tolerance 1e-8

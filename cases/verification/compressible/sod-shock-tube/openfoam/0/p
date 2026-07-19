@@ -1,5 +1,5 @@
 FoamFile { version 2.0; format ascii; class volScalarField; object p; }
-dimensions [1 -1 -2 0 0 0 0]; internalField nonuniform List<scalar> 200(1 0.1);
+dimensions [1 -1 -2 0 0 0 0]; internalField uniform 0.1;
 boundaryField {
     left  { type zeroGradient; }
     right { type zeroGradient; }

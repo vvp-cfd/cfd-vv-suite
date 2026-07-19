@@ -3,4 +3,4 @@ solvers {
     p { solver GAMG; tolerance 1e-07; relTol 0.01; smoother GaussSeidel; }
     U { solver smoothSolver; smoother GaussSeidel; tolerance 1e-07; relTol 0.01; }
 }
-SIMPLE { nNonOrthogonalCorrectors 0; residualControl { p 1e-5; U 1e-5; } }
+SIMPLE { nNonOrthogonalCorrectors 0; pRefCell 0; pRefValue 0; residualControl { p 1e-5; U 1e-5; } }

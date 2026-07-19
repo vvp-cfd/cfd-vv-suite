@@ -62,8 +62,8 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/poiseuille-2d/openfoam && blockMesh && simpleFoam"
           cd cases/verification/incompressible/poiseuille-2d/openfoam
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && blockMesh && simpleFoam"
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -78,8 +78,8 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/couette-2d/openfoam && blockMesh && simpleFoam"
           cd cases/verification/incompressible/couette-2d/openfoam
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && blockMesh && simpleFoam"
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -94,8 +94,8 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/lid-driven-cavity/openfoam && blockMesh && simpleFoam"
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && blockMesh && simpleFoam"
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -110,8 +110,8 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && blockMesh && icoFoam"
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && blockMesh && icoFoam"
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -126,8 +126,8 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/compressible/sod-shock-tube/openfoam && blockMesh && setFields && foamRun -solver shockFluid"
           cd cases/verification/compressible/sod-shock-tube/openfoam
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && blockMesh && setFields && foamRun -solver shockFluid"
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"

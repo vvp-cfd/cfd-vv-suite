@@ -62,8 +62,8 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh && simpleFoam
-          postProcess -func sampleDict -latestTime 2>/dev/null || true
-          find postProcessing -type f 2>/dev/null || true
+          postProcess -func sampleDict -latestTime || true
+          ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
@@ -74,8 +74,8 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/couette-2d/openfoam
           blockMesh && simpleFoam
-          postProcess -func sampleDict -latestTime 2>/dev/null || true
-          find postProcessing -type f 2>/dev/null || true
+          postProcess -func sampleDict -latestTime || true
+          ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
@@ -86,8 +86,8 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
           blockMesh && icoFoam
-          postProcess -func sampleDict -latestTime 2>/dev/null || true
-          find postProcessing -type f 2>/dev/null || true
+          postProcess -func sampleDict -latestTime || true
+          ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
@@ -98,8 +98,8 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           blockMesh && icoFoam
-          postProcess -func sampleDict -latestTime 2>/dev/null || true
-          find postProcessing -type f 2>/dev/null || true
+          postProcess -func sampleDict -latestTime || true
+          ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
@@ -110,8 +110,8 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/compressible/sod-shock-tube/openfoam
           blockMesh && setFields && foamRun -solver shockFluid
-          postProcess -func sampleDict -latestTime 2>/dev/null || true
-          find postProcessing -type f 2>/dev/null || true
+          postProcess -func sampleDict -latestTime || true
+          ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi

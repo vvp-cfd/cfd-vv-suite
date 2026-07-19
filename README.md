@@ -61,21 +61,30 @@ See [docs/case-index.md](docs/case-index.md) for the complete listing.
 Beyond the 51 built-in cases, cfd-vv-suite connects to external V&V databases:
 
 ```bash
-cfdvv import --list              # 23+ external cases from 6 sources
+cfdvv import --list              # 35 external cases from 6 sources
 cfdvv import flatplate           # auto-detects source, downloads data
 cfdvv import flatplate -r my.csv --plot  # import + compare in one step
 ```
 
 | Source | Cases | Type | Access |
 |--------|-------|------|--------|
-| **NASA TMR** | 5 | Experimental | Direct download |
-| **ERCOFTAC** | 8 | Experimental | Metadata + URLs |
+| **NASA TMR** | 8 | Experimental | Direct download |
+| **ERCOFTAC** | 14 | Experimental | Metadata + URLs |
 | **JHTDB** | 3 | DNS | Python API (giverny) |
-| **CFDBench** | 2 | Analytical | Metadata |
+| **CFDBench** | 5 | Analytical | Metadata |
 | **MASA** | 2 | MMS | pip install + script |
 | **ExactPack** | 3 | Exact solutions | pip install + script |
 
 See [docs/external-sources.md](docs/external-sources.md) for details.
+
+## Related Projects
+
+- **NASA TMR** ([tmbwg.github.io/turbmodels](https://tmbwg.github.io/turbmodels/)) — turbulence model validation databases
+- **ERCOFTAC** ([cfd.mace.manchester.ac.uk/ercoftac](http://cfd.mace.manchester.ac.uk/ercoftac)) — 80+ turbulent validation cases
+- **CFDBench** ([github.com/ricardodpcosta/CFDBench](https://github.com/ricardodpcosta/CFDBench)) — analytical verification cases
+- **MASA** ([github.com/manufactured-solutions/MASA](https://github.com/manufactured-solutions/MASA)) — C++ MMS library
+- **ExactPack** ([github.com/lanl/ExactPack](https://github.com/lanl/ExactPack)) — exact solutions for verification
+- **JHTDB** ([turbulence.idies.jhu.edu](https://turbulence.idies.jhu.edu)) — DNS/LES turbulence databases
 
 ## How to Cite
 

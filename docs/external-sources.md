@@ -124,3 +124,12 @@ cases/imported/nasa-tmr-flatplate/
 ```
 
 Imported cases are in `.gitignore` — they are regenerated on demand.
+
+## Related Projects
+
+- **NASA TMR** — [tmbwg.github.io/turbmodels](https://tmbwg.github.io/turbmodels/)
+- **ERCOFTAC Classic Collection** — [cfd.mace.manchester.ac.uk/ercoftac](http://cfd.mace.manchester.ac.uk/ercoftac)
+- **CFDBench** — [github.com/ricardodpcosta/CFDBench](https://github.com/ricardodpcosta/CFDBench)
+- **MASA** — [github.com/manufactured-solutions/MASA](https://github.com/manufactured-solutions/MASA)
+- **ExactPack** — [github.com/lanl/ExactPack](https://github.com/lanl/ExactPack)
+- **JHTDB** — [turbulence.idies.jhu.edu](https://turbulence.idies.jhu.edu)

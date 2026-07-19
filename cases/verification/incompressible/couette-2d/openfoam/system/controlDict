@@ -9,7 +9,7 @@ functions {
         writeControl outputTime;
         interpolationScheme cellPoint;
         setFormat csv;
-        fields (U);
+        fields (U p);
         sets (
             centerline {
                 type lineUniform; axis y;

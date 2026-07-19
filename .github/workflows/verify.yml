@@ -63,10 +63,10 @@ jobs:
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh && simpleFoam
           ls -R postProcessing || echo "no postProcessing dir"
-          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k4 -n | tail -1)
+          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
-            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
             cfdvv compare .. -r "$RESULT" --no-plot
           else
             echo "ERROR: no result file found"
@@ -79,10 +79,10 @@ jobs:
           cd cases/verification/incompressible/couette-2d/openfoam
           blockMesh && simpleFoam
           ls -R postProcessing || echo "no postProcessing dir"
-          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k4 -n | tail -1)
+          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
-            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
             cfdvv compare .. -r "$RESULT" --no-plot
           else
             echo "ERROR: no result file found"
@@ -95,10 +95,10 @@ jobs:
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
           blockMesh && simpleFoam
           ls -R postProcessing || echo "no postProcessing dir"
-          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k4 -n | tail -1)
+          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
-            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
             cfdvv compare .. -r "$RESULT" --no-plot
           else
             echo "ERROR: no result file found"
@@ -113,10 +113,10 @@ jobs:
           setExprFieldValue -field U -expression "vector(sin(x)*cos(y), -cos(x)*sin(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
           icoFoam
           ls -R postProcessing || echo "no postProcessing dir"
-          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k4 -n | tail -1)
+          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
-            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
             cfdvv compare .. -r "$RESULT" --no-plot
           else
             echo "ERROR: no result file found"
@@ -129,10 +129,10 @@ jobs:
           cd cases/verification/compressible/sod-shock-tube/openfoam
           blockMesh && setFields && foamRun -solver shockFluid
           ls -R postProcessing || echo "no postProcessing dir"
-          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k4 -n | tail -1)
+          RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
-            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g' "$RESULT" 2>/dev/null || true
+            sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
             cfdvv compare .. -r "$RESULT" --no-plot
           else
             echo "ERROR: no result file found"

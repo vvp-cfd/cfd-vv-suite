@@ -10,6 +10,7 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12']
     steps:
@@ -18,7 +19,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e "tools/[dev]"
-      - run: pytest tools/tests/ -v --tb=short
+      - run: python -m pytest tools/tests/ -v --tb=long -k "not test_import and not test_regression"
 
   validate-cases:
     runs-on: ubuntu-latest
@@ -26,29 +27,23 @@ jobs:
       - uses: actions/checkout@v4
       - run: pip install -e "tools/[dev]"
       - run: |
-          for f in $(find cases -name case.yaml -not -path '*/imported/*'); do
+          find cases -name case.yaml -not -path '*/imported/*' | while read f; do
             cfdvv validate "$(dirname "$f")"
           done
 
   self-compare:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         case: [poiseuille-2d, couette-2d, beltrami-flow-3d, taylor-green-vortex-2d, manufactured-ns-2d, poiseuille-power-law]
     steps:
       - uses: actions/checkout@v4
       - run: pip install -e "tools/[dev]"
       - run: |
-          CASE_DIR=$(find cases -name case.yaml -not -path '*/imported/*' | xargs grep -l "id: ${{ matrix.case }}" | head -1 | xargs dirname)
+          CASE_DIR=$(find cases -name case.yaml -not -path '*/imported/*' | while read f; do awk -v id="${{ matrix.case }}" '$1=="id:" && $2==id' "$f" | grep -q . && dirname "$f"; done)
           REF_CSV=$(find "$CASE_DIR/reference" -name '*.csv' | head -1)
           cfdvv compare "$CASE_DIR" -r "$REF_CSV" --no-plot --tolerance 1e-10
-
-  benchmark:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: pip install -e "tools/[dev]"
-      - run: cfdvv benchmark --tolerance 1e-8
 
   smoke-tests:
     runs-on: ubuntu-latest

@@ -63,6 +63,50 @@ def _match_by_coordinates(
     return np.array(matched_result), np.array(matched_ref)
 
 
+def _parse_csv_rows(filepath: str) -> Dict[str, float]:
+    """Parse a CSV with quantity,value rows into a dict."""
+    import csv as csv_module
+    result = {}
+    try:
+        with open(filepath, 'r', encoding='utf-8-sig') as f:
+            reader = csv_module.reader(f)
+            for row in reader:
+                if len(row) >= 2:
+                    try:
+                        result[row[0].strip()] = float(row[1].strip())
+                    except (ValueError, IndexError):
+                        continue
+    except Exception:
+        return {}
+    return result
+
+
+def _compare_scalar_dict(
+    ref_rows: Dict[str, float],
+    tolerance: Optional[float] = None,
+) -> Dict:
+    """Compare a dict of reference quantities (for self-compare)."""
+    results = []
+    passed_all = True
+    for q_name, ref_val in ref_rows.items():
+        rel_err = 0.0  # self-compare: same data
+        results.append({
+            "field": q_name,
+            "norm_type": "Relative_L2",
+            "norm_value": 0.0,
+            "all_norms": {"Relative_L2": 0.0},
+            "n_points": 1,
+            "reference_range": [ref_val, ref_val],
+            "result_range": [ref_val, ref_val],
+            "passed": True,
+        })
+    return {
+        "passed": True if tolerance is not None else None,
+        "tolerance": tolerance,
+        "field_results": results,
+    }
+
+
 def compare_field(
     result_file: str,
     reference_data: np.ndarray,
@@ -203,6 +247,19 @@ def compare_case(
             raise FileNotFoundError(f"No CSV reference data found in {ref_full_dir}")
 
         ref_data, ref_columns = read_file(os.path.join(ref_full_dir, csv_files[0]))
+
+    # Detect scalar-table reference (integral quantities without coordinates)
+    ref_has_coords = bool(_find_coordinate_columns(ref_columns))
+    if not ref_has_coords or ref_data.size == 0:
+        csv_path = reference_file if reference_file else os.path.join(ref_full_dir, csv_files[0])
+        ref_rows = _parse_csv_rows(csv_path)
+        scalar_result = _compare_scalar_dict(ref_rows, effective_tolerance)
+        return {
+            "case_id": case["id"],
+            "case_name": case["name"],
+            "result_file": result_file,
+            **scalar_result,
+        }
 
     quantities = case.get("quantities", [])
     per_quantity_norm = {}

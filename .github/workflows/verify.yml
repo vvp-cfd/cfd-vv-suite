@@ -45,7 +45,9 @@ jobs:
 
   openfoam-tests:
     runs-on: ubuntu-latest
-    container: openfoam/openfoam11-paraview510:latest
+    container:
+      image: openfoam/openfoam11-paraview510:latest
+      options: --user root
     steps:
       - uses: actions/checkout@v4
       - run: |

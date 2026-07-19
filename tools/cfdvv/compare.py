@@ -275,7 +275,16 @@ def compare_case(
         if not csv_files:
             raise FileNotFoundError(f"No CSV reference data found in {ref_full_dir}")
 
-        ref_data, ref_columns = read_file(os.path.join(ref_full_dir, csv_files[0]))
+        time_dir = os.path.basename(os.path.dirname(result_file))
+        try:
+            t_float = float(time_dir)
+            time_tag = f"t{str(time_dir)}.csv"
+            matched = [f for f in csv_files if time_tag in f]
+            ref_path = os.path.join(ref_full_dir, matched[0] if matched else csv_files[0])
+        except ValueError:
+            ref_path = os.path.join(ref_full_dir, csv_files[0])
+
+        ref_data, ref_columns = read_file(ref_path)
 
     # Detect scalar-table reference (integral quantities without coordinates)
     ref_has_coords = bool(_find_coordinate_columns(ref_columns))

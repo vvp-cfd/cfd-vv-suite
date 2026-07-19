@@ -8,7 +8,7 @@ version = "0.2.0"
 description = "CFD Verification & Validation Suite: open-source test cases and CLI tools for CFD code verification and validation."
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 authors = [
     {name = "Valeria Puzikova", email = "valeria.puzikova@gmail.com"}
 ]

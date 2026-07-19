@@ -54,10 +54,10 @@ jobs:
           apt-get update && apt-get install -y --no-install-recommends python3-pip
           pip3 install --upgrade pip setuptools wheel
           pip3 install tools/
-          source /usr/lib/openfoam/openfoam11/etc/bashrc 2>/dev/null || \
-            source /opt/openfoam11/etc/bashrc 2>/dev/null || \
-            source /usr/lib/x86_64-linux-gnu/openfoam11/etc/bashrc 2>/dev/null || \
-            . /usr/lib/openfoam/openfoam11/etc/bashrc
+          OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
+          if [ -z "$OFRC" ]; then OFRC=$(find / -name "bashrc" 2>/dev/null | grep -i openfoam | head -1); fi
+          echo "Found OpenFOAM bashrc: $OFRC"
+          . "$OFRC"
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh
           icoFoam

@@ -1,9 +1,19 @@
 FoamFile { version 2.0; format ascii; class dictionary; object blockMeshDict; }
 convertToMeters 1;
-// 64x64 mesh, domain 2pi x 2pi
 L 6.283185307179586;
 vertices ((0 0 0)($L 0 0)($L $L 0)(0 $L 0)(0 0 0.1)($L 0 0.1)($L $L 0.1)(0 $L 0.1));
 blocks ( hex (0 1 2 3 4 5 6 7) (64 64 1) simpleGrading (1 1 1) );
 edges ();
-boundary ( all { type cyclic; faces ((0 4 7 3)(1 5 6 2)(0 1 5 4)(3 7 6 2)); }
-    frontAndBack { type empty; faces ((0 3 2 1)(4 5 6 7)); } );
+boundary (
+    periodic_x {
+        type cyclic;
+        neighbourPatch periodic_x;
+        faces ((0 4 7 3)(1 5 6 2));
+    }
+    periodic_y {
+        type cyclic;
+        neighbourPatch periodic_y;
+        faces ((0 1 5 4)(3 7 6 2));
+    }
+    frontAndBack { type empty; faces ((0 3 2 1)(4 5 6 7)); }
+);

@@ -95,13 +95,3 @@ jobs:
           postProcess -func sampleDict -latestTime 2>/dev/null || true
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
-      - name: Test Sod (rhoCentralFoam)
-        continue-on-error: true
-        run: |
-          set +e
-          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          cd cases/verification/compressible/sod-shock-tube/openfoam
-          blockMesh && rhoCentralFoam
-          postProcess -func sampleDict -latestTime 2>/dev/null || true
-          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
-          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi

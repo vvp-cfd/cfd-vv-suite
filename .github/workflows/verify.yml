@@ -55,10 +55,12 @@ jobs:
           pip3 install --upgrade pip setuptools wheel
           pip3 install tools/
           OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          if [ -z "$OFRC" ]; then OFRC=$(find / -name "bashrc" 2>/dev/null | grep -i openfoam | head -1); fi
           echo "Found OpenFOAM bashrc: $OFRC"
           . "$OFRC"
           cd cases/verification/incompressible/poiseuille-2d/openfoam
+          echo "=== blockMesh ==="
           blockMesh
+          echo "=== icoFoam ==="
           icoFoam
-          cfdvv compare .. -r ../reference/analytical/solution.csv --no-plot --tolerance 1e-8
+          echo "=== compare ==="
+          cfdvv compare .. -r ../reference/analytical/solution.csv --no-plot

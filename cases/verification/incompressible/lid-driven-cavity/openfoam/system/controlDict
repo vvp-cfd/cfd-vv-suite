@@ -5,14 +5,14 @@ deltaT 1; writeControl timeStep; writeInterval 100;
 functions {
     sampleDict {
         type sets;
-        libs (sampling);
+        libs ("libsampling.so");
         writeControl outputTime;
         interpolationScheme cellPoint;
         setFormat csv;
         fields (U);
         sets (
             centerline {
-                type uniform; axis y;
+                type lineUniform; axis y;
                 start (0.5 0 0.05); end (0.5 1 0.05); nPoints 41;
             }
         );

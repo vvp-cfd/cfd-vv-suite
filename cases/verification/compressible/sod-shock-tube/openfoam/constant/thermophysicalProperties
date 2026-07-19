@@ -13,12 +13,15 @@ mixture {
         nMoles 1;
         molWeight 28.96;
     }
+    equationOfState {
+        R 1;
+    }
     thermodynamics {
-        Cp 1005;
+        Cp 3.5;
         Hf 0;
     }
     transport {
-        mu 1.8e-05;
-        Pr 0.7;
+        mu 0;
+        Pr 1;
     }
 }

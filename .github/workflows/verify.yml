@@ -111,7 +111,7 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && blockMesh && icoFoam"
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && blockMesh && setExprFieldValue -field U -expression 'vector(sin(x)*cos(y), -cos(x)*sin(y), 0)' && icoFoam"
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)

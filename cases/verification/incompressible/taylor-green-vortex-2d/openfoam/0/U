@@ -1,30 +1,6 @@
 FoamFile { version 2.0; format ascii; class volVectorField; object U; }
 dimensions [0 1 -1 0 0 0 0];
-internalField #codeStream
-{
-    codeInclude
-    #{
-        #include "fvCFD.H"
-    #};
-    code
-    #{
-        const fvMesh& mesh = refCast<const fvMesh>(db());
-        auto tresult = tmp<vectorField>::New(mesh.nCells());
-        auto& result = tresult.ref();
-        const scalarField& xc = mesh.C().component(0);
-        const scalarField& yc = mesh.C().component(1);
-        forAll(result, i)
-        {
-            result[i] = vector
-            (
-                sin(xc[i])*cos(yc[i]),
-                -cos(xc[i])*sin(yc[i]),
-                0
-            );
-        }
-        write(result);
-    #};
-};
+internalField uniform (0 0 0);
 boundaryField {
     cyc_x0  { type cyclic; }
     cyc_x1  { type cyclic; }

@@ -1,8 +1,8 @@
 import math, os
 
 L = 2 * math.pi
-nx = 64
-ny = 64
+nx = 128
+ny = 128
 h = L / nx
 
 lines = [

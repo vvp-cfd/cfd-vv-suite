@@ -14,8 +14,17 @@ p = -0.25*(np.cos(2*X)+np.cos(2*Y))*np.exp(-4*nu*t)
 
 with open(out, 'w', newline='') as f:
     w = csv.writer(f)
-    w.writerow(['x', 'y', 'u', 'v', 'p'])
-    for i in range(ny):
+    if ny == 1 and nx > 1:
+        w.writerow(['x', 'u', 'v', 'p'])
         for j in range(nx):
-            w.writerow([X[i,j], Y[i,j], u[i,j], v[i,j], p[i,j]])
+            w.writerow([X[0,j], u[0,j], v[0,j], p[0,j]])
+    elif nx == 1 and ny > 1:
+        w.writerow(['y', 'u', 'v', 'p'])
+        for i in range(ny):
+            w.writerow([Y[i,0], u[i,0], v[i,0], p[i,0]])
+    else:
+        w.writerow(['x', 'y', 'u', 'v', 'p'])
+        for i in range(ny):
+            for j in range(nx):
+                w.writerow([X[i,j], Y[i,j], u[i,j], v[i,j], p[i,j]])
 print(f'Written {out} ({nx}x{ny}) t={t}')

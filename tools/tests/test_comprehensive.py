@@ -189,3 +189,113 @@ class TestSchemaValidate:
             dir_path = os.path.dirname(f)
             errors = validate_case_dir(dir_path)
             assert errors == [], f"Validation errors in {dir_path}: {errors}"
+
+
+class TestCoordinateMatching:
+    """Test coordinate matching with dimension mismatches."""
+
+    def test_1d_result_vs_2d_reference(self):
+        from cfdvv.compare import _match_by_coordinates
+        res_coords = np.linspace(0, 1, 10).reshape(-1, 1)
+        x = np.linspace(0, 1, 5)
+        y = np.linspace(0, 1, 5)
+        X, Y = np.meshgrid(x, y)
+        ref_coords = np.column_stack([X.ravel(), Y.ravel()])
+        res_vals = np.sin(res_coords[:, 0])
+        ref_vals = np.sin(X.ravel())
+        mr, mref = _match_by_coordinates(res_coords, ref_coords, res_vals, ref_vals, 1e-10)
+        assert len(mr) == 10
+        assert len(mref) == 10
+
+    def test_1d_result_vs_1d_reference(self):
+        from cfdvv.compare import _match_by_coordinates
+        res_coords = np.linspace(0, 1, 10).reshape(-1, 1)
+        ref_coords = np.linspace(0, 1, 20).reshape(-1, 1)
+        res_vals = np.linspace(0, 1, 10)
+        ref_vals = np.linspace(0, 1, 20)
+        mr, mref = _match_by_coordinates(res_coords, ref_coords, res_vals, ref_vals, 1e-10)
+        assert len(mr) == 10
+        assert len(mref) == 10
+
+    def test_dimension_mismatch_2d_vs_1d_no_crash(self):
+        from cfdvv.compare import _match_by_coordinates
+        res_coords = np.linspace(0, 1, 10).reshape(-1, 1)
+        ref_coords = np.column_stack([
+            np.linspace(0, 1, 100),
+            np.zeros(100)
+        ])
+        res_vals = np.ones(10)
+        ref_vals = np.ones(100)
+        mr, mref = _match_by_coordinates(res_coords, ref_coords, res_vals, ref_vals, 1e-10)
+        assert len(mr) > 0
+
+
+class TestFieldMatching:
+    """Test OpenFOAM field name aliases."""
+
+    def test_of_aliases_recognized(self):
+        from cfdvv.compare import _find_field_column
+        cols = ['x', 'U:0', 'U:1', 'U:2', 'p', 'rho', 'T', 'e']
+        assert _find_field_column(cols, 'u') == 1
+        assert _find_field_column(cols, 'v') == 2
+        assert _find_field_column(cols, 'w') == 3
+        assert _find_field_column(cols, 'p') == 4
+        assert _find_field_column(cols, 'rho') == 5
+        assert _find_field_column(cols, 'T') == 6
+        assert _find_field_column(cols, 'e') == 7
+
+    def test_of_sample_headers(self):
+        from cfdvv.compare import _find_field_column
+        cols = ['x', '"U:0"', '"U:1"', 'p']
+        assert _find_field_column(cols, 'u') == 1
+        assert _find_field_column(cols, 'v') == 2
+        assert _find_field_column(cols, 'p') == 3
+
+    def test_missing_field_returns_none(self):
+        from cfdvv.compare import _find_field_column
+        cols = ['x', 'U:0', 'U:1', 'U:2', 'p']
+        assert _find_field_column(cols, 'e') is None
+        assert _find_field_column(cols, 'rho') is None
+
+
+class TestAutoGenerateParameters:
+    """Test auto-generate dimension detection from result files."""
+
+    def test_1d_result_ny_defaults_to_1(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write('x,U,p\n')
+            for i in range(10):
+                f.write(f'{i/10},{i/10},{i/10}\n')
+            tmp = f.name
+        from cfdvv.readers import read_file
+        data, cols = read_file(tmp)
+        ndim = sum(1 for c in cols[:3] if c.lower() in ('x', 'y', 'z'))
+        unique_counts = []
+        for d in range(ndim):
+            unique_counts.append(len(set(data[:, d])))
+        nx = unique_counts[0] if len(unique_counts) > 0 else 32
+        ny = unique_counts[1] if len(unique_counts) > 1 else (32 if ndim >= 2 else 1)
+        assert nx == 10
+        assert ny == 1
+        os.unlink(tmp)
+
+    def test_2d_result_ny_detected(self):
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
+            f.write('x,y,U,p\n')
+            for i in range(5):
+                for j in range(8):
+                    f.write(f'{i/5},{j/8},{0},{0}\n')
+            tmp = f.name
+        from cfdvv.readers import read_file
+        data, cols = read_file(tmp)
+        ndim = sum(1 for c in cols[:3] if c.lower() in ('x', 'y', 'z'))
+        unique_counts = []
+        for d in range(ndim):
+            unique_counts.append(len(set(data[:, d])))
+        nx = unique_counts[0] if len(unique_counts) > 0 else 32
+        ny = unique_counts[1] if len(unique_counts) > 1 else (32 if ndim >= 2 else 1)
+        assert nx == 5
+        assert ny == 8
+        os.unlink(tmp)

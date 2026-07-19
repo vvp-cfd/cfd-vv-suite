@@ -56,7 +56,15 @@ def _match_by_coordinates(
         return result_values, ref_values
 
     if ref_coords.shape[1] != result_coords.shape[1]:
-        result_coords = result_coords[:, :ref_coords.shape[1]]
+        ndim = min(ref_coords.shape[1], result_coords.shape[1])
+        ref_coords = ref_coords[:, :ndim]
+        result_coords = result_coords[:, :ndim]
+
+    if result_coords.shape[1] == 0:
+        raise ValueError(
+            "No common coordinate dimensions between result and reference. "
+            "Result coordinates should include at least 'x'."
+        )
 
     coord_tol = max(tolerance * 10, 1e-6)
     for coords in (ref_coords, result_coords):
@@ -241,7 +249,7 @@ def compare_case(
                     t = 0.0
                 
                 nx = unique_counts[0] if len(unique_counts) > 0 else 32
-                ny = unique_counts[1] if len(unique_counts) > 1 else nx
+                ny = unique_counts[1] if len(unique_counts) > 1 else (32 if ndim >= 2 else 1)
                 
                 tmpfile = os.path.join(tempfile.gettempdir(), "cfdvv_autogen_" + case["id"] + ".csv")
                 gen_args = [sys.executable, gen_script, str(nx), str(ny), str(t), tmpfile]

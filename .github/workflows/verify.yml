@@ -62,7 +62,6 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh && simpleFoam
-          postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
@@ -79,7 +78,6 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/couette-2d/openfoam
           blockMesh && simpleFoam
-          postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
@@ -96,7 +94,6 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
           blockMesh && simpleFoam
-          postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
@@ -115,7 +112,6 @@ jobs:
           blockMesh
           setExprFieldValue -field U -expression "vector(sin(x)*cos(y), -cos(x)*sin(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
           icoFoam
-          postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"

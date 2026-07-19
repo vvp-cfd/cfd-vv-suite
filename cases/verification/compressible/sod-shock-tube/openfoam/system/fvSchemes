@@ -13,9 +13,9 @@ divSchemes {
 laplacianSchemes { default Gauss linear orthogonal; }
 interpolationSchemes {
     default none;
-    reconstruct(rho) vanAlbada;
-    reconstruct(U)  vanAlbadaV;
-    reconstruct(T)  vanAlbada;
+    reconstruct(rho) limitedLinear 0;
+    reconstruct(U)  limitedLinearV 0;
+    reconstruct(T)  limitedLinear 0;
     flux(rhoU)      linear;
 }
 snGradSchemes { default orthogonal; }

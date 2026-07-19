@@ -63,7 +63,9 @@ jobs:
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh && simpleFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          find postProcessing -type f 2>/dev/null || true
+          RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
       - name: Test Couette (simpleFoam)
         continue-on-error: true
@@ -73,7 +75,9 @@ jobs:
           cd cases/verification/incompressible/couette-2d/openfoam
           blockMesh && simpleFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          find postProcessing -type f 2>/dev/null || true
+          RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
       - name: Test Lid-Driven Cavity (icoFoam)
         continue-on-error: true
@@ -83,7 +87,9 @@ jobs:
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
           blockMesh && icoFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          find postProcessing -type f 2>/dev/null || true
+          RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
       - name: Test Taylor-Green (icoFoam)
         continue-on-error: true
@@ -93,7 +99,9 @@ jobs:
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           blockMesh && icoFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          find postProcessing -type f 2>/dev/null || true
+          RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
       - name: Test Sod (foamRun shockFluid)
         continue-on-error: true
@@ -103,5 +111,7 @@ jobs:
           cd cases/verification/compressible/sod-shock-tube/openfoam
           blockMesh && setFields && foamRun -solver shockFluid
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          find postProcessing -type f 2>/dev/null || true
+          RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi

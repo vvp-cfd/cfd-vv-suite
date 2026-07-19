@@ -1,7 +1,7 @@
 FoamFile { version 2.0; format ascii; class dictionary; object fvSchemes; }
-ddtSchemes { default Euler; }
+ddtSchemes { default steadyState; }
 gradSchemes { default Gauss linear; }
-divSchemes { default none; div(phi,U) Gauss linear; }
+divSchemes { default none; div(phi,U) Gauss linearUpwind grad(U); }
 laplacianSchemes { default Gauss linear orthogonal; }
 interpolationSchemes { default linear; }
 snGradSchemes { default orthogonal; }

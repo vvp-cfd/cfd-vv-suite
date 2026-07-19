@@ -79,13 +79,13 @@ jobs:
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
-      - name: Test Lid-Driven Cavity (icoFoam)
+      - name: Test Lid-Driven Cavity (simpleFoam)
         continue-on-error: true
         run: |
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
-          blockMesh && icoFoam
+          blockMesh && simpleFoam
           postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)

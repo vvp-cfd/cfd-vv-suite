@@ -3,7 +3,7 @@ application foamRun;
 allowSystemOperations true;
 startFrom startTime; startTime 0; stopAt endTime; endTime 0.2;
 deltaT 0.0001; writeControl adjustableRunTime; writeInterval 0.05;
-maxCo 0.5; maxDeltaT 0.0001;
+adjustTimeStep no; maxCo 0.1; maxDeltaT 1;
 functions {
     sampleDict {
         type sets;

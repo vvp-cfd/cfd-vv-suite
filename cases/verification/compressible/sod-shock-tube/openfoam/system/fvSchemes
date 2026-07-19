@@ -12,9 +12,10 @@ divSchemes {
 }
 laplacianSchemes { default Gauss linear orthogonal; }
 interpolationSchemes {
-    default linear;
-    reconstruct(rho) vanLeer;
-    reconstruct(U)  vanLeerV;
-    reconstruct(p)  vanLeer;
+    default none;
+    reconstruct(rho) vanAlbada;
+    reconstruct(U)  vanAlbadaV;
+    reconstruct(T)  vanAlbada;
+    flux(rhoU)      linear;
 }
 snGradSchemes { default orthogonal; }

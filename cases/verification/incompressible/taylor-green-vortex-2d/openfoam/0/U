@@ -2,10 +2,6 @@ FoamFile { version 2.0; format ascii; class volVectorField; object U; }
 dimensions [0 1 -1 0 0 0 0];
 internalField #codeStream
 {
-    codeInclude
-    {
-        #include "fvCFD.H"
-    }
     code
     {
         const fvMesh& mesh = refCast<const fvMesh>(db());

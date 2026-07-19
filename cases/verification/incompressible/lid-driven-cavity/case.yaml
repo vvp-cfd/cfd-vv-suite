@@ -25,10 +25,6 @@ quantities:
     type: profile
     location: "vertical centerline x=0.5"
     norm: L2
-  - name: v
-    type: profile
-    location: "horizontal centerline y=0.5"
-    norm: L2
 
 parameters:
   - name: Re

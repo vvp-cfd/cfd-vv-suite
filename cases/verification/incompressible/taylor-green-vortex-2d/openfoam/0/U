@@ -3,7 +3,7 @@ dimensions [0 1 -1 0 0 0 0];
 internalField #codeStream
 {
     code
-    {
+    #{
         const fvMesh& mesh = refCast<const fvMesh>(db());
         auto tresult = tmp<vectorField>::New(mesh.nCells());
         auto& result = tresult.ref();
@@ -19,7 +19,7 @@ internalField #codeStream
             );
         }
         write(result);
-    }
+    #};
 };
 boundaryField {
     cyc_x0  { type cyclic; }

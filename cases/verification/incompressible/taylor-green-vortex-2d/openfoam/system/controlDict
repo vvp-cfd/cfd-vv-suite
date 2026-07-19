@@ -1,3 +1,4 @@
 FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }
-application icoFoam; startFrom startTime; startTime 0; stopAt endTime; endTime 0.5;
+application icoFoam;
+startFrom startTime; startTime 0; stopAt endTime; endTime 0.5;
 deltaT 0.001; writeControl timeStep; writeInterval 100;

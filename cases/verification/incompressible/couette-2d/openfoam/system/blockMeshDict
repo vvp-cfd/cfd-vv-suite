@@ -4,12 +4,9 @@ vertices ((0 0 0)(4 0 0)(4 1 0)(0 1 0)(0 0 0.1)(4 0 0.1)(4 1 0.1)(0 1 0.1));
 blocks ( hex (0 1 2 3 4 5 6 7) (8 16 1) simpleGrading (1 1 1) );
 edges ();
 boundary (
-    bottom { type wall; faces ((0 1 5 4)); }
-    top    { type wall; faces ((3 7 6 2)); }
-    periodic {
-        type cyclic;
-        neighbourPatch periodic;
-        faces ((0 4 7 3)(1 5 6 2));
-    }
+    bottom  { type wall; faces ((0 1 5 4)); }
+    top     { type wall; faces ((3 7 6 2)); }
+    cyclic1 { type cyclic; neighbourPatch cyclic2; faces ((0 4 7 3)); }
+    cyclic2 { type cyclic; neighbourPatch cyclic1; faces ((1 5 6 2)); }
     frontAndBack { type empty; faces ((0 3 2 1)(4 5 6 7)); }
 );

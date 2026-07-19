@@ -1,8 +1,9 @@
 FoamFile { version 2.0; format ascii; class volScalarField; object p; }
 dimensions [0 2 -2 0 0 0 0]; internalField uniform 0;
 boundaryField {
-    bottom { type zeroGradient; }
-    top { type zeroGradient; }
-    periodic { type cyclic; }
+    bottom  { type zeroGradient; }
+    top     { type zeroGradient; }
+    cyclic1 { type cyclic; }
+    cyclic2 { type cyclic; }
     frontAndBack { type empty; }
 }

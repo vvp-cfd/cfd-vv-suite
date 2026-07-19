@@ -55,23 +55,23 @@ jobs:
           apt-get update && apt-get install -y --no-install-recommends python3-pip
           pip3 install --upgrade pip setuptools wheel
           pip3 install tools/
-      - name: Test Poiseuille (icoFoam)
+      - name: Test Poiseuille (simpleFoam)
         continue-on-error: true
         run: |
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/poiseuille-2d/openfoam
-          blockMesh && icoFoam
+          blockMesh && simpleFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
-      - name: Test Couette (icoFoam)
+      - name: Test Couette (simpleFoam)
         continue-on-error: true
         run: |
           set +e
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/couette-2d/openfoam
-          blockMesh && icoFoam
+          blockMesh && simpleFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
@@ -92,6 +92,16 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           blockMesh && icoFoam
+          postProcess -func sampleDict -latestTime 2>/dev/null || true
+          RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
+          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+      - name: Test Sod (foamRun shockFluid)
+        continue-on-error: true
+        run: |
+          set +e
+          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
+          cd cases/verification/compressible/sod-shock-tube/openfoam
+          blockMesh && setFields && foamRun -solver shockFluid
           postProcess -func sampleDict -latestTime 2>/dev/null || true
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
           if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi

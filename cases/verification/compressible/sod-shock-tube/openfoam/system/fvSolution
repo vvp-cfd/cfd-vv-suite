@@ -6,6 +6,7 @@ solvers {
     "e.*"   { solver smoothSolver; smoother symGaussSeidel; tolerance 1e-06; }
 }
 PIMPLE {
+    nOuterCorrectors 1;
     nCorrectors 2;
     nNonOrthogonalCorrectors 0;
 }

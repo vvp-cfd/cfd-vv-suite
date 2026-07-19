@@ -1,8 +1,9 @@
 FoamFile { version 2.0; format ascii; class volVectorField; object U; }
-dimensions [0 1 -1 0 0 0 0]; internalField uniform (0 0 0);
+dimensions [0 1 -1 0 0 0 0]; internalField uniform (0.5 0 0);
 boundaryField {
-    bottom { type noSlip; }
-    top { type fixedValue; value uniform (1 0 0); }
-    periodic { type cyclic; }
+    bottom  { type noSlip; }
+    top     { type fixedValue; value uniform (1 0 0); }
+    cyclic1 { type cyclic; }
+    cyclic2 { type cyclic; }
     frontAndBack { type empty; }
 }

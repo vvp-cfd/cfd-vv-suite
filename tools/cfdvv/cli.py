@@ -585,7 +585,7 @@ def benchmark_command(category: str, cases_root: Optional[str], tolerance: float
         ref_file = None
         for rd in ref_dirs:
             if os.path.isdir(rd):
-                csvs = [f for f in os.listdir(rd) if f.endswith(".csv")]
+                csvs = sorted([f for f in os.listdir(rd) if f.endswith(".csv")])
                 if csvs:
                     ref_file = os.path.join(rd, csvs[0])
                     break

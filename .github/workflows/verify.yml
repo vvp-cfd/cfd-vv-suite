@@ -58,55 +58,50 @@ jobs:
       - name: Test Poiseuille (icoFoam)
         continue-on-error: true
         run: |
-          OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          . "$OFRC"
+          set +e
+          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/poiseuille-2d/openfoam
           blockMesh && icoFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          set +e
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
-          [ -n "$RESULT" ] && (cfdvv compare .. -r "$RESULT" --no-plot || true)
-      - name: Test Couette
-        continue-on-error: true (icoFoam)
+          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+      - name: Test Couette (icoFoam)
+        continue-on-error: true
         run: |
-          OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          . "$OFRC"
+          set +e
+          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/couette-2d/openfoam
           blockMesh && icoFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          set +e
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
-          [ -n "$RESULT" ] && (cfdvv compare .. -r "$RESULT" --no-plot || true)
-      - name: Test Lid-Driven Cavity
-        continue-on-error: true (icoFoam)
+          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+      - name: Test Lid-Driven Cavity (icoFoam)
+        continue-on-error: true
         run: |
-          OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          . "$OFRC"
+          set +e
+          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/lid-driven-cavity/openfoam
           blockMesh && icoFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          set +e
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
-          [ -n "$RESULT" ] && (cfdvv compare .. -r "$RESULT" --no-plot || true)
-      - name: Test Taylor-Green
-        continue-on-error: true (icoFoam)
+          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+      - name: Test Taylor-Green (icoFoam)
+        continue-on-error: true
         run: |
-          OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          . "$OFRC"
+          set +e
+          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           blockMesh && icoFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          set +e
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
-          [ -n "$RESULT" ] && (cfdvv compare .. -r "$RESULT" --no-plot || true)
-      - name: Test Sod
-        continue-on-error: true (rhoCentralFoam)
+          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi
+      - name: Test Sod (rhoCentralFoam)
+        continue-on-error: true
         run: |
-          OFRC=$(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
-          . "$OFRC"
+          set +e
+          . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/compressible/sod-shock-tube/openfoam
           blockMesh && rhoCentralFoam
           postProcess -func sampleDict -latestTime 2>/dev/null || true
-          set +e
           RESULT=$(find postProcessing -name "*.csv" -o -name "*.xy" 2>/dev/null | head -1)
-          [ -n "$RESULT" ] && (cfdvv compare .. -r "$RESULT" --no-plot || true)
+          if [ -n "$RESULT" ]; then cfdvv compare .. -r "$RESULT" --no-plot || true; fi

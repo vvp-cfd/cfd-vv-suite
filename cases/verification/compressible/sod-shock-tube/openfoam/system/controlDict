@@ -2,3 +2,18 @@ FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }
 application foamRun;
 startFrom startTime; startTime 0; stopAt endTime; endTime 0.2;
 deltaT 0.0001; writeControl adjustableRunTime; writeInterval 0.05;
+functions {
+    sampleDict {
+        type sets;
+        libs (sampling);
+        writeControl outputTime;
+        setFormat csv;
+        fields (rho U p);
+        sets (
+            line {
+                type uniform; axis x;
+                start (0 0.005 0.005); end (1 0.005 0.005); nPoints 200;
+            }
+        );
+    }
+}

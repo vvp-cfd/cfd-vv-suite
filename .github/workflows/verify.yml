@@ -128,7 +128,6 @@ jobs:
           . $(find / -name bashrc -path "*/openfoam*" 2>/dev/null | head -1)
           cd cases/verification/compressible/sod-shock-tube/openfoam
           blockMesh && setFields && foamRun -solver shockFluid
-          postProcess -func sampleDict -latestTime || true
           ls -R postProcessing || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k4 -n | tail -1)
           echo "Result file: $RESULT"

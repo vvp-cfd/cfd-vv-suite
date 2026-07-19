@@ -8,6 +8,7 @@ functions {
         libs (sampling);
         writeControl outputTime;
         setFormat csv;
+        fields (U);
         sets (
             centerline {
                 type uniform; axis y;

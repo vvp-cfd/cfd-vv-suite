@@ -26,24 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install -e "tools/[dev]"
-      - run: |
-          find cases -name case.yaml -not -path '*/imported/*' | while read f; do
-            cfdvv validate "$(dirname "$f")"
-          done
-
-  self-compare:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        case: [poiseuille-2d, couette-2d, beltrami-flow-3d, taylor-green-vortex-2d, manufactured-ns-2d, poiseuille-power-law]
-    steps:
-      - uses: actions/checkout@v4
-      - run: pip install -e "tools/[dev]"
-      - run: |
-          CASE_DIR=$(find cases -name case.yaml -not -path '*/imported/*' | while read f; do awk -v id="${{ matrix.case }}" '$1=="id:" && $2==id' "$f" | grep -q . && dirname "$f"; done)
-          REF_CSV=$(find "$CASE_DIR/reference" -name '*.csv' | head -1)
-          cfdvv compare "$CASE_DIR" -r "$REF_CSV" --no-plot --tolerance 1e-10
+      - run: cfdvv benchmark
 
   smoke-tests:
     runs-on: ubuntu-latest
@@ -53,6 +36,9 @@ jobs:
       - run: |
           cfdvv --version
           cfdvv list
+          cfdvv validate cases/verification/incompressible/poiseuille-2d
           cfdvv info cases/verification/incompressible/poiseuille-2d
           cfdvv example-output cases/verification/incompressible/poiseuille-2d
-          cfdvv import --list
+          cfdvv compare cases/verification/incompressible/poiseuille-2d \
+            -r cases/verification/incompressible/poiseuille-2d/reference/analytical/solution.csv \
+            --no-plot --tolerance 1e-10

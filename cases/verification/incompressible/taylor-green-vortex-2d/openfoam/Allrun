@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e; blockMesh
-# Initialize TGV velocity field: u=sin(x)*cos(y), v=-cos(x)*sin(y)
-setExprFieldValue -field U -expression "vector(sin(x)*cos(y), -cos(x)*sin(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
+# Initialize TGV velocity field: u=-cos(x)*sin(y), v=sin(x)*cos(y)
+setExprFieldValue -field U -expression "vector(-cos(x)*sin(y), sin(x)*cos(y), 0)" 2>/dev/null || echo "setExprFieldValue not available"
 icoFoam
 echo "Taylor-Green done. Compare with: cfdvv compare . -r reference/analytical/solution_t0.csv"

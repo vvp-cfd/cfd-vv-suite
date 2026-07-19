@@ -1,0 +1,55 @@
+id: poiseuille-3d
+name: "Square Duct Poiseuille Flow (3D)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, duct, analytical, navier-stokes, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: |
+    u(y,z) = (16a^2G/π⁴mu)·Σ_{n=1,3,5...} Σ_{m=1,3,5...} sin(nπ(y+a)/(2a))·sin(mπ(z+a)/(2a)) / (nm(n^2+m^2))
+    v = w = 0, p(x) = p₀ - G·x, a = H/2
+  source: "Shah & London, Laminar Flow Forced Convection in Ducts, 1978"
+
+quantities:
+  - name: u
+    type: profile
+    location: "duct centerline z=0"
+    norm: L2
+  - name: v
+    type: profile
+    location: "duct centerline z=0"
+    norm: L2
+  - name: w
+    type: profile
+    location: "duct centerline z=0"
+    norm: L2
+
+parameters:
+  - name: H
+    description: "Duct side length"
+    default: 1.0
+  - name: mu
+    description: "Dynamic viscosity"
+    default: 1.0
+  - name: G
+    description: "Pressure gradient -dp/dx"
+    default: 1.0
+mesh:
+  type: "uniform hexahedral"
+  recommended: [20, 21, 21]
+  convergence_study: [[10,11,11],[20,21,21],[40,41,41]]
+  wall_refinement: false
+  notes: "Square duct. 20 cells in streamwise direction." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 5e-4

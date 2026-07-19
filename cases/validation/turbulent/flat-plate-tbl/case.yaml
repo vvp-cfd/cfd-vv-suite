@@ -1,0 +1,56 @@
+id: flat-plate-tbl
+name: "Turbulent Flat Plate Boundary Layer (Wieghardt)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, boundary-layer, zero-pressure-gradient, experimental, rans-validation]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Skin friction Cf(Re_theta), mean velocity profile u+(y+)"
+  source: "Wieghardt, K. (1947), in Coles, D.E. & Hirst, E.A. (eds.), Computation of Turbulent Boundary Layers, AFOSR-IFP-Stanford, 1968"
+  doi: ""
+
+quantities:
+  - name: uplus
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+  - name: Cf
+    type: scalar
+    location: "plate surface"
+    norm: Relative_L2
+
+parameters:
+  - name: Re_theta
+    description: "Reynolds number based on momentum thickness"
+    default: 7080
+  - name: U_inf
+    description: "Freestream velocity"
+    default: 33.0
+  - name: nu
+    description: "Kinematic viscosity (air)"
+    default: 1.5e-5
+mesh:
+  type: "quadrilateral, stretched, y+<1"
+  recommended: [200, 100]
+  convergence_study: [[100,50],[200,100],[400,200]]
+  wall_refinement: true
+  notes: "y+ of first cell < 1. Growth ratio 1.15. Re_theta up to 20000." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.2
+
+notes: |
+  Zero pressure gradient turbulent boundary layer.
+  u+ = y+ in viscous sublayer (y+<5).
+  u+ = (1/0.41)*ln(y+) + 5.0 in log layer (y+>30).
+  Expected Cf(Re_theta=7080) ~ 0.0029.

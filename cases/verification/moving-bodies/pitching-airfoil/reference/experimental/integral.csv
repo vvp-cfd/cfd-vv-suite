@@ -1,0 +1,10 @@
+quantity,value,description
+Re,4800000.0,Chord-based Reynolds number
+M,0.3,Mach number
+alpha_mean,2.5,Mean angle of attack (deg)
+alpha_amp,2.5,Amplitude (deg)
+k,0.081,Reduced frequency
+x_pivot,0.25,Pivot location (x/c)
+Cl_max,0.55,Max lift during cycle
+Cl_min,0.03,Min lift during cycle
+Cm_max,0.02,Max moment coefficient

@@ -1,0 +1,49 @@
+id: oblique-shock-3d
+name: "Oblique Shock (3D, M=2.0, wedge 10 deg)"
+category: verification
+subcategory: compressible
+tags: [compressible, inviscid, steady, supersonic, shock, euler, analytical, 3d]
+
+physics:
+  type: compressible
+  regime: laminar
+  convective: true
+  equations: [euler]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "3D extruded wedge: shock angle 39.31 deg invariant in z"
+  source: "Oblique shock relations (Anderson); 3D: periodic in z, verify spanwise invariance"
+
+quantities:
+  - name: p_pinf
+    type: profile
+    location: "wedge surface at midspan"
+    norm: L2
+  - name: w
+    type: profile
+    location: "post-shock region"
+    norm: L2
+
+parameters:
+  - name: M_inf
+    description: "Freestream Mach number"
+    default: 2.0
+  - name: wedge_angle
+    description: "Wedge half-angle (deg)"
+    default: 10.0
+  - name: Ar
+    description: "Spanwise aspect ratio"
+    default: 1.0
+mesh:
+  type: "uniform hexahedral"
+  recommended: [100, 50, 4]
+  convergence_study: [[50,25,2],[100,50,4]]
+  wall_refinement: false
+  notes: "3D wedge. Periodic in z." 
+
+tolerances:
+  L2: 0.02
+  Linf: 0.05

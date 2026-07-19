@@ -1,0 +1,54 @@
+id: cylinder-viv-3d
+name: "VIV of a Cylinder (3D)"
+category: validation
+subcategory: complex-geometry
+tags: [newtonian, laminar, viv, cylinder, moving-boundary, experimental, fsi, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes, rigid-body-dynamics]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "3D VIV: oblique/parallel vortex shedding, spanwise correlation length, 3D response"
+  source: "Khalak & Williamson (1997); 3D experiments by Govardhan & Williamson (2006)"
+
+quantities:
+  - name: A_D
+    type: scalar
+    location: "cylinder midspan"
+    norm: Relative_L2
+  - name: St
+    type: scalar
+    location: "wake"
+    norm: Relative_L2
+
+parameters:
+  - name: m_star
+    description: "Mass ratio"
+    default: 10.1
+  - name: zeta
+    description: "Damping ratio"
+    default: 0.0011
+  - name: Ar
+    description: "Spanwise aspect ratio L/D"
+    default: 10.0
+mesh:
+  type: "O-H-grid, deforming in r"
+  recommended: [400000]
+  convergence_study: [[100000],[400000]]
+  wall_refinement: true
+  notes: "3D VIV. Ar>=10 for correct spanwise correlation." 
+
+tolerances:
+  L2: 0.1
+  Linf: 0.2
+
+notes: |
+  3D VIV: at low m*, vortex shedding transitions between oblique
+  and parallel modes. Spanwise correlation affects amplitude.
+  Requires sufficiently long span (Ar >= 10) for realistic 3D effects.

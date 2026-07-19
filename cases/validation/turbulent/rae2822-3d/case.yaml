@@ -1,0 +1,42 @@
+id: rae2822-3d
+name: "RAE 2822 Wing Section (3D)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, compressible, transonic, airfoil, shock, experimental, rans-validation, 3d]
+
+physics:
+  type: compressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans, energy]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "3D: periodic spanwise, midspan Cp should match 2D RAE 2822"
+  source: "Cook et al. (1979), AGARD AR-138; 3D extrusion"
+
+quantities:
+  - name: Cp
+    type: profile
+    location: "airfoil surface at midspan"
+    norm: L2
+
+parameters:
+  - name: M
+    description: "Freestream Mach number"
+    default: 0.73
+  - name: Ar
+    description: "Spanwise aspect ratio"
+    default: 1.0
+mesh:
+  type: "C-H-grid extruded"
+  recommended: [80000]
+  convergence_study: [[20000],[80000]]
+  wall_refinement: true
+  notes: "3D airfoil. Periodic in span." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15

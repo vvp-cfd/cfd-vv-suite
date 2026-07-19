@@ -1,0 +1,61 @@
+id: manufactured-ns-3d
+name: "Manufactured Solution -- 3D Navier-Stokes"
+category: verification
+subcategory: incompressible/steady
+tags: [mms, manufactured-solution, newtonian, laminar, steady, navier-stokes, source-term, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: mms
+  solution: |
+    u = sin(pi*x)*cos(pi*y)*cos(pi*z)
+    v = cos(pi*x)*sin(pi*y)*cos(pi*z)
+    w = -2*cos(pi*x)*cos(pi*y)*sin(pi*z)
+    p = sin(pi*x)*sin(pi*y)*sin(pi*z)
+    Domain: [0,1]^3, nu = 0.1
+  source: "Method of Manufactured Solutions (MMS)"
+
+quantities:
+  - name: u
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: v
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: w
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: p
+    type: field
+    location: "full domain"
+    norm: L2
+
+parameters:
+  - name: nu
+    description: "Kinematic viscosity"
+    default: 0.1
+mesh:
+  type: "uniform hexahedral"
+  recommended: [21, 21, 21]
+  convergence_study: [[11,11,11],[21,21,21],[41,41,41]]
+  wall_refinement: false
+  notes: "3D MMS. Add source terms to equations." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 1e-4
+
+notes: |
+  Full 3D MMS. The manufactured solution is divergence-free.
+  Source terms S_u, S_v, S_w must be added to momentum equations.
+  Run on 3+ mesh levels (e.g., 11^3, 21^3, 41^3) for convergence study.

@@ -1,0 +1,12 @@
+quantity,value,description
+Re,100,Based on cylinder diameter
+rho_s_rho_f,10,Solid/fluid density ratio
+E,1400000.0,Young modulus
+nu_s,0.4,Poisson ratio
+D,0.1,Cylinder diameter
+L,2.5,Channel length
+H,0.41,Channel height
+Ay_tip,0.035,Tip y-amplitude (+-0.005)
+f,2.0,Oscillation frequency (+-0.1)
+Cd_mean,3.22,Mean drag (+-0.05)
+Cl_amp,2.55,Lift amplitude (+-0.1)

@@ -1,0 +1,52 @@
+# case.yaml
+
+id: my-case
+name: "Descriptive Case Name"
+category: verification               # verification | validation
+subcategory: incompressible/steady   # see docs/case-format-spec.md
+tags: [newtonian, laminar, steady]
+
+physics:
+  type: incompressible               # incompressible | compressible
+  regime: laminar                    # laminar | turbulent | transitional
+  convective: false
+  equations:
+    - continuity
+    - navier-stokes
+
+dimension: 2D
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [100, 50]
+  convergence_study: [[50,25],[100,50],[200,100]]
+  wall_refinement: false
+  notes: "Mesh requirements description"
+
+reference:
+  type: analytical                   # analytical | experimental | dns | les | mms
+  solution: "u(y) = ..."
+  source: "Author, Journal, Year"
+  doi: ""
+
+quantities:
+  - name: u
+    type: profile
+    location: "outlet"
+    norm: L2
+  - name: v
+    type: profile
+    location: "outlet"
+    norm: L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number"
+    default: 100
+    range: [1, 1000]
+  - name: H
+    description: "Characteristic length"
+    default: 1.0
+
+tolerances:
+  L2: 1e-6
+  Linf: 1e-5

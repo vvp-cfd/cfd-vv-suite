@@ -1,0 +1,59 @@
+id: taylor-green-vortex-3d
+name: "Taylor-Green Vortex (3D initial condition)"
+category: verification
+subcategory: incompressible/unsteady
+tags: [newtonian, laminar, unsteady, vortex, analytical, navier-stokes, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: |
+    u = sin(x)cos(y)cos(z)
+    v = cos(x)sin(y)cos(z)
+    w = -2cos(x)cos(y)sin(z)
+    p = (cos(2x)+cos(2y))(cos(2z)+2)/16
+    Domain: [0,2pi]^3, periodic
+  source: "Divergence-free initial condition for TG vortex"
+
+quantities:
+  - name: u
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: v
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: w
+    type: field
+    location: "full domain"
+    norm: L2
+
+parameters:
+  - name: L
+    description: "Domain size"
+    default: 6.283185307179586
+  - name: nu
+    description: "Kinematic viscosity"
+    default: 0.01
+mesh:
+  type: "uniform hexahedral, triply periodic"
+  recommended: [32, 32, 32]
+  convergence_study: [[16,16,16],[32,32,32],[64,64,64]]
+  wall_refinement: false
+  notes: "Periodic domain [0,2pi]^3." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 1e-3
+
+notes: |
+  Exact div-free initial condition. The nonlinear terms do not cancel.
+  This tests spatial discretization at t=0.

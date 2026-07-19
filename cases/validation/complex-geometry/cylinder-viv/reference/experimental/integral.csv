@@ -1,0 +1,9 @@
+quantity,value,description
+m_star,10.1,Mass ratio
+zeta,0.0011,Damping ratio
+Re_range,3000-16000,Reynolds number range
+A_max_D,0.92,Max amplitude in upper branch
+f_star_upper,0.18,Upper branch frequency ratio f/f_n
+f_star_lower,0.16,Lower branch frequency ratio f/f_n
+Ur_transition1,5.0,Initial to upper branch transition velocity
+Ur_transition2,9.0,Upper to lower branch transition velocity

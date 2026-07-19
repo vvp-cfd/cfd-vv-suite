@@ -1,0 +1,42 @@
+id: backward-facing-step-turb
+name: "Turbulent Backward-Facing Step (Driver & Seegmiller)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, separation, recirculation, experimental, rans-validation]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Reattachment length x_r/h=6.26, Cf along bottom wall, velocity profiles"
+  source: "Driver, D.M. & Seegmiller, H.L. AIAA J., 23(2), 163-171, 1985"
+
+quantities:
+  - name: Cf
+    type: profile
+    location: "bottom wall downstream of step"
+    norm: L2
+
+parameters:
+  - name: Re_h
+    description: "Reynolds number based on step height"
+    default: 36000
+  - name: ER
+    description: "Expansion ratio"
+    default: 1.125
+mesh:
+  type: "quadrilateral, y+<1 at walls"
+  recommended: [300, 80]
+  convergence_study: [[150,40],[300,80],[600,160]]
+  wall_refinement: true
+  notes: "Turbulent BFS Re_h=36000. y+ < 1 at walls for low-Re RANS." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15

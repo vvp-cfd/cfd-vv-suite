@@ -1,0 +1,59 @@
+id: pipe-flow-3d
+name: "Hagen-Poiseuille Pipe Flow (3D Cartesian)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, pipe, axisymmetric, analytical, navier-stokes, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "u(r) = G * (R^2 - r^2) / (4*mu), r = sqrt(y^2+z^2), v = w = 0"
+  source: "White, F.M. Viscous Fluid Flow, 3rd ed., McGraw-Hill, 2006"
+  doi: ""
+
+quantities:
+  - name: u
+    type: profile
+    location: "radial profile at pipe midpoint"
+    norm: L2
+  - name: v
+    type: profile
+    location: "radial profile at pipe midpoint"
+    norm: L2
+  - name: w
+    type: profile
+    location: "radial profile at pipe midpoint"
+    norm: L2
+
+parameters:
+  - name: R
+    description: "Pipe radius"
+    default: 0.5
+  - name: mu
+    description: "Dynamic viscosity"
+    default: 1.0
+  - name: G
+    description: "Pressure gradient -dp/dx"
+    default: 1.0
+mesh:
+  type: "unstructured tetrahedral or cut-cell Cartesian"
+  recommended: [60000]
+  convergence_study: [[10000],[40000],[160000]]
+  wall_refinement: true
+  notes: "Curved pipe wall. For Cartesian solver: immersed boundary or stair-step. Unstructured mesh: 60k cells." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 5e-4
+
+notes: |
+  Tests Cartesian solver on curvilinear geometry (pipe).
+  Reference data includes only points inside the pipe (r <= R).
+  Mesh should resolve the cylindrical boundary adequately.

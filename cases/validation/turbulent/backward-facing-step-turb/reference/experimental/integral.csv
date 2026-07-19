@@ -1,0 +1,6 @@
+quantity,value,uncertainty
+Re_h,36000,500
+expansion_ratio,1.125,0.0
+x_r_h,6.26,0.1
+Cf_min,-0.0011,0.0002
+U_inf,44.2,0.5

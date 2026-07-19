@@ -1,0 +1,64 @@
+id: manufactured-ns-2d
+name: "Manufactured Solution -- 2D Navier-Stokes"
+category: verification
+subcategory: incompressible/steady
+tags: [mms, manufactured-solution, newtonian, laminar, steady, navier-stokes, source-term]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations:
+    - continuity
+    - navier-stokes
+
+dimension: 2D
+
+reference:
+  type: mms
+  solution: |
+    u = sin(πx)·cos(πy)
+    v = -cos(πx)·sin(πy)
+    p = sin(πx)·sin(πy)
+    nu = 0.1, domain [0,1]^2
+  source: "Method of Manufactured Solutions (MMS). See Roache (1998), Oberkampf & Roy (2010)"
+
+quantities:
+  - name: u
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: v
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: p
+    type: field
+    location: "full domain"
+    norm: L2
+
+parameters:
+  - name: nu
+    description: "Kinematic viscosity"
+    default: 0.1
+  - name: L
+    description: "Domain side length"
+    default: 1.0
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [41, 41]
+  convergence_study: [[11,11],[21,21],[41,41],[81,81]]
+  wall_refinement: false
+  notes: "Uniform mesh for convergence study. Expected order: 2 (central differences)." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 1e-4
+
+notes: |
+  MMS is the gold standard for code verification.
+  The manufactured solution satisfies grad·u ≡ 0 exactly.
+  Source terms (forcing functions) are provided in reference/mms/source_terms.csv.
+  User must add source terms to momentum equations to recover the solution.
+  Boundary conditions are Dirichlet from the manufactured solution.
+  Run on 3+ mesh levels (e.g., 21^2, 41^2, 81^2) to verify order of convergence.

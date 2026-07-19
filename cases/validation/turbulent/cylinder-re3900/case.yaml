@@ -1,0 +1,45 @@
+id: cylinder-re3900
+name: "Flow Past a Cylinder (Re=3900, turbulent wake)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, bluff-body, cylinder, external-flow, experimental, les-validation]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans-or-les]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "Cd=0.99, St=0.215, Cp_base=-1.04, wake velocity profiles from PIV"
+  source: "Ong & Wallace (1996); Norberg (2003); Parnaudeau et al. (2008) Exp. Fluids"
+  doi: "https://doi.org/10.1007/BF00189383"
+
+quantities:
+  - name: Cd
+    type: scalar
+    location: "cylinder surface"
+    norm: Relative_L2
+  - name: St
+    type: scalar
+    location: "wake"
+    norm: Relative_L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number based on diameter"
+    default: 3900
+mesh:
+  type: "O-grid (structured) or unstructured tetrahedral"
+  recommended: [500000]
+  convergence_study: [[100000],[500000],[2000000]]
+  wall_refinement: true
+  notes: "3D cylinder, Ar>=4. LES: 500k+ cells. Wall refinement y+~1." 
+
+tolerances:
+  L2: 0.1
+  Relative_L2: 0.1
+  Linf: 0.2

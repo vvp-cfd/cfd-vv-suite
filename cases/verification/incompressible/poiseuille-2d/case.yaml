@@ -1,0 +1,60 @@
+id: poiseuille-2d
+name: "Plane Poiseuille Flow (2D)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, channel, analytical, navier-stokes]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations:
+    - continuity
+    - navier-stokes
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "u(y) = (G/(2*mu)) * y * (H - y), v = 0, p(x) = p0 - G*x"
+  source: "White, F.M. Viscous Fluid Flow, 3rd ed., McGraw-Hill, 2006"
+  doi: ""
+
+quantities:
+  - name: u
+    type: profile
+    location: "outlet cross-section"
+    norm: L2
+  - name: v
+    type: profile
+    location: "outlet cross-section"
+    norm: L2
+
+parameters:
+  - name: H
+    description: "Channel height"
+    default: 1.0
+  - name: L
+    description: "Channel length"
+    default: 10.0
+  - name: mu
+    description: "Dynamic viscosity"
+    default: 1.0
+  - name: G
+    description: "Pressure gradient (-dp/dx)"
+    default: 1.0
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [10, 20]
+  convergence_study: [[5,10],[10,20],[20,40],[40,80]]
+  wall_refinement: false
+  notes: "Uniform mesh. 10 cells across height sufficient for L2<1e-6." 
+
+tolerances:
+  L2: 1e-6
+  Linf: 1e-5
+
+notes: |
+  This is a standard verification test for incompressible Navier-Stokes
+  solvers. The flow is fully developed, unidirectional, with a parabolic
+  velocity profile. Use at least 10 cells across the channel height.

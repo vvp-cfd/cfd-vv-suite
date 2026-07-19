@@ -1,0 +1,50 @@
+id: couette-3d
+name: "Plane Couette Flow (3D)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, channel, analytical, navier-stokes, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "u(y) = U0·y/H, v = w = 0, p = const"
+  source: "White, F.M. Viscous Fluid Flow, 3rd ed., McGraw-Hill, 2006"
+
+quantities:
+  - name: u
+    type: profile
+    location: "vertical centerline at outlet"
+    norm: L2
+  - name: v
+    type: profile
+    location: "vertical centerline at outlet"
+    norm: L2
+  - name: w
+    type: profile
+    location: "vertical centerline at outlet"
+    norm: L2
+
+parameters:
+  - name: H
+    description: "Channel height"
+    default: 1.0
+  - name: U0
+    description: "Top wall velocity"
+    default: 1.0
+mesh:
+  type: "uniform hexahedral"
+  recommended: [8, 16, 4]
+  convergence_study: [[4,8,2],[8,16,4],[16,32,8]]
+  wall_refinement: false
+  notes: "2D physics, 4 cells in z-direction." 
+
+tolerances:
+  L2: 1e-6
+  Linf: 1e-5

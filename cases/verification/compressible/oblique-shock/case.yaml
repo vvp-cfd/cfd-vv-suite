@@ -1,0 +1,50 @@
+id: oblique-shock
+name: "Oblique Shock (M=2.0, wedge 10 deg)"
+category: verification
+subcategory: compressible
+tags: [compressible, inviscid, steady, supersonic, shock, euler, analytical]
+
+physics:
+  type: compressible
+  regime: laminar
+  convective: true
+  equations: [euler]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "Theta-beta-M relation: shock angle 39.31 deg, p2/p1=1.866, rho2/rho1=1.706"
+  source: "Anderson, J.D. Fundamentals of Aerodynamics; Oblique shock relations"
+
+quantities:
+  - name: p_pinf
+    type: profile
+    location: "wedge surface"
+    norm: L2
+
+parameters:
+  - name: M_inf
+    description: "Freestream Mach number"
+    default: 2.0
+  - name: wedge_angle
+    description: "Wedge half-angle (deg)"
+    default: 10.0
+  - name: gamma
+    description: "Ratio of specific heats"
+    default: 1.4
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [100, 50]
+  convergence_study: [[50,25],[100,50],[200,100]]
+  wall_refinement: false
+  notes: "Supersonic wedge flow. Mesh aligned with flow." 
+
+tolerances:
+  L2: 0.02
+  Linf: 0.05
+
+notes: |
+  Supersonic flow over a wedge generates an attached oblique shock.
+  The post-shock flow is uniform with analytically known properties.
+  Tests shock-capturing capability and post-shock state accuracy.

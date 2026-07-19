@@ -1,0 +1,54 @@
+id: flat-plate-blausius
+name: "Blasius Flat Plate Boundary Layer"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, boundary-layer, analytical, similarity]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: |
+    Self-similar solution: u/U_inf = f'(eta), eta = y*sqrt(U_inf/(2*nu*x))
+    delta_99 = 5.0*x/sqrt(Re_x), Cf = 0.664/sqrt(Re_x)
+  source: "Blasius, H. Z. Math. Phys., 56, 1-37, 1908"
+  doi: ""
+
+quantities:
+  - name: u
+    type: profile
+    location: "vertical profiles at x=0.2,0.5,0.8,1.0"
+    norm: L2
+  - name: Cf
+    type: scalar
+    location: "wall"
+    norm: Relative_L2
+
+parameters:
+  - name: Re_L
+    description: "Reynolds number based on plate length"
+    default: 100000
+  - name: U_inf
+    description: "Freestream velocity"
+    default: 1.0
+mesh:
+  type: "quadrilateral, stretched in y"
+  recommended: [100, 50]
+  convergence_study: [[50,25],[100,50],[200,100]]
+  wall_refinement: true
+  notes: "Wall refinement: first cell y1=0.001. Growth ratio 1.1." 
+
+tolerances:
+  L2: 1e-3
+  Linf: 1e-2
+
+notes: |
+  Fundamental laminar boundary layer. Domain: flat plate from x=0 to x=L=1.
+  Uniform inflow U_inf=1 at x<0. No-slip on plate (y=0, x>=0).
+  Symmetry or far-field at y=ymax. Verify both velocity profiles and Cf(x).

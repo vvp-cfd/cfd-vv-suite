@@ -1,0 +1,55 @@
+id: taylor-couette-3d
+name: "Taylor-Couette Flow (3D, Taylor Vortices)"
+category: verification
+subcategory: moving-bodies
+tags: [newtonian, laminar, rotating, cylindrical, moving-boundary, taylor-vortices, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "Ta<1708: axisymmetric Couette. Ta>1708: 3D Taylor vortices with wavelength ~2d"
+  source: "Taylor, G.I. (1923); Chandrasekhar (1961)"
+
+quantities:
+  - name: u_theta
+    type: profile
+    location: "radial direction at mid-height"
+    norm: L2
+  - name: u_z
+    type: profile
+    location: "axial direction"
+    norm: L2
+
+parameters:
+  - name: Ta
+    description: "Taylor number"
+    default: 3200
+  - name: Gamma
+    description: "Aspect ratio H/d"
+    default: 4.0
+  - name: eta
+    description: "Radius ratio R1/R2"
+    default: 0.5
+mesh:
+  type: "uniform hexahedral in (r,theta,z)"
+  recommended: [32, 64, 32]
+  convergence_study: [[16,32,16],[32,64,32],[64,128,64]]
+  wall_refinement: false
+  notes: "3D. Height H>=2d to accommodate Taylor vortices." 
+
+tolerances:
+  L2: 1e-4
+  Linf: 1e-3
+
+notes: |
+  Below Ta_crit=1708: steady axisymmetric, no axial flow.
+  Above Ta_crit: Taylor vortices appear --- toroidal rolls with
+  wavelength ~2d. Wave number depends on Gamma.
+  Tests rotating BCs and centrifugal instability in 3D.

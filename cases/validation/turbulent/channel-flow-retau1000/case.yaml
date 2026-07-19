@@ -1,0 +1,44 @@
+id: channel-flow-retau1000
+name: "Turbulent Channel Flow (Re_tau=1000, Lee-Moser DNS)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, channel, dns, rans-validation, wall-bounded, high-re]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans-or-les-or-dns]
+
+dimension: 3D
+
+reference:
+  type: dns
+  solution: "DNS mean velocity u+, Reynolds shear stress"
+  source: "Lee, M. & Moser, R.D. J. Fluid Mech., 774, 395-415, 2015"
+  doi: "https://doi.org/10.1017/jfm.2015.268"
+
+quantities:
+  - name: uplus
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+  - name: uv
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+
+parameters:
+  - name: Re_tau
+    description: "Friction Reynolds number"
+    default: 1000
+mesh:
+  type: "uniform x,z; stretched y"
+  recommended: [512, 513, 512]
+  convergence_study: [[256,257,256],[512,513,512]]
+  wall_refinement: true
+  notes: "DNS: 512^3. dx+=10, dz+=6." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.12

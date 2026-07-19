@@ -1,0 +1,7 @@
+quantity,value,uncertainty,source
+Cd_mean,0.99,0.05,Norberg 2003
+St,0.215,0.005,Norberg 2003
+Cl_rms,0.2,0.05,Norberg 2003
+Cp_base,-1.04,0.05,Norberg 2003
+Lw_D,1.03,0.1,Parnaudeau 2008
+theta_sep,88.0,2.0,Ong & Wallace 1996

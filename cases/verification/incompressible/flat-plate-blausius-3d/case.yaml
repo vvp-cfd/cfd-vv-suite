@@ -1,0 +1,51 @@
+id: flat-plate-blausius-3d
+name: "Blasius Flat Plate Boundary Layer (3D)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, boundary-layer, analytical, similarity, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "Self-similar solution u/U_inf = f'(eta), spanwise invariant"
+  source: "Blasius (1908); 3D extension: spanwise periodicity, verify z-uniformity"
+
+quantities:
+  - name: u
+    type: profile
+    location: "vertical profiles at x stations"
+    norm: L2
+  - name: w
+    type: profile
+    location: "vertical profiles at x stations"
+    norm: L2
+
+parameters:
+  - name: Re_L
+    description: "Reynolds number based on plate length"
+    default: 100000
+  - name: Ar
+    description: "Spanwise aspect ratio"
+    default: 1.0
+mesh:
+  type: "hexahedral, stretched in y, periodic z"
+  recommended: [100, 50, 4]
+  convergence_study: [[50,25,2],[100,50,4]]
+  wall_refinement: true
+  notes: "3D plate. 4 cells in z, periodic BC." 
+
+tolerances:
+  L2: 1e-3
+  Linf: 1e-2
+
+notes: |
+  3D flat plate: periodic or symmetry in z. Tests that 3D solver
+  reproduces 2D Blasius solution without spurious spanwise flow.
+  w should be zero everywhere.

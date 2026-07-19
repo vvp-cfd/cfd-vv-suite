@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use cfd-vv-suite in your research, please cite it as below."
+title: "cfd-vv-suite: Open Test Suite for CFD Verification and Validation"
+authors:
+  - family-names: Puzikova
+    given-names: Valeria
+    email: valeria.puzikova@gmail.com
+version: 0.2.0
+date-released: 2026-07-19
+url: "https://github.com/vvp-cfd/cfd-vv-suite"
+repository-code: "https://github.com/vvp-cfd/cfd-vv-suite"
+license: MIT
+keywords:
+  - CFD
+  - verification
+  - validation
+  - computational-fluid-dynamics
+  - navier-stokes
+  - benchmark

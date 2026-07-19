@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cfdvv"
+version = "0.2.0"
+description = "CFD Verification & Validation Suite: open-source test cases and CLI tools for CFD code verification and validation."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.9"
+authors = [
+    {name = "Valeria Puzikova", email = "valeria.puzikova@gmail.com"}
+]
+keywords = ["cfd", "verification", "validation", "computational-fluid-dynamics", "navier-stokes", "benchmark"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+    "numpy>=1.21",
+    "click>=8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+plot = [
+    "matplotlib>=3.5",
+]
+vtk = [
+    "meshio>=5.0",
+]
+openfoam = [
+    "fluidfoam>=0.2",
+]
+full = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "matplotlib>=3.5",
+    "meshio>=5.0",
+]
+
+[project.scripts]
+cfdvv = "cfdvv.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/vvp-cfd/cfd-vv-suite"
+Repository = "https://github.com/vvp-cfd/cfd-vv-suite"
+Issues = "https://github.com/vvp-cfd/cfd-vv-suite/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]

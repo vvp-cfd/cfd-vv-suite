@@ -1,0 +1,51 @@
+id: flat-plate-tbl-3d
+name: "Turbulent Flat Plate Boundary Layer (3D)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, boundary-layer, zero-pressure-gradient, experimental, rans-validation, 3d]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "3D extension: spanwise periodic, verify 2D TBL statistics recovered at midplane"
+  source: "Wieghardt (1947); Cf(Re_theta), u+(y+)"
+
+quantities:
+  - name: uplus
+    type: profile
+    location: "wall-normal at midspan"
+    norm: L2
+  - name: w
+    type: profile
+    location: "wall-normal at midspan"
+    norm: L2
+
+parameters:
+  - name: Re_theta
+    description: "Reynolds number based on momentum thickness"
+    default: 7080
+  - name: Ar
+    description: "Spanwise aspect ratio"
+    default: 1.0
+mesh:
+  type: "hexahedral, stretched y, periodic z"
+  recommended: [200, 100, 16]
+  convergence_study: [[100,50,8],[200,100,16]]
+  wall_refinement: true
+  notes: "3D TBL. 16 cells in z to resolve turbulent structures." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+
+notes: |
+  3D turbulent BL. Spanwise periodic or symmetry BCs.
+  RANS should produce spanwise-uniform statistics.
+  For LES/DNS: domain must be wide enough for turbulent structures.

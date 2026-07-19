@@ -1,0 +1,57 @@
+id: naca0012
+name: "NACA 0012 Airfoil (McCroskey, Gregory)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, compressible, airfoil, external-flow, experimental, rans-validation]
+
+physics:
+  type: compressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans, energy]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Lift coefficient Cl(alpha), surface pressure Cp(x/c), drag Cd"
+  source: "McCroskey, W.J. (1987); Gregory & O'Reilly (1970); Ladson, C.L. (1988) NASA TM-4074"
+  doi: ""
+
+quantities:
+  - name: Cl
+    type: scalar
+    location: "airfoil"
+    norm: Relative_L2
+  - name: Cp
+    type: profile
+    location: "airfoil surface"
+    norm: L2
+
+parameters:
+  - name: alpha
+    description: "Angle of attack (deg)"
+    default: 10.0
+    range: [0, 16]
+  - name: Re
+    description: "Reynolds number based on chord"
+    default: 3000000
+  - name: M
+    description: "Freestream Mach number"
+    default: 0.15
+mesh:
+  type: "C-grid (structured around airfoil)"
+  recommended: [50000]
+  convergence_study: [[10000],[50000],[200000]]
+  wall_refinement: true
+  notes: "C-grid: 250 points on airfoil, 100 normal, y+~1. Transition at x/c=0.05." 
+
+tolerances:
+  L2: 0.05
+  Relative_L2: 0.05
+  Linf: 0.15
+
+notes: |
+  Symmetric NACA 0012 airfoil at low Mach (M=0.15, effectively incompressible).
+  Transition fixed at x/c=0.05 on both surfaces.
+  Reference data for alpha=0 (symmetric) and alpha=10 deg.

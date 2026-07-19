@@ -1,0 +1,49 @@
+id: naca0012-3d
+name: "NACA 0012 Wing Section (3D extruded)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, compressible, airfoil, external-flow, experimental, rans-validation, 3d]
+
+physics:
+  type: compressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans, energy]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "3D extruded airfoil: Cl(alpha), Cp(x/c) at midspan. Periodic in z."
+  source: "NACA 0012 data (McCroskey, Gregory & O'Reilly); 3D: spanwise periodic"
+
+quantities:
+  - name: Cl
+    type: scalar
+    location: "airfoil midspan"
+    norm: Relative_L2
+  - name: Cp
+    type: profile
+    location: "airfoil surface at midspan"
+    norm: L2
+
+parameters:
+  - name: alpha
+    description: "Angle of attack (deg)"
+    default: 10.0
+  - name: Re
+    description: "Reynolds number based on chord"
+    default: 3000000
+  - name: Ar
+    description: "Spanwise aspect ratio"
+    default: 1.0
+mesh:
+  type: "C-H-grid, extruded in span"
+  recommended: [50000]
+  convergence_study: [[10000],[50000]]
+  wall_refinement: true
+  notes: "One cell in span (periodic BC) or Ar=1." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15

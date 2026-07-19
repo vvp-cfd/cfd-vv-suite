@@ -1,0 +1,47 @@
+id: contraction-oldroyd-b
+name: "Oldroyd-B 4:1 Planar Contraction (Alves et al.)"
+category: validation
+subcategory: non-newtonian
+tags: [non-newtonian, viscoelastic, oldroyd-b, creeping, contraction, experimental]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, momentum-viscoelastic, oldroyd-b-constitutive]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Vortex size X_R, velocity overshoot, stress fields at We=0,1,2,3"
+  source: "Alves, M.A., Oliveira, P.J., Pinho, F.T. J. Non-Newtonian Fluid Mech., 101(1), 55-76, 2001"
+  doi: "https://doi.org/10.1016/S0377-0257(02)00191-X"
+
+quantities:
+  - name: X_R
+    type: scalar
+    location: "upstream corner vortex"
+    norm: Relative_L2
+
+parameters:
+  - name: We
+    description: "Weissenberg number"
+    default: 2.0
+  - name: beta
+    description: "Viscosity ratio eta_s/(eta_s+eta_p)"
+    default: 0.111
+  - name: Re
+    description: "Reynolds number (creeping flow)"
+    default: 0.0
+mesh:
+  type: "quadrilateral, refined near contraction and walls"
+  recommended: [10000]
+  convergence_study: [[3000],[10000],[30000]]
+  wall_refinement: true
+  notes: "Refinement at walls and near contraction corner. We<=3." 
+
+tolerances:
+  L2: 0.1
+  Relative_L2: 0.1
+  Linf: 0.3

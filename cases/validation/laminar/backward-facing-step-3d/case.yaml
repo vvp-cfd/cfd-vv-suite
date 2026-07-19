@@ -1,0 +1,47 @@
+id: backward-facing-step-3d
+name: "Backward-Facing Step (3D, Armaly et al.)"
+category: validation
+subcategory: laminar
+tags: [newtonian, laminar, steady, separation, recirculation, experimental, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "3D extension: spanwise effects on reattachment length x_r/h"
+  source: "Same as 2D Armaly et al. (1983); side walls at z=0, z=W"
+
+quantities:
+  - name: xr_h
+    type: scalar
+    location: "reattachment point on lower wall at midspan"
+    norm: Relative_L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number based on step height"
+    default: 389
+  - name: Ar
+    description: "Spanwise aspect ratio W/h"
+    default: 4.0
+mesh:
+  type: "hexahedral, refined near step"
+  recommended: [200, 40, 32]
+  convergence_study: [[100,20,16],[200,40,32]]
+  wall_refinement: true
+  notes: "3D BFS with side walls. Ar>=4 for 2D approximation at midplane." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+
+notes: |
+  3D BFS with side walls. The side wall boundary layers create
+  spanwise variation in reattachment length. Midplane should
+  approximate 2D result for Ar >= 4.

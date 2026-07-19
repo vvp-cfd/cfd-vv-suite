@@ -1,0 +1,44 @@
+id: ahmed-body-25
+name: "Ahmed Body (25 deg slant)"
+category: validation
+subcategory: complex-geometry
+tags: [newtonian, turbulent, automotive, bluff-body, external-flow, experimental, rans-validation]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+
+dimension: 3D
+
+reference:
+  type: experimental
+  solution: "Cd=0.285, Cl=0.100, Re_L=4.29e6"
+  source: "Ahmed, S.R., Ramm, G., Faltin, G. SAE Technical Paper 840300, 1984"
+  doi: "https://doi.org/10.4271/840300"
+
+quantities:
+  - name: Cd
+    type: scalar
+    location: "body surface"
+    norm: Relative_L2
+
+parameters:
+  - name: slant_angle
+    description: "Slant angle (deg)"
+    default: 25
+  - name: Re_L
+    description: "Reynolds number based on body length"
+    default: 4290000
+mesh:
+  type: "unstructured tetrahedral + prism layers"
+  recommended: [3000000]
+  convergence_study: [[1000000],[3000000],[8000000]]
+  wall_refinement: true
+  notes: "Prism layers on body surface. y+~1 or wall functions. Wake resolution required." 
+
+tolerances:
+  L2: 0.1
+  Relative_L2: 0.1
+  Linf: 0.2

@@ -1,0 +1,55 @@
+id: turek-hron-fsi2
+name: "FSI2: Elastic Flag behind Cylinder (Turek & Hron)"
+category: validation
+subcategory: complex-geometry
+tags: [newtonian, laminar, fsi, moving-boundary, flag, cylinder, experimental, benchmark]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes, solid-mechanics]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Oscillation frequency f=2.0 Hz, tip amplitude Ay=0.035m, Cd=3.22, Cl_amp=2.55"
+  source: "Turek, S. & Hron, J. Proposal for Numerical Benchmarking of FSI, Uni Dortmund, 2006"
+  doi: "https://doi.org/10.1007/3-540-34596-5_15"
+
+quantities:
+  - name: Ay
+    type: scalar
+    location: "flag tip"
+    norm: Relative_L2
+  - name: Cd
+    type: scalar
+    location: "cylinder"
+    norm: Relative_L2
+  - name: Cl_amp
+    type: scalar
+    location: "cylinder"
+    norm: Relative_L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number based on cylinder diameter"
+    default: 100
+  - name: rho_s_rho_f
+    description: "Solid/fluid density ratio"
+    default: 10.0
+  - name: E
+    description: "Young modulus (Pa)"
+    default: 1400000
+mesh:
+  type: "unstructured triangular, ALE or IBM"
+  recommended: [50000]
+  convergence_study: [[15000],[50000],[150000]]
+  wall_refinement: true
+  notes: "Moving mesh (ALE) or immersed boundary. dt=0.001." 
+
+tolerances:
+  L2: 0.1
+  Relative_L2: 0.1
+  Linf: 0.3

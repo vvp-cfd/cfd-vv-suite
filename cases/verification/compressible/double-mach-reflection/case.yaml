@@ -1,0 +1,50 @@
+id: double-mach-reflection
+name: "Double Mach Reflection (M_s=10, Woodward-Colella)"
+category: verification
+subcategory: compressible
+tags: [compressible, inviscid, unsteady, shock, euler, benchmark]
+
+physics:
+  type: compressible
+  regime: laminar
+  convective: true
+  equations: [euler]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "Key shock features from high-resolution reference solution (Woodward & Colella 1984)"
+  source: "Woodward, P. & Colella, P. J. Comput. Phys., 54, 115-173, 1984"
+  doi: "https://doi.org/10.1016/0021-9991(84)90142-6"
+
+quantities:
+  - name: rho
+    type: field
+    location: "full domain at t=0.2"
+    norm: L2
+
+parameters:
+  - name: M_s
+    description: "Shock Mach number"
+    default: 10.0
+  - name: gamma
+    description: "Ratio of specific heats"
+    default: 1.4
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [960, 240]
+  convergence_study: [[240,60],[480,120],[960,240]]
+  wall_refinement: false
+  notes: "High resolution for shock capturing. Minimum 240x60 for reasonable results." 
+
+tolerances:
+  L2: 0.1
+  Linf: 1.0
+
+notes: |
+  Classic high-resolution shock-capturing benchmark.
+  M_s=10 shock hits a 30 deg wedge at x=1/6.
+  At t=0.2, complex shock structures: Mach stem, reflected shocks, contact.
+  Max density ~20.9, triple point at y~0.42.
+  Domain: [0,4]x[0,1]. Reflective BC at bottom for x>1/6.

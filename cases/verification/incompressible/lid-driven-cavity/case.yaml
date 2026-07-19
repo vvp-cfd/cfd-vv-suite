@@ -1,0 +1,54 @@
+id: lid-driven-cavity
+name: "Lid-Driven Cavity (Re=100, Ghia et al.)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, re=100, analytical, navier-stokes, benchmark]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations:
+    - continuity
+    - navier-stokes
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "Ghia et al. (1982) reference data --- numerical solution on 129^2 mesh"
+  source: "Ghia, U., Ghia, K.N., Shin, C.T. J. Comput. Phys., 48, 387-411, 1982"
+  doi: "https://doi.org/10.1016/0021-9991(82)90058-4"
+
+quantities:
+  - name: u
+    type: profile
+    location: "vertical centerline x=0.5"
+    norm: L2
+  - name: v
+    type: profile
+    location: "horizontal centerline y=0.5"
+    norm: L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number"
+    default: 100
+  - name: L
+    description: "Cavity side length"
+    default: 1.0
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [129, 129]
+  convergence_study: [[32,32],[64,64],[129,129]]
+  wall_refinement: false
+  notes: "Square uniform mesh. Ghia reference at 129^2. For Re>400 wall refinement needed." 
+
+tolerances:
+  L2: 1e-3
+  Linf: 0.05
+
+notes: |
+  Classic CFD benchmark. The lid moves at constant velocity U=1.
+  Reference data digitized from Ghia et al. (1982) for Re=100.
+  Minimum recommended mesh: 32^2 uniform.

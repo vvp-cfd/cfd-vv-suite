@@ -1,0 +1,47 @@
+id: poiseuille-bingham-3d
+name: "Bingham Poiseuille Flow (3D square duct)"
+category: verification
+subcategory: non-newtonian
+tags: [non-newtonian, bingham, viscoplastic, laminar, steady, duct, analytical, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, momentum-bingham]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "3D square duct viscoplastic flow. Plug zone shape differs from 2D channel."
+  source: "Taylor (1948); Mosolov & Miasnikov (1965)"
+
+quantities:
+  - name: u
+    type: profile
+    location: "duct cross-section"
+    norm: L2
+
+parameters:
+  - name: Bn
+    description: "Bingham number"
+    default: 0.2
+  - name: tau_y
+    description: "Yield stress"
+    default: 0.1
+mesh:
+  type: "uniform hexahedral"
+  recommended: [20, 41, 41]
+  convergence_study: [[10,21,21],[20,41,41]]
+  wall_refinement: false
+  notes: "3D yield zone. Refinement at plug boundary." 
+
+tolerances:
+  L2: 1e-4
+  Linf: 1e-3
+
+notes: |
+  3D viscoplastic flow in square duct.
+  Plug zone is rectangular with rounded corners (not circular).
+  For Bn > Bn_crit ~ 3, the flow is fully plugged (no flow).

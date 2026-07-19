@@ -1,0 +1,24 @@
+
+=== Plane Poiseuille Flow (2D) — Expected CSV Format ===
+
+Case: poiseuille-2d (2D)
+Reference type: analytical
+Physics: incompressible, laminar
+
+CSV header:
+  x,y,u,v
+
+Example row:
+  0.0,0.0,0.5,0.5
+
+Mesh requirements:
+  Type:    uniform quadrilateral
+  Recommended resolution: [10, 20]
+  GCI grids: [5,10], [10,20], [20,40], [40,80]
+  Wall refinement: False
+  Notes: Uniform mesh. 10 cells across height sufficient for L2<1e-6.
+
+Tolerances (pass/fail thresholds):
+  L2: 1e-06
+  Linf: 1e-05
+

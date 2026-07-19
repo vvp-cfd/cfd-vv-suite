@@ -1,0 +1,20 @@
+# Docker image for automated CFD verification testing
+# Build:   docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
+# Run:     docker run -v $(pwd)/cases:/cases -v $(pwd)/results:/results cfdvv-openfoam
+
+FROM openfoam/openfoam11-default:latest
+
+USER root
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip python3-numpy python3-matplotlib \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY tools/ /opt/cfdvv/tools/
+WORKDIR /opt/cfdvv
+RUN pip3 install -e tools/
+
+COPY cases/ /opt/cfdvv/cases/
+COPY ci/test_all.sh /opt/cfdvv/test_all.sh
+RUN chmod +x /opt/cfdvv/test_all.sh
+
+ENTRYPOINT ["/opt/cfdvv/test_all.sh"]

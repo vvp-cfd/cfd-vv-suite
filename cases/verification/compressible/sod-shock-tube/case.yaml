@@ -1,0 +1,62 @@
+id: sod-shock-tube
+name: "Sod Shock Tube"
+category: verification
+subcategory: compressible
+tags: [compressible, inviscid, unsteady, riemann, analytical, euler, shock]
+
+physics:
+  type: compressible
+  regime: laminar
+  convective: true
+  equations:
+    - euler
+
+dimension: 1D
+
+reference:
+  type: analytical
+  solution: "Riemann problem exact solution (Euler equations, ideal gas, γ=1.4)"
+  source: "Sod, G.A. J. Comput. Phys., 27, 1-31, 1978"
+  doi: "https://doi.org/10.1016/0021-9991(78)90023-2"
+
+quantities:
+  - name: rho
+    type: profile
+    location: "entire domain at t=0.2"
+    norm: L2
+  - name: u
+    type: profile
+    location: "entire domain at t=0.2"
+    norm: L2
+  - name: p
+    type: profile
+    location: "entire domain at t=0.2"
+    norm: L2
+  - name: e
+    type: profile
+    location: "entire domain at t=0.2"
+    norm: L2
+
+parameters:
+  - name: gamma
+    description: "Ratio of specific heats"
+    default: 1.4
+  - name: L
+    description: "Domain length"
+    default: 1.0
+mesh:
+  type: "uniform 1D"
+  recommended: [200]
+  convergence_study: [[50],[100],[200],[400]]
+  wall_refinement: false
+  notes: "1D domain [0,1]. 200 cells sufficient for reasonable shock resolution." 
+
+tolerances:
+  L2: 1e-2
+  Linf: 0.1
+
+notes: |
+  Initial conditions (diaphragm at x=0.5):
+  Left:  rho=1.0, u=0, p=1.0
+  Right: rho=0.125, u=0, p=0.1
+  Solution features: rarefaction fan, contact discontinuity, shock wave.

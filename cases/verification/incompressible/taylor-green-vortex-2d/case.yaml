@@ -1,0 +1,60 @@
+id: taylor-green-vortex-2d
+name: "Taylor-Green Vortex (2D, decaying)"
+category: verification
+subcategory: incompressible/unsteady
+tags: [newtonian, laminar, unsteady, vortex, analytical, navier-stokes, spatial-accuracy, temporal-accuracy]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations:
+    - continuity
+    - navier-stokes
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: |
+    u = -cos(x)·sin(y)·exp(-2nut)
+    v = sin(x)·cos(y)·exp(-2nut)
+    p = -0.25·(cos(2x) + cos(2y))·exp(-4nut)
+  source: "Taylor, G.I. & Green, A.E. 1937. Proc. R. Soc. Lond. A."
+
+quantities:
+  - name: u
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: v
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: p
+    type: field
+    location: "full domain"
+    norm: L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number (1/nu)"
+    default: 100
+  - name: L
+    description: "Domain size"
+    default: 6.283185307179586
+mesh:
+  type: "uniform quadrilateral, periodic"
+  recommended: [64, 64]
+  convergence_study: [[16,16],[32,32],[64,64],[128,128]]
+  wall_refinement: false
+  notes: "Periodic domain [0,2pi]^2. For spatial accuracy." 
+
+tolerances:
+  L2: 1e-6
+  Linf: 1e-4
+
+notes: |
+  Classic test for both spatial and temporal accuracy.
+  Run with different grid resolutions to verify convergence order.
+  Reference solutions provided at t=0 and t=0.5.

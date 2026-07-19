@@ -1,0 +1,44 @@
+id: natural-convection-cavity-3d
+name: "Natural Convection in a Cube (Fusegi et al.)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, buoyancy, boussinesq, heat-transfer, benchmark, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes, energy-boussinesq]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "Nu_mean = 2.10 (Ra=1e4), 4.45 (Ra=1e5), 8.60 (Ra=1e6) for Pr=0.71"
+  source: "Fusegi, T., Hyun, J.M., Kuwahara, K., Farouk, B. Int. J. Heat Mass Transfer, 34(6), 1991"
+
+quantities:
+  - name: Nu_mean
+    type: scalar
+    location: "hot wall"
+    norm: Relative_L2
+
+parameters:
+  - name: Ra
+    description: "Rayleigh number"
+    default: 100000
+    range: [10000, 1000000]
+  - name: Pr
+    description: "Prandtl number"
+    default: 0.71
+mesh:
+  type: "uniform hexahedral"
+  recommended: [41, 41, 41]
+  convergence_study: [[21,21,21],[41,41,41]]
+  wall_refinement: false
+  notes: "Cube. Fusegi used up to 62^3 for Ra=1e6." 
+
+tolerances:
+  L2: 0.05
+  Relative_L2: 0.05
+  Linf: 0.15

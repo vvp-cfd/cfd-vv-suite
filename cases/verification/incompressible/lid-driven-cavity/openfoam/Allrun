@@ -1,0 +1,3 @@
+#!/bin/bash
+set -e; blockMesh; icoFoam
+echo "Lid-driven cavity done. Compare centerline profiles."

@@ -1,0 +1,7 @@
+quantity,value,description
+Re,0.0,Creeping flow
+We,2.0,Weissenberg number = lambda*U/H2
+beta,0.111,Solvent viscosity ratio = eta_s/(eta_s+eta_p)
+X_R_We0,1.48,Vortex length at We=0 (Newtonian)
+X_R_We2,2.15,Vortex length at We=2
+U_max_We0,1.52,Centerline velocity overshoot at contraction

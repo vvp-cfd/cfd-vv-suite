@@ -1,0 +1,48 @@
+id: lid-driven-cavity-3d
+name: "Lid-Driven Cavity (3D, Re=100)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, re=100, analytical, navier-stokes, benchmark, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "Midplane velocity profiles from high-resolution 3D numerical simulations"
+  source: "Chiang et al. (1997); Bouffanais et al. (2007)"
+
+quantities:
+  - name: u
+    type: profile
+    location: "vertical centerline at midplane z=0.5"
+    norm: L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number"
+    default: 100
+  - name: Ar
+    description: "Spanwise aspect ratio"
+    default: 1.0
+mesh:
+  type: "uniform hexahedral"
+  recommended: [64, 64, 64]
+  convergence_study: [[32,32,32],[64,64,64]]
+  wall_refinement: false
+  notes: "Cube. End-walls create 3D boundary layers." 
+
+tolerances:
+  L2: 0.005
+  Linf: 0.05
+
+notes: |
+  3D extension of the classic Ghia et al. benchmark.
+  Domain: [0,1]x[0,1]x[0,1]. Top lid moves at U=1.
+  End-walls at z=0 and z=1 are no-slip.
+  Recommended minimum mesh: 32^3.

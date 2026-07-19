@@ -1,0 +1,46 @@
+id: pitching-airfoil
+name: "Pitching NACA 0012 Airfoil (AGARD CT5)"
+category: verification
+subcategory: moving-bodies
+tags: [newtonian, laminar, unsteady, airfoil, moving-boundary, pitching, experimental, agard]
+
+physics:
+  type: compressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes, energy]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Lift and moment hysteresis loops: Cl_max=0.55, Cl_min=0.03"
+  source: "AGARD Report 702, Compendium of Unsteady Aerodynamic Measurements, 1982"
+  doi: "https://apps.dtic.mil/sti/citations/ADA117244"
+
+quantities:
+  - name: Cl
+    type: scalar
+    location: "airfoil"
+    norm: L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number"
+    default: 4800000
+  - name: M
+    description: "Mach number"
+    default: 0.3
+  - name: k
+    description: "Reduced frequency omega*c/(2*U)"
+    default: 0.081
+mesh:
+  type: "C-grid, rigidly rotating"
+  recommended: [50000]
+  convergence_study: [[10000],[50000]]
+  wall_refinement: true
+  notes: "Mesh rotates with airfoil (rigid body motion). dt=T/200." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15

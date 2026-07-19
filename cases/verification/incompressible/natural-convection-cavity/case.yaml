@@ -1,0 +1,63 @@
+id: natural-convection-cavity
+name: "Natural Convection in a Square Cavity (de Vahl Davis)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, buoyancy, boussinesq, heat-transfer, benchmark]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes, energy-boussinesq]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "De Vahl Davis (1983) benchmark data: Nu_mean, Nu_max, velocity profiles for Ra=1e3,1e4,1e5,1e6"
+  source: "de Vahl Davis, G. Int. J. Numer. Methods Fluids, 3, 249-264, 1983"
+  doi: "https://doi.org/10.1002/fld.1650030305"
+
+quantities:
+  - name: Nu_mean
+    type: scalar
+    location: "hot wall"
+    norm: Relative_L2
+  - name: Nu_max
+    type: scalar
+    location: "hot wall"
+    norm: Relative_L2
+  - name: u_max
+    type: scalar
+    location: "mid-height x=0.5"
+    norm: Relative_L2
+  - name: v_max
+    type: scalar
+    location: "mid-width y=0.5"
+    norm: Relative_L2
+
+parameters:
+  - name: Ra
+    description: "Rayleigh number"
+    default: 100000
+    range: [1000, 1000000]
+  - name: Pr
+    description: "Prandtl number"
+    default: 0.71
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [81, 81]
+  convergence_study: [[21,21],[41,41],[81,81]]
+  wall_refinement: false
+  notes: "Ra=1e5. De Vahl Davis used 81^2. For Ra=1e6 need 129^2+." 
+
+tolerances:
+  L2: 0.02
+  Relative_L2: 0.05
+  Linf: 0.1
+
+notes: |
+  Classic thermal convection benchmark. Square cavity [0,1]^2.
+  Left wall: T=1 (hot), Right wall: T=0 (cold), Top/Bottom: adiabatic.
+  Boussinesq approximation: density variations only in buoyancy term.
+  Reference data for Ra=1e5 profiles provided.

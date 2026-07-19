@@ -1,0 +1,55 @@
+id: couette-2d
+name: "Plane Couette Flow (2D)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, channel, analytical, navier-stokes]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations:
+    - continuity
+    - navier-stokes
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "u(y) = U0 * y / H, v = 0, p = const"
+  source: "White, F.M. Viscous Fluid Flow, 3rd ed., McGraw-Hill, 2006"
+
+quantities:
+  - name: u
+    type: profile
+    location: "outlet cross-section"
+    norm: L2
+  - name: v
+    type: profile
+    location: "outlet cross-section"
+    norm: L2
+  - name: p
+    type: profile
+    location: "outlet cross-section"
+    norm: Linf
+
+parameters:
+  - name: H
+    description: "Channel height"
+    default: 1.0
+  - name: U0
+    description: "Top wall velocity"
+    default: 1.0
+  - name: L
+    description: "Channel length"
+    default: 4.0
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [8, 16]
+  convergence_study: [[4,8],[8,16],[16,32]]
+  wall_refinement: false
+  notes: "Linear profile --- 8 cells across height sufficient." 
+
+tolerances:
+  L2: 1e-6
+  Linf: 1e-4

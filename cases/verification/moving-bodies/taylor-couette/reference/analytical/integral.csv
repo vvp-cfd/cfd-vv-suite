@@ -1,0 +1,9 @@
+quantity,value,description
+R1,1.0,Inner cylinder radius
+R2,2.0,Outer cylinder radius
+Omega1,1.0,Inner angular velocity
+Omega2,0.0,Outer angular velocity (stationary)
+eta,0.5,Radius ratio
+Re,100,Reynolds number Re=Omega1*R1*d/nu
+Ta,3200,Taylor number
+Ta_crit,1708,Critical Taylor number (onset of Taylor vortices)

@@ -1,0 +1,52 @@
+id: rae2822
+name: "RAE 2822 Transonic Airfoil (Cook et al., Case 9 & 10)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, compressible, transonic, airfoil, shock, experimental, rans-validation]
+
+physics:
+  type: compressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans, energy]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Surface Cp distributions, shock position, Cl, Cd for Case 9 (M=0.73) and Case 10 (M=0.75)"
+  source: "Cook, P.H., McDonald, M.A., Firmin, M.C.P. AGARD AR-138, 1979"
+  doi: ""
+
+quantities:
+  - name: Cp
+    type: profile
+    location: "airfoil surface"
+    norm: L2
+
+parameters:
+  - name: M
+    description: "Freestream Mach number"
+    default: 0.73
+  - name: alpha
+    description: "Angle of attack (deg)"
+    default: 2.79
+  - name: Re
+    description: "Reynolds number based on chord"
+    default: 6500000
+mesh:
+  type: "C-grid (structured)"
+  recommended: [80000]
+  convergence_study: [[20000],[80000],[300000]]
+  wall_refinement: true
+  notes: "C-grid. Shock resolution on upper surface is critical." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+
+notes: |
+  Standard transonic validation case. Supercritical RAE 2822 airfoil.
+  Case 9 (M=0.73, alpha=2.79): weak shock on upper surface at x/c~0.55, Cl=0.803.
+  Case 10 (M=0.75, alpha=3.19): stronger shock, Cl=0.921, Cd=0.0254.
+  Tests shock-capturing, boundary layer separation, and wake prediction.

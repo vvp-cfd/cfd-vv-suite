@@ -1,0 +1,54 @@
+id: channel-flow-retau180
+name: "Turbulent Channel Flow (Re_tau=180, Moser DNS)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, channel, dns, rans-validation, wall-bounded]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans-or-les-or-dns]
+
+dimension: 3D
+
+reference:
+  type: dns
+  solution: "DNS data: mean velocity u+, Reynolds stresses u_rms+, v_rms+, w_rms+, -uv+"
+  source: "Moser, Kim, Mansour, Phys. Fluids, 11(4), 943-945, 1999"
+  doi: "https://doi.org/10.1063/1.869966"
+
+quantities:
+  - name: uplus
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+  - name: uv
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+
+parameters:
+  - name: Re_tau
+    description: "Friction Reynolds number"
+    default: 180
+  - name: Re_bulk
+    description: "Bulk Reynolds number"
+    default: 2800
+mesh:
+  type: "uniform hexahedral in x,z; stretched in y"
+  recommended: [128, 129, 128]
+  convergence_study: [[64,65,64],[128,129,128],[256,257,256]]
+  wall_refinement: true
+  notes: "y+: first cell < 1, growth 1.05. DNS: 128x129x128. Periodic in x,z." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+
+notes: |
+  Standard RANS/DNS/LES validation case.
+  Domain: 4*pi*h x 2h x 4/3*pi*h (h=1, half-channel).
+  Periodic in x and z. No-slip at y=+-h.
+  Driven by constant pressure gradient or mass flow.
+  For RANS: compare u+. For DNS/LES: compare Reynolds stresses.

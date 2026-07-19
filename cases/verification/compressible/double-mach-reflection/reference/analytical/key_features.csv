@@ -1,0 +1,9 @@
+quantity,value
+time,0.2
+M_shock,10.0
+wedge_angle_deg,30.0
+gamma,1.4
+max_density,20.9
+triple_point_y,0.42
+domain_x,4.0
+domain_y,1.0

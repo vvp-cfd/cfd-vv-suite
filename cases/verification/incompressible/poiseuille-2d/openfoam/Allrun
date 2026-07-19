@@ -1,0 +1,9 @@
+#!/bin/bash
+# OpenFOAM Poiseuille-2D Verification Case
+# Usage: ./Allrun
+# Requires: OpenFOAM sourced
+set -e
+blockMesh
+icoFoam
+postProcess -func sampleDict -latestTime
+echo "Done. Compare with: cfdvv compare . -r reference/analytical/solution.csv"

@@ -1,0 +1,28 @@
+# Glossary
+
+- **BFS** --- Backward-Facing Step. Flow over a sudden expansion, creates a recirculation bubble.
+- **Bingham** --- Viscoplastic fluid model: flows only above a yield stress tau_y. Parameter Bn = tau_y*H/(mu_p*U).
+- **CFD** --- Computational Fluid Dynamics.
+- **CLA** --- Contributor License Agreement. Terms under which contributions are accepted.
+- **DNS** --- Direct Numerical Simulation. Resolves all turbulent scales without modeling.
+- **DOI** --- Digital Object Identifier. A permanent link to a publication.
+- **FSI** --- Fluid-Structure Interaction. Coupled fluid and solid mechanics.
+- **GCI** --- Grid Convergence Index. A uniform method for reporting grid refinement studies (Roache, 1994).
+- **JHTDB** --- Johns Hopkins Turbulence Database. Public DNS/LES data repository.
+- **LES** --- Large Eddy Simulation. Resolves large turbulent scales, models small ones.
+- **M** --- Mach number. Ratio of flow velocity to speed of sound.
+- **MMS** --- Method of Manufactured Solutions. Code verification technique: an artificial solution with known source terms is imposed, and the solver is tested on whether it recovers the solution.
+- **NASA TMR** --- NASA Turbulence Modeling Resource. Public validation database for turbulence models.
+- **NS** --- Navier-Stokes equations. Governing equations of fluid motion.
+- **Oldroyd-B** --- Viscoelastic constitutive model for dilute polymer solutions. Parameters: We (Weissenberg number), beta (viscosity ratio).
+- **PIV** --- Particle Image Velocimetry. Experimental technique for measuring velocity fields.
+- **Power-law** (Ostwald-de Waele) --- Non-Newtonian model: mu_eff = K·|du/dy|^(n-1). n<1: shear-thinning; n>1: shear-thickening.
+- **Ra** --- Rayleigh number. Dimensionless parameter for natural convection: Ra = g·beta·DeltaT·L^3/(nu·alpha).
+- **RANS** --- Reynolds-Averaged Navier-Stokes. Turbulence modeling approach using time-averaged equations.
+- **Re** --- Reynolds number. Ratio of inertial to viscous forces.
+- **Re_tau** --- Friction Reynolds number. Re_tau = u_tau·h/nu for channel flow.
+- **St** --- Strouhal number. Dimensionless frequency: St = f·D/U for cylinder shedding.
+- **TBL** --- Turbulent Boundary Layer.
+- **V&V** --- Verification & Validation. Verification checks if equations are solved correctly; validation checks if the right physics is modeled.
+- **VIV** --- Vortex-Induced Vibration. Oscillation of a bluff body due to vortex shedding lock-in.
+- **We** --- Weissenberg number. Ratio of elastic to viscous forces in viscoelastic flows: We = λ·U/L.

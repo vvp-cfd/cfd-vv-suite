@@ -1,0 +1,7 @@
+quantity,value,description
+Cd,0.231,Drag coefficient (no wake bubble on slant)
+Cl,0.165,Lift coefficient
+Re_L,4290000.0,Based on body length
+U_inf,60.0,Freestream velocity (m/s)
+slant_angle,35,Slant angle (deg)
+L,1.044,Body length (m)

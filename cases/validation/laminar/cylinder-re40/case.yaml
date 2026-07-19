@@ -1,0 +1,48 @@
+id: cylinder-re40
+name: "Flow Past a Cylinder (Re=40)"
+category: validation
+subcategory: laminar
+tags: [newtonian, laminar, steady, bluff-body, cylinder, external-flow, experimental]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Drag coefficient, recirculation length, surface Cp from experiments and high-resolution simulations"
+  source: "Tritton (1959); Dennis & Chang (1970); Grove et al. (1964)"
+  notes: "Steady flow with symmetric recirculation bubble."
+
+quantities:
+  - name: Cd
+    type: scalar
+    location: "cylinder surface"
+    norm: Relative_L2
+  - name: Lw_D
+    type: scalar
+    location: "cylinder surface"
+    norm: Relative_L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number based on diameter"
+    default: 40
+  - name: D
+    description: "Cylinder diameter"
+    default: 1.0
+mesh:
+  type: "O-grid (structured around cylinder)"
+  recommended: [25000]
+  convergence_study: [[5000],[20000],[80000]]
+  wall_refinement: true
+  notes: "O-grid. 200x100 sufficient for Re=40." 
+
+tolerances:
+  L2: 0.05
+  Relative_L2: 0.05
+  Linf: 0.15

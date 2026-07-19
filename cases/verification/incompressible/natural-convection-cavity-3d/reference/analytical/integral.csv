@@ -1,0 +1,10 @@
+quantity,value,note
+Ra,10000.0,Rayleigh number
+Ra,100000.0,Rayleigh number
+Ra,1000000.0,Rayleigh number
+Nu_mean_Ra1e4,2.1,Average Nusselt (Fusegi)
+Nu_mean_Ra1e5,4.45,Average Nusselt (Fusegi)
+Nu_mean_Ra1e6,8.6,Average Nusselt (Fusegi)
+u_max_Ra1e5,0.1,"Max u at y=0.5,z=0.5 (normalized)"
+v_max_Ra1e5,0.15,"Max v at x=0.5,z=0.5"
+w_max_Ra1e5,0.05,"Max w at x=0.5,y=0.5"

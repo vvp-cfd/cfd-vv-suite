@@ -1,0 +1,57 @@
+id: poiseuille-power-law
+name: "Power-Law Poiseuille Flow (n=0.5--1.5)"
+category: verification
+subcategory: non-newtonian
+tags: [non-newtonian, power-law, laminar, steady, duct, analytical]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, momentum-power-law]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: |
+    u(y) = n/(n+1) * (G/K)^(1/n) * [(H/2)^(1+1/n) - |y-H/2|^(1+1/n)]
+    For n=1: Newtonian u(y) = G/(2K) * y * (H-y)
+    n<1: shear-thinning (flatter profile)
+    n>1: shear-thickening (more peaked profile)
+    mu_eff = K * |du/dy|^(n-1)
+  source: "Bird, R.B., Armstrong, R.C., Hassager, O. Dynamics of Polymeric Liquids, 1987"
+
+quantities:
+  - name: u
+    type: profile
+    location: "channel cross-section"
+    norm: L2
+
+parameters:
+  - name: n
+    description: "Power-law index"
+    default: 0.5
+    range: [0.5, 1.5]
+  - name: K
+    description: "Consistency index"
+    default: 1.0
+  - name: G
+    description: "Pressure gradient -dp/dx"
+    default: 1.0
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [10, 51]
+  convergence_study: [[5,26],[10,51],[20,101]]
+  wall_refinement: false
+  notes: "Uniform in y for accurate profile. 10 cells in x sufficient." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 5e-4
+
+notes: |
+  First non-Newtonian verification case. Tests power-law viscosity model.
+  The effective viscosity mu_eff = K*|du/dy|^(n-1) is shear-rate dependent.
+  n=1 recovers the Newtonian Poiseuille solution.
+  Reference profiles provided for n=0.5, 0.75, 1.0, 1.25, 1.5.

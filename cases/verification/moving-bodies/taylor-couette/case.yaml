@@ -1,0 +1,51 @@
+id: taylor-couette
+name: "Taylor-Couette Flow (Rotating Cylinders)"
+category: verification
+subcategory: moving-bodies
+tags: [newtonian, laminar, steady, rotating, cylindrical, analytical, moving-boundary]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: "u_theta(r) = A*r + B/r, A = -Omega1*eta^2/(1-eta^2), B = Omega1*R1^2/(1-eta^2)"
+  source: "Taylor, G.I. Phil. Trans. R. Soc. Lond. A, 223, 289-343, 1923"
+  doi: "https://doi.org/10.1098/rsta.1923.0008"
+
+quantities:
+  - name: u_theta
+    type: profile
+    location: "radial direction"
+    norm: L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number Re=Omega1*R1*d/nu"
+    default: 100
+  - name: eta
+    description: "Radius ratio R1/R2"
+    default: 0.5
+  - name: Ta
+    description: "Taylor number"
+    default: 3200
+mesh:
+  type: "uniform quadrilateral in (r,theta)"
+  recommended: [32, 64]
+  convergence_study: [[16,32],[32,64],[64,128]]
+  wall_refinement: false
+  notes: "Polar mesh. Rotating inner wall." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 1e-4
+
+notes: |
+  For Re < Re_crit (Ta < 1708): steady circular Couette flow.
+  For Re > Re_crit: Taylor vortices appear (bifurcation).
+  This case tests rotating wall boundary conditions.

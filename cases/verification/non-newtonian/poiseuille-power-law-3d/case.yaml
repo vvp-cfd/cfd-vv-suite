@@ -1,0 +1,42 @@
+id: poiseuille-power-law-3d
+name: "Power-Law Poiseuille Flow (3D square duct)"
+category: verification
+subcategory: non-newtonian
+tags: [non-newtonian, power-law, laminar, steady, duct, analytical, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, momentum-power-law]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: "Double Fourier series solution for square duct. n=1 recovers Newtonian."
+  source: "Shah & London (1978) for Newtonian; power-law via numerical integration"
+
+quantities:
+  - name: u
+    type: profile
+    location: "duct cross-section"
+    norm: L2
+
+parameters:
+  - name: n
+    description: "Power-law index"
+    default: 1.0
+  - name: K
+    description: "Consistency index"
+    default: 1.0
+mesh:
+  type: "uniform hexahedral"
+  recommended: [20, 21, 21]
+  convergence_study: [[10,11,11],[20,21,21]]
+  wall_refinement: false
+  notes: "Square duct. n=1 verified against Fourier series." 
+
+tolerances:
+  L2: 1e-4
+  Linf: 1e-3

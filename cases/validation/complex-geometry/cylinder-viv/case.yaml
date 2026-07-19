@@ -1,0 +1,47 @@
+id: cylinder-viv
+name: "VIV of a Cylinder (Khalak & Williamson)"
+category: validation
+subcategory: complex-geometry
+tags: [newtonian, laminar, viv, cylinder, moving-boundary, experimental, fsi]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes, rigid-body-dynamics]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Response amplitude A/D vs Ur, upper/lower branches, max A/D=0.92"
+  source: "Khalak, A. & Williamson, C.H.K. J. Fluids Struct., 11(7), 1997"
+  doi: "https://doi.org/10.1006/jfls.1997.0110"
+
+quantities:
+  - name: A_D
+    type: scalar
+    location: "cylinder"
+    norm: Relative_L2
+
+parameters:
+  - name: m_star
+    description: "Mass ratio m/(rho*D^2)"
+    default: 10.1
+  - name: zeta
+    description: "Damping ratio"
+    default: 0.0011
+  - name: Ur
+    description: "Reduced velocity U/(f_n*D)"
+    range: [3, 13]
+mesh:
+  type: "O-grid with deforming region"
+  recommended: [40000]
+  convergence_study: [[10000],[40000],[120000]]
+  wall_refinement: true
+  notes: "Moving mesh around cylinder. dt=0.002." 
+
+tolerances:
+  L2: 0.1
+  Relative_L2: 0.1
+  Linf: 0.3

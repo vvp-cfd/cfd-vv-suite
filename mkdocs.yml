@@ -1,0 +1,45 @@
+site_name: cfd-vv-suite
+site_description: "Open-source CFD Verification & Validation Suite"
+site_author: cfd-vv-suite
+repo_url: https://github.com/vvp-cfd/cfd-vv-suite
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/brightness-7
+        name: Dark mode
+    - scheme: slate
+      primary: indigo
+      accent: deep orange
+      toggle:
+        icon: material/brightness-4
+        name: Light mode
+
+nav:
+  - Home: index.md
+  - Quick Start: getting-started.md
+  - Cases:
+      - Verification: cases/verification.md
+      - Validation: cases/validation.md
+  - Methodology: comparison-methodology.md
+  - Integration: solver-integration.md
+  - Format: case-format-spec.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.arithmatex
+  - tables
+  - toc:
+      permalink: true

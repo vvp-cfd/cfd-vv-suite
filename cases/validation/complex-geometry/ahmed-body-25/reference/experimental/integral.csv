@@ -1,0 +1,9 @@
+quantity,value,description
+Cd,0.285,Drag coefficient
+Cl,0.1,Lift coefficient (front axle)
+Re_L,4290000.0,Based on body length L=1.044m
+U_inf,60.0,Freestream velocity (m/s)
+slant_angle,25,Slant angle (deg)
+L,1.044,Body length (m)
+H,0.288,Body height (m)
+W,0.389,Body width (m)

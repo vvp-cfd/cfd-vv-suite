@@ -1,0 +1,43 @@
+id: channel-flow-retau550
+name: "Turbulent Channel Flow (Re_tau=550, Moser DNS)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, channel, dns, rans-validation, wall-bounded]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans-or-les-or-dns]
+
+dimension: 3D
+
+reference:
+  type: dns
+  solution: "DNS mean velocity u+, Reynolds shear stress -uv+"
+  source: "Moser, R.D., Kim, J., Mansour, N.N. Phys. Fluids, 11(4), 1999"
+
+quantities:
+  - name: uplus
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+  - name: uv
+    type: profile
+    location: "wall-normal direction"
+    norm: L2
+
+parameters:
+  - name: Re_tau
+    description: "Friction Reynolds number"
+    default: 550
+mesh:
+  type: "uniform x,z; stretched y"
+  recommended: [256, 257, 256]
+  convergence_study: [[128,129,128],[256,257,256],[512,513,512]]
+  wall_refinement: true
+  notes: "DNS: 256^3. dx+=8, dz+=4, dy+_wall=0.05." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15

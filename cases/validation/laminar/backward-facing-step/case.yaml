@@ -1,0 +1,51 @@
+id: backward-facing-step
+name: "Backward-Facing Step (Armaly et al., laminar)"
+category: validation
+subcategory: laminar
+tags: [newtonian, laminar, steady, separation, recirculation, experimental]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Reattachment length x_r/h, velocity profiles from LDA measurements"
+  source: "Armaly, B.F., Durst, F., Pereira, J.C.F., Schonung, B. J. Fluid Mech., 127, 473-496, 1983"
+  doi: "https://doi.org/10.1017/S0022112083002839"
+
+quantities:
+  - name: xr_h
+    type: scalar
+    location: "reattachment point on lower wall"
+    norm: Relative_L2
+
+parameters:
+  - name: Re
+    description: "Reynolds number based on step height h and max inlet velocity"
+    default: 389
+    range: [100, 800]
+  - name: ER
+    description: "Expansion ratio (outlet/inlet height)"
+    default: 1.94
+mesh:
+  type: "uniform quadrilateral, refined near step"
+  recommended: [200, 40]
+  convergence_study: [[100,20],[200,40],[400,80]]
+  wall_refinement: true
+  notes: "Structured mesh. Refined near step and lower wall. 200x40 sufficient." 
+
+tolerances:
+  L2: 0.05
+  Relative_L2: 0.05
+  Linf: 0.15
+
+notes: |
+  Classic separated flow benchmark. Geometry: inlet channel height h, step height h,
+  outlet channel height 1.94h (ER=1.94). Fully developed parabolic profile at inlet.
+  Re=100: steady, x_r/h~3. Re=389: x_r/h~9.4. Re=800: x_r/h~13.8.
+  Also check for secondary separation bubble on upper wall.

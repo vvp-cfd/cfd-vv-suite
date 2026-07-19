@@ -1,0 +1,63 @@
+id: beltrami-flow-3d
+name: "Beltrami Flow (3D exact steady solution)"
+category: verification
+subcategory: incompressible/steady
+tags: [newtonian, laminar, steady, beltrami, analytical, navier-stokes, 3d]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: true
+  equations: [continuity, navier-stokes]
+
+dimension: 3D
+
+reference:
+  type: analytical
+  solution: |
+    u = sin(y) - cos(z)
+    v = sin(z) - cos(x)
+    w = sin(x) - cos(y)
+    p = -(sin(x)cos(y) + sin(y)cos(z) + sin(z)cos(x))
+    Domain: [0,2pi]^3, periodic, nu=1
+  source: "Ethier and Steinman (1994); satisfies curl(u)=u, (u.grad)u=-grad(p)"
+  doi: "https://doi.org/10.1002/fld.1650190502"
+
+quantities:
+  - name: u
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: v
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: w
+    type: field
+    location: "full domain"
+    norm: L2
+  - name: p
+    type: field
+    location: "full domain"
+    norm: L2
+
+parameters:
+  - name: nu
+    description: "Kinematic viscosity"
+    default: 1.0
+mesh:
+  type: "uniform hexahedral, triply periodic"
+  recommended: [32, 32, 32]
+  convergence_study: [[16,16,16],[32,32,32],[64,64,64]]
+  wall_refinement: false
+  notes: "[0,2pi]^3, periodic. Exact solution at any resolution (nu=1)." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 1e-3
+
+notes: |
+  Exact steady 3D solution with all terms active.
+  Beltrami property: curl(u) = u.
+  Nonlinear terms exactly balance pressure gradient.
+  Excellent for verifying full 3D NS implementations.

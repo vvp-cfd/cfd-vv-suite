@@ -1,0 +1,49 @@
+id: poiseuille-bingham
+name: "Bingham Poiseuille Flow (Bn=0--0.98)"
+category: verification
+subcategory: non-newtonian
+tags: [non-newtonian, bingham, viscoplastic, laminar, steady, duct, analytical]
+
+physics:
+  type: incompressible
+  regime: laminar
+  convective: false
+  equations: [continuity, momentum-bingham]
+
+dimension: 2D
+
+reference:
+  type: analytical
+  solution: |
+    mu_p*du/dy = -G*(y-H/2) +- tau_y  for |y-H/2| > y_p (shear zone)
+    u = const for |y-H/2| <= y_p (plug zone)
+    y_p = tau_y/G  (yield surface position)
+  source: "Bird, R.B., Dai, G.C., Yarusso, B.J. Rev. Chem. Eng., 1(1), 1983"
+
+quantities:
+  - name: u
+    type: profile
+    location: "channel cross-section"
+    norm: L2
+
+parameters:
+  - name: Bn
+    description: "Bingham number = tau_y*H/(mu_p*U_char)"
+    default: 0.5
+    range: [0, 0.98]
+  - name: tau_y
+    description: "Yield stress"
+    default: 0.25
+  - name: mu_p
+    description: "Plastic viscosity"
+    default: 1.0
+mesh:
+  type: "uniform quadrilateral"
+  recommended: [10, 101]
+  convergence_study: [[5,51],[10,101],[20,201]]
+  wall_refinement: false
+  notes: "High resolution near yield surface y=y_p." 
+
+tolerances:
+  L2: 1e-5
+  Linf: 5e-4

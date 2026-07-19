@@ -1,0 +1,63 @@
+name: V&V Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e "tools/[dev]"
+      - run: pytest tools/tests/ -v --tb=short
+
+  validate-cases:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -e "tools/[dev]"
+      - run: |
+          for f in $(find cases -name case.yaml -not -path '*/imported/*'); do
+            cfdvv validate "$(dirname "$f")"
+          done
+
+  self-compare:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        case: [poiseuille-2d, couette-2d, beltrami-flow-3d, taylor-green-vortex-2d, manufactured-ns-2d, poiseuille-power-law]
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -e "tools/[dev]"
+      - run: |
+          CASE_DIR=$(find cases -name case.yaml -not -path '*/imported/*' | xargs grep -l "id: ${{ matrix.case }}" | head -1 | xargs dirname)
+          REF_CSV=$(find "$CASE_DIR/reference" -name '*.csv' | head -1)
+          cfdvv compare "$CASE_DIR" -r "$REF_CSV" --no-plot --tolerance 1e-10
+
+  benchmark:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -e "tools/[dev]"
+      - run: cfdvv benchmark --tolerance 1e-8
+
+  smoke-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -e "tools/[dev]"
+      - run: |
+          cfdvv --version
+          cfdvv list
+          cfdvv info cases/verification/incompressible/poiseuille-2d
+          cfdvv example-output cases/verification/incompressible/poiseuille-2d
+          cfdvv import --list

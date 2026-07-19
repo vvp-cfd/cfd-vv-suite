@@ -1,0 +1,5 @@
+quantity,value,uncertainty
+Cd,1.35,0.02
+St,0.165,0.005
+Cl_rms,0.23,0.02
+Lw_D,1.0,0.05

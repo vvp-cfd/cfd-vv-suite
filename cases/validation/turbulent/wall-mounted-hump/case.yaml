@@ -1,0 +1,43 @@
+id: wall-mounted-hump
+name: "NASA Wall-Mounted Hump (Greenblatt, CFDVAL2004)"
+category: validation
+subcategory: turbulent
+tags: [newtonian, turbulent, separation, hump, experimental, rans-validation, nasa]
+
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+
+dimension: 2D
+
+reference:
+  type: experimental
+  solution: "Surface Cp, separation bubble x/c~0.65-1.11"
+  source: "Greenblatt, D. et al. NASA CFDVAL2004 Workshop, Case 3"
+  doi: ""
+
+quantities:
+  - name: Cp
+    type: profile
+    location: "hump surface and downstream wall"
+    norm: L2
+
+parameters:
+  - name: Re_c
+    description: "Reynolds number based on chord"
+    default: 936000
+  - name: M
+    description: "Mach number"
+    default: 0.1
+mesh:
+  type: "structured quadrilateral, refined near hump"
+  recommended: [50000]
+  convergence_study: [[15000],[50000],[150000]]
+  wall_refinement: true
+  notes: "Wall refinement in separation region x/c=0.6-1.2." 
+
+tolerances:
+  L2: 0.05
+  Linf: 0.15

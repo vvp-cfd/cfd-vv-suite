@@ -52,6 +52,7 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           apt-get update && apt-get install -y --no-install-recommends python3-pip
+          pip3 install --upgrade pip
           pip3 install -e tools/
           . /usr/lib/openfoam/openfoam11/etc/bashrc
           cd cases/verification/incompressible/poiseuille-2d/openfoam

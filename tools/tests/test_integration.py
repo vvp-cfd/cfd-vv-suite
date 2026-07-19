@@ -45,13 +45,13 @@ class TestSelfCompare:
         if not os.path.isdir(ref_dir):
             ref_dir = os.path.join(cdir, 'reference', 'mms')
         if os.path.isdir(ref_dir):
-            csvs = [f for f in os.listdir(ref_dir) if f.endswith('.csv')]
+            csvs = sorted([f for f in os.listdir(ref_dir) if f.endswith('.csv')])
             if csvs:
                 analytical_cases.append((cdir, os.path.join(ref_dir, csvs[0])))
 
     @pytest.mark.parametrize("case_dir,ref_file", analytical_cases)
     def test_self_compare_zero_error(self, case_dir, ref_file):
-        result = compare_case(case_dir, ref_file, norm_type='L2')
+        result = compare_case(case_dir, ref_file, reference_file=ref_file, norm_type='L2')
         for fr in result.get('field_results', []):
             if 'error' in fr:
                 continue

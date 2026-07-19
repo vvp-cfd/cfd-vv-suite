@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - run: pip install -e "tools/[dev]"
-      - run: python -m pytest tools/tests/ -v --tb=long -k "not test_import and not test_regression"
+      - run: python -m pytest tools/tests/ -v --tb=short --ignore=tools/tests/test_import.py --ignore=tools/tests/test_regression.py
 
   validate-cases:
     runs-on: ubuntu-latest

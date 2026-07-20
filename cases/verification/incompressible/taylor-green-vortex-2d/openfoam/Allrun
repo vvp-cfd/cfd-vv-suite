@@ -1,5 +1,5 @@
 #!/bin/bash
 set -e; blockMesh
-setExprFields 2>/dev/null || true
+python3 scripts/init_fields.py
 icoFoam
 echo "Taylor-Green done."

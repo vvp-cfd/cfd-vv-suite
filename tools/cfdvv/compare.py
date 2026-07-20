@@ -51,7 +51,12 @@ def _match_by_coordinates(
     ref_values: np.ndarray,
     tolerance: float = 1e-10,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """Match result points to nearest reference points by coordinates."""
+    """Match result points to reference points by coordinates.
+
+    For 1D profile comparisons (one varying coordinate), uses linear
+    interpolation to map result values onto reference coordinates.
+    For 2D+ comparisons, uses nearest-neighbor matching.
+    """
     if result_coords.shape == ref_coords.shape and np.allclose(result_coords, ref_coords, atol=tolerance):
         return result_values, ref_values
 
@@ -63,8 +68,35 @@ def _match_by_coordinates(
     if result_coords.shape[1] == 0:
         raise ValueError(
             "No common coordinate dimensions between result and reference. "
-            "Result coordinates should include at least 'x'."
+            "Result coordinates should include at least one of 'x', 'y', 'z'."
         )
+
+    def _varying_dims(coords):
+        return [d for d in range(coords.shape[1]) if np.unique(coords[:, d]).size > 1]
+
+    ref_varying = _varying_dims(ref_coords)
+    res_varying = _varying_dims(result_coords)
+
+    is_1d_profile = (
+        len(ref_varying) == 1
+        and len(res_varying) == 1
+        and ref_varying[0] == res_varying[0]
+    )
+    if is_1d_profile:
+        d = ref_varying[0]
+        if np.unique(ref_coords[:, d]).size < ref_coords.shape[0]:
+            is_1d_profile = False
+
+    if is_1d_profile:
+        d = ref_varying[0]
+        ref_sort = np.argsort(ref_coords[:, d])
+        res_sort = np.argsort(result_coords[:, d])
+        interpolated = np.interp(
+            ref_coords[ref_sort, d],
+            result_coords[res_sort, d],
+            result_values[res_sort],
+        )
+        return interpolated, ref_values[ref_sort]
 
     coord_tol = max(tolerance * 10, 1e-6)
     for coords in (ref_coords, result_coords):

@@ -214,8 +214,8 @@ class TestCoordinateMatching:
         res_vals = np.linspace(0, 1, 10)
         ref_vals = np.linspace(0, 1, 20)
         mr, mref = _match_by_coordinates(res_coords, ref_coords, res_vals, ref_vals, 1e-10)
-        assert len(mr) == 10
-        assert len(mref) == 10
+        assert len(mr) == 20  # interpolation maps result to all ref points
+        assert len(mref) == 20
 
     def test_dimension_mismatch_2d_vs_1d_no_crash(self):
         from cfdvv.compare import _match_by_coordinates

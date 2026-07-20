@@ -2,6 +2,6 @@ FoamFile { version 2.0; format ascii; class dictionary; object fvSchemes; }
 ddtSchemes { default CrankNicolson 0.5; }
 gradSchemes { default Gauss linear; }
 divSchemes { default none; div(phi,U) Gauss linear; }
-laplacianSchemes { default Gauss linear orthogonal; }
+laplacianSchemes { default Gauss linear corrected; }
 interpolationSchemes { default linear; }
-snGradSchemes { default orthogonal; }
+snGradSchemes { default corrected; }

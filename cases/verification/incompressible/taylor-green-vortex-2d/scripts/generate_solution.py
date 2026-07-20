@@ -10,7 +10,7 @@ y = np.linspace(0, L, ny)
 X, Y = np.meshgrid(x, y)
 u = -np.cos(X)*np.sin(Y)*np.exp(-2*nu*t)
 v = np.sin(X)*np.cos(Y)*np.exp(-2*nu*t)
-p = 0.25*(np.cos(2*X)+np.cos(2*Y))*np.exp(-4*nu*t)
+p = -0.25*(np.cos(2*X)+np.cos(2*Y))*np.exp(-4*nu*t)
 
 with open(out, 'w', newline='') as f:
     w = csv.writer(f)

@@ -1,14 +1,41 @@
 FoamFile { version 2.0; format ascii; class dictionary; object fvSchemes; }
-fluxScheme Kurganov;
-ddtSchemes { default Euler; }
-gradSchemes { default Gauss linear; }
-divSchemes { default none; }
-laplacianSchemes { default Gauss linear orthogonal; }
-interpolationSchemes {
-    default none;
-    reconstruct(rho) limitedLinear 0.5;
-    reconstruct(U)  limitedLinearV 0.5;
-    reconstruct(T)  limitedLinear 0.5;
-    flux(rhoU)      linear;
+
+ddtSchemes
+{
+    default         Euler;
 }
-snGradSchemes { default orthogonal; }
+
+gradSchemes
+{
+    default         leastSquares;
+    grad(U)         cellLimited leastSquares 1.0;
+}
+
+divSchemes
+{
+    default         none;
+
+    div(phi,U)      Gauss MinmodV;
+    div(phi,K)      Gauss limitedLinear 1;
+    div(phi,h)      Gauss limitedLinear 1;
+    div(phid,p)     Gauss limitedLinear 1;
+    div(phi,e)      Gauss limitedLinear 1;
+    div(phiv,p)     Gauss limitedLinear 1;
+
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+}
+
+laplacianSchemes
+{
+    default         Gauss linear limited 1;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         limited 1;
+}

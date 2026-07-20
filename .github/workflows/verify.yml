@@ -113,7 +113,7 @@ jobs:
           . /opt/openfoam11/etc/bashrc
           cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && blockMesh" || true
-          sudo -u ofuser python3 scripts/set_initial_u.py
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && setExprFields" || true
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
@@ -124,12 +124,12 @@ jobs:
           else
             echo "ERROR: no result file found"
           fi
-      - name: Test Sod (foamRun shockFluid)
+      - name: Test Sod (rhoPimpleFoam)
         continue-on-error: true
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/compressible/sod-shock-tube/openfoam && blockMesh && setFields && foamRun -solver shockFluid" || true
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/compressible/sod-shock-tube/openfoam && blockMesh && setFields && rhoPimpleFoam" || true
           cd cases/verification/compressible/sod-shock-tube/openfoam
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)

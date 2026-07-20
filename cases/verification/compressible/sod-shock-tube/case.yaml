@@ -41,10 +41,10 @@ parameters:
     default: 1.0
 mesh:
   type: "uniform 1D"
-  recommended: [200]
-  convergence_study: [[50],[100],[200],[400]]
+  recommended: [2000]
+  convergence_study: [[50],[100],[200],[400],[1000],[2000]]
   wall_refinement: false
-  notes: "1D domain [0,1]. 200 cells sufficient for reasonable shock resolution." 
+  notes: "1D domain [0,1]. rhoPimpleFoam with MinmodV + leastSquares + 2000 cells." 
 
 tolerances:
   L2: 1e-2

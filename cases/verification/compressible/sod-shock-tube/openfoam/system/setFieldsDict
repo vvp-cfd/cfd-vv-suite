@@ -2,7 +2,6 @@ FoamFile { version 2.0; format ascii; class dictionary; object setFieldsDict; }
 defaultFieldValues (
     volScalarFieldValue p 0.1
     volScalarFieldValue T 0.8
-    volScalarFieldValue e 2.0
     volVectorFieldValue U (0 0 0)
 );
 regions (
@@ -11,7 +10,6 @@ regions (
         fieldValues (
             volScalarFieldValue p 1.0
             volScalarFieldValue T 1.0
-            volScalarFieldValue e 2.5
         );
-    }
+     }
 );

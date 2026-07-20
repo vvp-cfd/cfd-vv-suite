@@ -1,15 +1,19 @@
-name: Publish to Docker Hub
+name: Publish Docker images
 
 on:
   release:
     types: [published]
   workflow_dispatch:
 
+env:
+  REGISTRY_GHCR: ghcr.io
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
 
@@ -19,11 +23,20 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Extract metadata
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY_GHCR }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (CLI image)
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/cfdvv
+          images: |
+            ${{ secrets.DOCKER_USERNAME }}/cfdvv
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
@@ -36,10 +49,21 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Extract metadata (OpenFOAM image)
+        id: meta-of
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            ${{ secrets.DOCKER_USERNAME }}/cfdvv-openfoam
+            ${{ env.REGISTRY_GHCR }}/${{ github.repository }}-openfoam
+          tags: |
+            type=raw,value=latest
+
       - name: Build and push (OpenFOAM image)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ci/Dockerfile.openfoam
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/cfdvv-openfoam:latest
+          tags: ${{ steps.meta-of.outputs.tags }}
+          labels: ${{ steps.meta-of.outputs.labels }}

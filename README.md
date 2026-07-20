@@ -1,10 +1,12 @@
 # cfd-vv-suite
 
-[![PyPI version](https://img.shields.io/pypi/v/cfdvv?color=blue)](https://pypi.org/project/cfdvv/)
-[![Python versions](https://img.shields.io/pypi/pyversions/cfdvv)](https://pypi.org/project/cfdvv/)
-[![License](https://img.shields.io/pypi/l/cfdvv)](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/LICENSE)
+[![PyPI version](https://badgen.net/pypi/v/cfdvv)](https://pypi.org/project/cfdvv/)
+[![Python versions](https://badgen.net/pypi/python/cfdvv)](https://pypi.org/project/cfdvv/)
+[![License](https://badgen.net/pypi/license/cfdvv)](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/LICENSE)
 [![CI](https://github.com/vvp-cfd/cfd-vv-suite/actions/workflows/verify.yml/badge.svg)](https://github.com/vvp-cfd/cfd-vv-suite/actions/workflows/verify.yml)
-[![DOI](https://zenodo.org/badge/1305111910.svg)](https://doi.org/10.5281/zenodo.21462233)
+[![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.21462233-blue)](https://doi.org/10.5281/zenodo.21462233)
+[![Docker Hub](https://img.shields.io/docker/pulls/vvpcfd/cfdvv?label=Docker%20Hub)](https://hub.docker.com/r/vvpcfd/cfdvv)
+[![GitHub Packages](https://img.shields.io/badge/GitHub-Packages-2496ED?logo=docker)](https://github.com/vvp-cfd/cfd-vv-suite/pkgs/container/cfd-vv-suite)
 
 An open test suite for verification and validation (V&V) of computational fluid dynamics codes.
 51 cases: 1D/2D/3D, laminar/turbulent, Newtonian/non-Newtonian, stationary/moving bodies.

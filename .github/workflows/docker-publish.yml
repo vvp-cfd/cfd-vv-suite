@@ -57,6 +57,7 @@ jobs:
             ${{ secrets.DOCKER_USERNAME }}/cfdvv-openfoam
             ${{ env.REGISTRY_GHCR }}/${{ github.repository }}-openfoam
           tags: |
+            type=semver,pattern={{version}}
             type=raw,value=latest
 
       - name: Build and push (OpenFOAM image)

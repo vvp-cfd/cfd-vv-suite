@@ -27,6 +27,10 @@ pip install cfdvv
 git clone https://github.com/vvp-cfd/cfd-vv-suite.git
 cd cfd-vv-suite
 pip install -e tools/
+
+# Docker images (solver-agnostic CLI)
+docker pull vvpcfd/cfdvv                          # Docker Hub
+docker pull ghcr.io/vvp-cfd/cfd-vv-suite           # GitHub Container Registry
 ```
 
 ### Usage
@@ -71,20 +75,23 @@ cd cases/verification/incompressible/poiseuille-2d/openfoam
 ./Allrun
 ```
 
-### Option 2: Using our Dockerfile
+### Option 2: Using our Docker image
 
-The repository provides [ci/Dockerfile.openfoam](ci/Dockerfile.openfoam) with OpenFOAM 11
-and cfdvv pre-installed:
+Pull the pre-built image from either registry:
+
+```bash
+docker pull vvpcfd/cfdvv-openfoam                         # Docker Hub
+docker pull ghcr.io/vvp-cfd/cfd-vv-suite-openfoam          # GitHub Container Registry
+
+docker run --rm -v $(pwd)/cases:/cases vvpcfd/cfdvv-openfoam
+```
+
+Or build from [ci/Dockerfile.openfoam](ci/Dockerfile.openfoam):
 
 ```bash
 docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
 docker run --rm -v $(pwd)/cases:/cases cfdvv-openfoam
 ```
-
-The pre-built image is also published on
-[Docker Hub](https://hub.docker.com/r/vvpcfd/cfdvv-openfoam) (`vvpcfd/cfdvv-openfoam`) and
-[GitHub Container Registry](https://github.com/vvp-cfd/cfd-vv-suite/pkgs/container/cfd-vv-suite-openfoam)
-for each release.
 
 ## Case Categories
 

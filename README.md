@@ -59,6 +59,33 @@ cfdvv report cases/verification/incompressible/poiseuille-2d \
 
 Full guide: [docs/getting-started.md](docs/getting-started.md)
 
+## OpenFOAM Integration
+
+Verification cases include ready-to-run OpenFOAM setups. You need OpenFOAM 11+ installed.
+
+### Option 1: Native OpenFOAM
+
+```bash
+pip install cfdvv  # or pip install -e tools/ from the cloned repo
+cd cases/verification/incompressible/poiseuille-2d/openfoam
+./Allrun
+```
+
+### Option 2: Using our Dockerfile
+
+The repository provides [ci/Dockerfile.openfoam](ci/Dockerfile.openfoam) with OpenFOAM 11
+and cfdvv pre-installed:
+
+```bash
+docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
+docker run --rm -v $(pwd)/cases:/cases cfdvv-openfoam
+```
+
+The pre-built image is also published on
+[Docker Hub](https://hub.docker.com/r/vvpcfd/cfdvv-openfoam) (`vvpcfd/cfdvv-openfoam`) and
+[GitHub Container Registry](https://github.com/vvp-cfd/cfd-vv-suite/pkgs/container/cfd-vv-suite-openfoam)
+for each release.
+
 ## Case Categories
 
 | Category | Subcategory | Examples |

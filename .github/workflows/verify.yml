@@ -202,3 +202,5 @@ jobs:
           echo "Expected: $EXPECTED  Got: $GOT"
           [ "$EXPECTED" = "$GOT" ] || { echo "Version mismatch!"; exit 1; }
           echo "Docker image OK (cfdvv v$GOT)"
+      - name: Build OpenFOAM Docker image
+        run: docker build -t cfdvv-openfoam-test -f ci/Dockerfile.openfoam .

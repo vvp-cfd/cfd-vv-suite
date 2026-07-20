@@ -133,39 +133,7 @@ jobs:
           CASE=cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           cd $CASE
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && blockMesh" || true
-          echo "=== TG debug ==="
-          which python3; which python; pwd; ls -la scripts/
-          echo "--- Before init ---"
-          head -3 0/U
-          PYTHON=python3; $PYTHON --version || PYTHON=python; $PYTHON --version
-          $PYTHON -c "
-import math, os, sys
-nx=80; ny=80; L=2*math.pi; hx=L/nx; hy=L/ny; n=nx*ny
-print(f'nx={nx} ny={ny} n={n}')
-os.makedirs('0', exist_ok=True)
-for fname, cls, dim, expr in [
-    ('0/U', 'volVectorField', '[0 1 -1 0 0 0 0]',
-     lambda xc,yc: '({:.10g} {:.10g} 0)'.format(-math.cos(xc)*math.sin(yc), math.sin(xc)*math.cos(yc))),
-    ('0/p', 'volScalarField', '[0 2 -2 0 0 0 0]',
-     lambda xc,yc: str(-0.25*(math.cos(2*xc)+math.cos(2*yc)))),
-]:
-    lines = [
-        'FoamFile { version 2.0; format ascii; class ' + cls + '; object ' + os.path.basename(fname) + '; }',
-        'dimensions ' + dim + ';',
-        'internalField nonuniform List<' + ('vector' if cls=='volVectorField' else 'scalar') + '> ' + str(n) + '(',
-    ]
-    for j in range(ny):
-        for i in range(nx):
-            lines.append(expr((i+0.5)*hx, (j+0.5)*hy))
-    lines += [ ');', 'boundaryField {', '    cyc_x0  { type cyclic; }', '    cyc_x1  { type cyclic; }', '    cyc_y0  { type cyclic; }', '    cyc_y1  { type cyclic; }', '    frontAndBack { type empty; }', '}', '' ]
-    with open(fname, 'w') as f: f.write(os.linesep.join(lines))
-    sz = os.path.getsize(fname)
-    print(f'Wrote {fname} ({sz} bytes)')
-" 2>&1; echo "py_exit=$?"
-echo "--- After init ---"
-wc -c 0/U
-head -2 0/U
-echo "---"
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)

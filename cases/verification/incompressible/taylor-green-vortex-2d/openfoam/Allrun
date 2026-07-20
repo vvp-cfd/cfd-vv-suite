@@ -1,5 +1,3 @@
 #!/bin/bash
-set -e; blockMesh
-python3 scripts/init_fields.py
-icoFoam
+set -e; blockMesh; icoFoam
 echo "Taylor-Green done."

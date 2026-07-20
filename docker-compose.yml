@@ -1,0 +1,17 @@
+version: "3"
+services:
+  cfdvv:
+    build: .
+    image: cfdvv
+    entrypoint: ["cfdvv"]
+    command: ["--help"]
+    volumes:
+      - ./results:/opt/cfdvv-suite/results
+
+  openfoam:
+    build:
+      context: .
+      dockerfile: ci/Dockerfile.openfoam
+    image: cfdvv-openfoam
+    volumes:
+      - ./results:/opt/cfdvv/results

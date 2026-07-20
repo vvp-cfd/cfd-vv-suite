@@ -148,25 +148,37 @@ def _parse_csv_rows(filepath: str) -> Dict[str, float]:
 
 def _compare_scalar_dict(
     ref_rows: Dict[str, float],
+    result_rows: Optional[Dict[str, float]] = None,
     tolerance: Optional[float] = None,
 ) -> Dict:
-    """Compare a dict of reference quantities (for self-compare)."""
+    """Compare scalar reference quantities against result values.
+    
+    When no result_rows are provided (self-compare), error is 0.
+    """
     results = []
     passed_all = True
     for q_name, ref_val in ref_rows.items():
-        rel_err = 0.0  # self-compare: same data
+        if result_rows and q_name in result_rows:
+            res_val = result_rows[q_name]
+            rel_err = abs(res_val - ref_val) / (abs(ref_val) if ref_val != 0 else 1.0)
+        else:
+            res_val = ref_val
+            rel_err = 0.0
+        passed = True if tolerance is None else (rel_err <= tolerance)
+        if not passed:
+            passed_all = False
         results.append({
             "field": q_name,
             "norm_type": "Relative_L2",
-            "norm_value": 0.0,
-            "all_norms": {"Relative_L2": 0.0},
+            "norm_value": rel_err,
+            "all_norms": {"Relative_L2": rel_err},
             "n_points": 1,
             "reference_range": [ref_val, ref_val],
-            "result_range": [ref_val, ref_val],
-            "passed": True,
+            "result_range": [res_val, res_val],
+            "passed": passed,
         })
     return {
-        "passed": True if tolerance is not None else None,
+        "passed": passed_all if tolerance is not None else None,
         "tolerance": tolerance,
         "field_results": results,
     }
@@ -341,7 +353,8 @@ def compare_case(
     if not ref_has_coords or ref_data.size == 0:
         csv_path = reference_file if reference_file else os.path.join(ref_full_dir, csv_files[0])
         ref_rows = _parse_csv_rows(csv_path)
-        scalar_result = _compare_scalar_dict(ref_rows, effective_tolerance)
+        result_rows = _parse_csv_rows(result_file)
+        scalar_result = _compare_scalar_dict(ref_rows, result_rows, effective_tolerance)
         return {
             "case_id": case["id"],
             "case_name": case["name"],

@@ -1,0 +1,17 @@
+{
+    "creators": [
+        {
+            "name": "Puzikova, Valeria",
+            "affiliation": "Independent Researcher",
+            "orcid": "https://orcid.org/0000-0000-0000-0000"
+        }
+    ],
+    "title": "cfd-vv-suite: Open Test Suite for CFD Verification and Validation",
+    "description": "An open test suite for verification and validation (V&V) of computational fluid dynamics codes. 51 built-in cases covering 1D/2D/3D, laminar/turbulent, Newtonian/non-Newtonian, stationary/moving bodies, with solver-agnostic CLI comparison tools.",
+    "keywords": ["CFD", "verification", "validation", "computational-fluid-dynamics", "navier-stokes", "benchmark"],
+    "license": "MIT",
+    "upload_type": "software",
+    "access_right": "open",
+    "version": "0.2.0",
+    "language": "eng"
+}

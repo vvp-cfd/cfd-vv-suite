@@ -12,6 +12,7 @@
     "license": "MIT",
     "upload_type": "software",
     "access_right": "open",
+"doi": "10.5281/zenodo.21462233",
     "version": "0.3.0",
     "language": "eng"
 }

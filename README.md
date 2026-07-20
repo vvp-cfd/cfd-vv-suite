@@ -4,6 +4,7 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/cfdvv)](https://pypi.org/project/cfdvv/)
 [![License](https://img.shields.io/pypi/l/cfdvv)](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/LICENSE)
 [![CI](https://github.com/vvp-cfd/cfd-vv-suite/actions/workflows/verify.yml/badge.svg)](https://github.com/vvp-cfd/cfd-vv-suite/actions/workflows/verify.yml)
+[![DOI](https://zenodo.org/badge/1305111910.svg)](https://doi.org/10.5281/zenodo.21462233)
 
 An open test suite for verification and validation (V&V) of computational fluid dynamics codes.
 51 cases: 1D/2D/3D, laminar/turbulent, Newtonian/non-Newtonian, stationary/moving bodies.
@@ -111,6 +112,7 @@ If you use cfd-vv-suite in your research, please cite it as:
   title        = {cfd-vv-suite: Open Test Suite for CFD Verification and Validation},
   year         = {2026},
   publisher    = {GitHub},
+  doi          = {10.5281/zenodo.21462233},
   howpublished = {\\url{https://github.com/vvp-cfd/cfd-vv-suite}},
   note         = {Version 0.3.0}
 }

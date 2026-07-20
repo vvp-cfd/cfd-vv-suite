@@ -112,7 +112,7 @@ If you use cfd-vv-suite in your research, please cite it as:
   year         = {2026},
   publisher    = {GitHub},
   howpublished = {\\url{https://github.com/vvp-cfd/cfd-vv-suite}},
-  note         = {Version 0.2.0}
+  note         = {Version 0.3.0}
 }
 ```
 

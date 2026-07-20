@@ -62,6 +62,7 @@ jobs:
         continue-on-error: true
         run: |
           set +e
+          EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
           CASE=cases/verification/incompressible/poiseuille-2d/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
@@ -71,19 +72,21 @@ jobs:
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
             sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
-            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 1e-3
+            cfdvv compare .. -r "$RESULT" -R "$PWD/reference/openfoam-regression/centerline.csv" --no-plot --tolerance 1e-12 || EXIT_CODE=$?
           else
-            echo "ERROR: no result file found"
+            echo "WARNING: no result file found (simulation may have failed)"
           fi
           ART_DIR="$GITHUB_WORKSPACE/artifacts/poiseuille-2d"
           mkdir -p "$ART_DIR"
           cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
           latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
           [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
+          exit $EXIT_CODE
       - name: Test Couette (simpleFoam)
         continue-on-error: true
         run: |
           set +e
+          EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
           CASE=cases/verification/incompressible/couette-2d/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
@@ -93,19 +96,21 @@ jobs:
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
             sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
-            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 1e-3
+            cfdvv compare .. -r "$RESULT" -R "$PWD/reference/openfoam-regression/centerline.csv" --no-plot --tolerance 1e-12 || EXIT_CODE=$?
           else
-            echo "ERROR: no result file found"
+            echo "WARNING: no result file found (simulation may have failed)"
           fi
           ART_DIR="$GITHUB_WORKSPACE/artifacts/couette-2d"
           mkdir -p "$ART_DIR"
           cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
           latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
           [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
+          exit $EXIT_CODE
       - name: Test Lid-Driven Cavity (simpleFoam)
         continue-on-error: true
         run: |
           set +e
+          EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
           CASE=cases/verification/incompressible/lid-driven-cavity/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
@@ -115,9 +120,9 @@ jobs:
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
             sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
-            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 0.001
+            cfdvv compare .. -r "$RESULT" -R "$PWD/reference/openfoam-regression/centerline.csv" --no-plot --tolerance 1e-12 || EXIT_CODE=$?
           else
-            echo "ERROR: no result file found"
+            echo "WARNING: no result file found (simulation may have failed)"
           fi
           # Save artifacts: sampled CSV + solution fields
           ART_DIR="$GITHUB_WORKSPACE/artifacts/lid-driven-cavity"
@@ -125,10 +130,12 @@ jobs:
           cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
           latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
           [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
+          exit $EXIT_CODE
       - name: Test Taylor-Green (icoFoam)
         continue-on-error: true
         run: |
           set +e
+          EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
           CASE=cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           cd $CASE
@@ -140,9 +147,9 @@ jobs:
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
             sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
-            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 0.01 --auto-generate
+            cfdvv compare .. -r "$RESULT" -R "$PWD/reference/openfoam-regression/line_y0.csv" --no-plot --tolerance 1e-12 || EXIT_CODE=$?
           else
-            echo "ERROR: no result file found"
+            echo "WARNING: no result file found (simulation may have failed)"
           fi
           ART_DIR="$GITHUB_WORKSPACE/artifacts/taylor-green-vortex-2d"
           mkdir -p "$ART_DIR"
@@ -150,10 +157,12 @@ jobs:
           cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
           latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
           [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
+          exit $EXIT_CODE
       - name: Test Sod (rhoPimpleFoam)
         continue-on-error: true
         run: |
           set +e
+          EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
           CASE=cases/verification/compressible/sod-shock-tube/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && setFields && rhoPimpleFoam" || true
@@ -163,15 +172,16 @@ jobs:
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
             sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
-            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 0.05
+            cfdvv compare .. -r "$RESULT" -R "$PWD/reference/openfoam-regression/line.csv" --no-plot --tolerance 1e-12 || EXIT_CODE=$?
           else
-            echo "ERROR: no result file found"
+            echo "WARNING: no result file found (simulation may have failed)"
           fi
           ART_DIR="$GITHUB_WORKSPACE/artifacts/sod-shock-tube"
           mkdir -p "$ART_DIR"
           cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
           latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
           [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
+          exit $EXIT_CODE
       - name: Upload OpenFOAM artifacts
         if: always()
         uses: actions/upload-artifact@v4

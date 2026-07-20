@@ -11,7 +11,7 @@ functions {
         writeControl outputTime;
         interpolationScheme cellPoint;
         setFormat csv;
-        fields (rho U p e);
+        fields (rho U p);
         sets (
             line {
                 type lineUniform; axis x;

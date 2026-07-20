@@ -32,11 +32,6 @@ quantities:
     type: profile
     location: "entire domain at t=0.2"
     norm: L2
-  - name: e
-    type: profile
-    location: "entire domain at t=0.2"
-    norm: L2
-
 parameters:
   - name: gamma
     description: "Ratio of specific heats"

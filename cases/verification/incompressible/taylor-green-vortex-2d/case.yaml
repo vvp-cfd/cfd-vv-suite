@@ -19,7 +19,7 @@ reference:
   solution: |
     u = -cos(x)·sin(y)·exp(-2nut)
     v = sin(x)·cos(y)·exp(-2nut)
-    p = -0.25·(cos(2x) + cos(2y))·exp(-4nut)
+    p = 0.25·(cos(2x) + cos(2y))·exp(-4nut)
   source: "Taylor, G.I. & Green, A.E. 1937. Proc. R. Soc. Lond. A."
 
 quantities:

@@ -63,8 +63,9 @@ jobs:
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/poiseuille-2d/openfoam && blockMesh && simpleFoam" || true
-          cd cases/verification/incompressible/poiseuille-2d/openfoam
+          CASE=cases/verification/incompressible/poiseuille-2d/openfoam
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
+          cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -74,13 +75,19 @@ jobs:
           else
             echo "ERROR: no result file found"
           fi
+          ART_DIR="$GITHUB_WORKSPACE/artifacts/poiseuille-2d"
+          mkdir -p "$ART_DIR"
+          cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
+          latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
+          [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
       - name: Test Couette (simpleFoam)
         continue-on-error: true
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/couette-2d/openfoam && blockMesh && simpleFoam" || true
-          cd cases/verification/incompressible/couette-2d/openfoam
+          CASE=cases/verification/incompressible/couette-2d/openfoam
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
+          cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -90,13 +97,19 @@ jobs:
           else
             echo "ERROR: no result file found"
           fi
+          ART_DIR="$GITHUB_WORKSPACE/artifacts/couette-2d"
+          mkdir -p "$ART_DIR"
+          cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
+          latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
+          [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
       - name: Test Lid-Driven Cavity (simpleFoam)
         continue-on-error: true
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/incompressible/lid-driven-cavity/openfoam && blockMesh && simpleFoam" || true
-          cd cases/verification/incompressible/lid-driven-cavity/openfoam
+          CASE=cases/verification/incompressible/lid-driven-cavity/openfoam
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
+          cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -106,12 +119,19 @@ jobs:
           else
             echo "ERROR: no result file found"
           fi
+          # Save artifacts: sampled CSV + solution fields
+          ART_DIR="$GITHUB_WORKSPACE/artifacts/lid-driven-cavity"
+          mkdir -p "$ART_DIR"
+          cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
+          latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
+          [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
       - name: Test Taylor-Green (icoFoam)
         continue-on-error: true
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam
+          CASE=cases/verification/incompressible/taylor-green-vortex-2d/openfoam
+          cd $CASE
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && blockMesh" || true
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && setExprFields" || true
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
@@ -124,13 +144,19 @@ jobs:
           else
             echo "ERROR: no result file found"
           fi
+          ART_DIR="$GITHUB_WORKSPACE/artifacts/taylor-green-vortex-2d"
+          mkdir -p "$ART_DIR"
+          cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
+          latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
+          [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
       - name: Test Sod (rhoPimpleFoam)
         continue-on-error: true
         run: |
           set +e
           . /opt/openfoam11/etc/bashrc
-          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/cases/verification/compressible/sod-shock-tube/openfoam && blockMesh && setFields && rhoPimpleFoam" || true
-          cd cases/verification/compressible/sod-shock-tube/openfoam
+          CASE=cases/verification/compressible/sod-shock-tube/openfoam
+          sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && setFields && rhoPimpleFoam" || true
+          cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
           echo "Result file: $RESULT"
@@ -140,3 +166,14 @@ jobs:
           else
             echo "ERROR: no result file found"
           fi
+          ART_DIR="$GITHUB_WORKSPACE/artifacts/sod-shock-tube"
+          mkdir -p "$ART_DIR"
+          cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
+          latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
+          [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true
+      - name: Upload OpenFOAM artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openfoam-results
+          path: artifacts/

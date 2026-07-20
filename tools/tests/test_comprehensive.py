@@ -988,8 +988,7 @@ class TestYamlReaderEdgeCases:
         val = _parse_scalar(".inf")
         assert val == float("inf")
         val2 = _parse_scalar("-.inf")
-        # NOTE: current impl returns +inf for -.inf (regex match without sign check)
-        assert math.isinf(val2) and val2 > 0
+        assert math.isinf(val2) and val2 < 0
 
     def test_parse_nan(self):
         from cfdvv.yaml_reader import _parse_scalar

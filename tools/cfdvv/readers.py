@@ -108,21 +108,21 @@ def read_openfoam_field(filepath: str) -> Tuple[np.ndarray, List[str]]:
     """Read an OpenFOAM field file (U, p, k, etc.) in raw format.
 
     Parses the internalField section. Returns (values, [field_name]).
+    Handles both uniform and nonuniform formats.
     """
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
 
     values = []
     in_internal = False
-    value_count = 0
+    skip_count = False
 
     for line in content.split("\n"):
         stripped = line.strip()
 
         if stripped.startswith("internalField"):
             in_internal = True
-            if "nonuniform" in stripped:
-                value_count = int(stripped.split("nonuniform")[1].split("(")[0].strip())
+            skip_count = "nonuniform" in stripped
             continue
 
         if not in_internal:
@@ -133,6 +133,15 @@ def read_openfoam_field(filepath: str) -> Tuple[np.ndarray, List[str]]:
 
         if stripped == "(" or stripped == ";":
             continue
+
+        if skip_count:
+            try:
+                int(stripped)
+                skip_count = False
+                continue
+            except ValueError:
+                pass
+            skip_count = False
 
         for token in stripped.replace("(", " ").replace(")", " ").split():
             try:

@@ -58,7 +58,7 @@ def _parse_scalar(s: str) -> Any:
     if re.match(r"^-?\.\d+([eE][+-]?\d+)?$", s):
         return float(s)
     if re.match(r"^-?\.(inf|Inf|INF)$", s):
-        return float("inf")
+        return float("-inf") if s.startswith("-") else float("inf")
     if s.lower() == ".nan":
         return float("nan")
 

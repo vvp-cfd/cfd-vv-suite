@@ -6,7 +6,7 @@ authors:
     given-names: Valeria
     email: valeria.puzikova@gmail.com
     orcid: "https://orcid.org/0000-0003-0712-4519"
-version: 0.3.1
+version: 0.3.2
 date-released: 2026-07-21
 doi: 10.5281/zenodo.21462233
 url: "https://github.com/vvp-cfd/cfd-vv-suite"

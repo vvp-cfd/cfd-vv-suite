@@ -188,3 +188,17 @@ jobs:
         with:
           name: openfoam-results
           path: artifacts/
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image
+        run: docker build -t cfdvv-test .
+      - name: Check version
+        run: |
+          EXPECTED=$(grep '__version__' tools/cfdvv/__init__.py | sed "s/.*\"\(.*\)\".*/\1/")
+          GOT=$(docker run --rm cfdvv-test --version 2>&1 | grep -oP '[\d]+\.[\d]+\.[\d]+')
+          echo "Expected: $EXPECTED  Got: $GOT"
+          [ "$EXPECTED" = "$GOT" ] || { echo "Version mismatch!"; exit 1; }
+          echo "Docker image OK (cfdvv v$GOT)"

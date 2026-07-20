@@ -102,7 +102,7 @@ jobs:
           echo "Result file: $RESULT"
           if [ -n "$RESULT" ]; then
             sed -i 's/U:0/u/g; s/U:1/v/g; s/U:2/w/g; s/U_x/u/g; s/U_y/v/g; s/U_z/w/g' "$RESULT" 2>/dev/null || true
-            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 0.25
+            cfdvv compare .. -r "$RESULT" --no-plot --tolerance 0.001
           else
             echo "ERROR: no result file found"
           fi

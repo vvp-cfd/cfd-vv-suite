@@ -6,6 +6,6 @@ fields (U p);
 sets (
     line_y0 {
         type uniform; axis x;
-        start (0 3.14159 0.05); end (6.28318 3.14159 0.05); nPoints 128;
+        start (0 0 0.05); end (6.28318 0 0.05); nPoints 128;
     }
 );

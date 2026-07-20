@@ -1,8 +1,8 @@
 FoamFile { version 2.0; format ascii; class dictionary; object blockMeshDict; }
 convertToMeters 1;
-// 32x32 mesh (minimum recommended)
+// 64x64 mesh (minimum recommended)
 vertices ((0 0 0)(1 0 0)(1 1 0)(0 1 0)(0 0 0.1)(1 0 0.1)(1 1 0.1)(0 1 0.1));
-blocks ( hex (0 1 2 3 4 5 6 7) (32 32 1) simpleGrading (1 1 1) );
+blocks ( hex (0 1 2 3 4 5 6 7) (64 64 1) simpleGrading (1 1 1) );
 edges ();
 boundary (
     movingWall { type wall; faces ((3 7 6 2)); }

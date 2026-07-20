@@ -133,9 +133,17 @@ jobs:
           CASE=cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           cd $CASE
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && blockMesh" || true
-          which python3; python3 --version
-          python3 scripts/init_fields.py && echo "init_fields OK" || echo "init_fields FAILED"
+          echo "=== TG debug ==="
+          which python3 || which python || echo "no python found"
+          pwd
+          ls -la scripts/init_fields.py
+          echo "--- Before init ---"
           head -3 0/U
+          python3 scripts/init_fields.py 2>&1; echo "exit=$?"
+          echo "--- After init ---"
+          head -3 0/U
+          wc -c 0/U
+          echo "=== end debug ==="
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)
@@ -148,6 +156,7 @@ jobs:
           fi
           ART_DIR="$GITHUB_WORKSPACE/artifacts/taylor-green-vortex-2d"
           mkdir -p "$ART_DIR"
+          cp -r 0 "$ART_DIR/" 2>/dev/null || true
           cp -r postProcessing "$ART_DIR/" 2>/dev/null || true
           latest=$(ls -d [0-9]* 2>/dev/null | sort -n | tail -1)
           [ -n "$latest" ] && cp -r "$latest" "$ART_DIR/" 2>/dev/null || true

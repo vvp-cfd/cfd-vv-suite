@@ -14,24 +14,34 @@ cfd-vv-suite provides a standardized, reproducible, solver-agnostic toolkit for 
 
 ## Quick Start
 
+### Installation
+
 ```bash
+# From PyPI (recommended — no clone needed)
+pip install cfdvv
+
+# Or from source (includes cases + OpenFOAM templates)
 git clone https://github.com/vvp-cfd/cfd-vv-suite.git
 cd cfd-vv-suite
 pip install -e tools/
+```
 
+### Usage
+
+```bash
 # List available cases
 cfdvv list
 cfdvv list -c validation
 
-# OpenFOAM: ready-to-run Poiseuille case
+# Compare your results against reference
+cfdvv compare cases/verification/incompressible/poiseuille-2d \
+    --result my_results.csv --norm L2 --plot
+
+# OpenFOAM: ready-to-run Poiseuille case (from cloned repo)
 cd cases/verification/incompressible/poiseuille-2d/openfoam && ./Allrun
 
 # Generate analytical solution on a given mesh
 python cases/verification/incompressible/poiseuille-2d/scripts/generate_solution.py 10 20 my.csv
-
-# Compare your results against reference
-cfdvv compare cases/verification/incompressible/poiseuille-2d \
-    --result my_results.csv --norm L2 --plot
 
 # See expected output format
 cfdvv example-output cases/verification/incompressible/poiseuille-2d

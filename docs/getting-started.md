@@ -3,6 +3,10 @@
 ## 1. Install
 
 ```bash
+# From PyPI (recommended — no clone needed)
+pip install cfdvv
+
+# Or from source (includes cases + OpenFOAM templates)
 git clone https://github.com/vvp-cfd/cfd-vv-suite.git
 cd cfd-vv-suite
 pip install -e tools/
@@ -216,23 +220,6 @@ cfdvv gci cases/... -r coarse_results.csv -r medium_results.csv -r fine_results.
 ```
 
 See [comparison-methodology.md](comparison-methodology.md) for full mathematical details.
-
-
-```bash
-cfdvv report cases/verification/incompressible/poiseuille-2d \
-    --result my_results.csv --output report.html
-
-cfdvv report cases/validation/turbulent/channel-flow-retau180 \
-    --result my_uplus.csv --output channel_report.html
-```
-
-## 7. Grid Convergence Study (GCI)
-
-```bash
-cfdvv gci cases/verification/incompressible/poiseuille-2d \
-    --results coarse.csv medium.csv fine.csv \
-    --mesh-sizes 0.1,0.05,0.025
-```
 
 ## Case Directory Structure
 

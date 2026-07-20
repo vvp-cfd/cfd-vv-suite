@@ -30,15 +30,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update Docker Hub description
-        continue-on-error: true
-        uses: peter-evans/dockerhub-description@v4
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: vvpcfd/cfdvv
-          readme-filepath: ./README.md
-
       - name: Extract metadata (CLI image)
         id: meta
         uses: docker/metadata-action@v5

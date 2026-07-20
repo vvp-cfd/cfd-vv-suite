@@ -213,8 +213,18 @@ def compare_field(
             f"Field '{field_name}' not found in result columns: {result_columns}"
         )
 
-    ref_coords = reference_data[:, ref_coord_indices]
-    res_coords = result_data[:, res_coord_indices]
+    ref_col_names = [reference_columns[i].lower().strip().strip('"').strip("'") for i in ref_coord_indices]
+    res_col_names = [result_columns[i].lower().strip().strip('"').strip("'") for i in res_coord_indices]
+    ref_cmap = dict(zip(ref_col_names, ref_coord_indices))
+    res_cmap = dict(zip(res_col_names, res_coord_indices))
+    common_names = [n for n in ("x", "y", "z") if n in ref_cmap and n in res_cmap]
+    if not common_names:
+        raise ValueError(
+            f"No common coordinate columns between reference {list(ref_cmap.keys())} "
+            f"and result {list(res_cmap.keys())}."
+        )
+    ref_coords = np.column_stack([reference_data[:, ref_cmap[n]] for n in common_names])
+    res_coords = np.column_stack([result_data[:, res_cmap[n]] for n in common_names])
     ref_values = reference_data[:, ref_field_idx]
     res_values = result_data[:, res_field_idx]
 

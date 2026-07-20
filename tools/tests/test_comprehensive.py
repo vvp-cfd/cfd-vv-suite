@@ -230,6 +230,116 @@ class TestCoordinateMatching:
         assert len(mr) > 0
 
 
+class TestInterpolationAccuracy:
+    """Verify that compare_field produces correct L2 norms for 1D profile
+    comparison with known functions via interpolation."""
+
+    def _make_result_csv(self, y_vals, u_vals):
+        """Write a result CSV with x,y,U:0 columns and return the path."""
+        import tempfile
+        f = tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False)
+        f.write('x,y,U:0\n')
+        for yi, ui in zip(y_vals, u_vals):
+            f.write(f'0.5,{yi},{ui}\n')
+        f.close()
+        return f.name
+
+    def test_interpolation_exact_for_linear_function(self):
+        """Linear function interpolated exactly → L2 ≈ 0 regardless of grid size."""
+        from cfdvv.compare import compare_field
+        y_ref = np.linspace(0, 1, 103)
+        u_ref = 2.0 * y_ref + 1.0
+        ref_data = np.column_stack([y_ref, u_ref])
+        ref_cols = ['y', 'u']
+
+        y_res = np.linspace(0, 1, 7)
+        u_res = 2.0 * y_res + 1.0
+        result_path = self._make_result_csv(y_res, u_res)
+
+        try:
+            result = compare_field(result_path, ref_data, ref_cols, 'u', 'L2')
+            assert result['n_points'] == len(y_ref), (
+                f"Expected {len(y_ref)} points, got {result['n_points']}"
+            )
+            assert result['norm_value'] == pytest.approx(0.0, abs=1e-14), (
+                f"Linear interpolation of linear function should be exact, got {result['norm_value']}"
+            )
+        finally:
+            os.unlink(result_path)
+
+    def test_interpolation_sine_known_error(self):
+        """Interpolation error of sin(πy) from 11→101 points matches manual np.interp."""
+        from cfdvv.compare import compare_field
+        from cfdvv.norms import l2_norm
+
+        y_ref = np.linspace(0, 1, 101)
+        u_ref = np.sin(np.pi * y_ref)
+        ref_data = np.column_stack([y_ref, u_ref])
+        ref_cols = ['y', 'u']
+
+        y_res = np.linspace(0, 1, 11)
+        u_res = np.sin(np.pi * y_res)
+        result_path = self._make_result_csv(y_res, u_res)
+
+        try:
+            result = compare_field(result_path, ref_data, ref_cols, 'u', 'L2')
+            u_interp = np.interp(y_ref, y_res, u_res)
+            expected_l2 = l2_norm(u_interp, u_ref)
+
+            assert result['n_points'] == len(y_ref), (
+                f"Expected {len(y_ref)} points, got {result['n_points']}"
+            )
+            assert result['norm_value'] == pytest.approx(expected_l2, rel=1e-10, abs=1e-12), (
+                f"L2 mismatch: {result['norm_value']} vs {expected_l2}"
+            )
+        finally:
+            os.unlink(result_path)
+
+    def test_interpolation_1d_ref_vs_2d_result(self):
+        """Reference has only y, result has x,y → still interpolates correctly."""
+        from cfdvv.compare import compare_field
+        from cfdvv.norms import l2_norm
+
+        y_ref = np.linspace(0, 1, 51)
+        u_ref = np.sin(np.pi * y_ref)
+        ref_data = np.column_stack([y_ref, u_ref])
+        ref_cols = ['y', 'u']
+
+        y_res = np.linspace(0, 1, 6)
+        u_res = np.sin(np.pi * y_res)
+        result_path = self._make_result_csv(y_res, u_res)
+
+        try:
+            result = compare_field(result_path, ref_data, ref_cols, 'u', 'L2')
+            u_interp = np.interp(y_ref, y_res, u_res)
+            expected_l2 = l2_norm(u_interp, u_ref)
+
+            assert result['n_points'] == len(y_ref), (
+                f"Expected {len(y_ref)} points, got {result['n_points']}"
+            )
+            assert result['norm_value'] == pytest.approx(expected_l2, rel=1e-10, abs=1e-12), (
+                f"L2 mismatch: {result['norm_value']} vs {expected_l2}"
+            )
+        finally:
+            os.unlink(result_path)
+
+    def test_interpolation_result_on_reference_grid(self):
+        """Result on the exact same y-grid as reference → L2 ≈ 0 (interpolation exact)."""
+        from cfdvv.compare import compare_field
+        y = np.linspace(0, 1, 21)
+        u = np.sin(2 * np.pi * y) + 0.5 * np.cos(3 * np.pi * y)
+        ref_data = np.column_stack([y, u])
+        ref_cols = ['y', 'u']
+        result_path = self._make_result_csv(y, u)
+
+        try:
+            result = compare_field(result_path, ref_data, ref_cols, 'u', 'L2')
+            assert result['n_points'] == len(y)
+            assert result['norm_value'] == pytest.approx(0.0, abs=1e-14)
+        finally:
+            os.unlink(result_path)
+
+
 class TestFieldMatching:
     """Test OpenFOAM field name aliases."""
 

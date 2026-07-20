@@ -2,8 +2,8 @@ FoamFile { version 2.0; format ascii; class dictionary; object controlDict; }
 application foamRun;
 allowSystemOperations true;
 startFrom startTime; startTime 0; stopAt endTime; endTime 0.2;
-deltaT 5e-5; writeControl adjustableRunTime; writeInterval 0.05;
-adjustTimeStep yes; maxCo 0.3; maxDeltaT 1;
+deltaT 5e-6; writeControl adjustableRunTime; writeInterval 0.05;
+adjustTimeStep no; maxCo 0.1; maxDeltaT 1;
 functions {
     sampleDict {
         type sets;

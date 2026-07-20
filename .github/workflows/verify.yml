@@ -133,7 +133,9 @@ jobs:
           CASE=cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           cd $CASE
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && blockMesh" || true
-          sudo -u ofuser bash -c "cd $PWD && python3 scripts/init_fields.py" || true
+          which python3; python3 --version
+          python3 scripts/init_fields.py && echo "init_fields OK" || echo "init_fields FAILED"
+          head -3 0/U
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
           RESULT=$(find postProcessing -type f \( -name "*.csv" -o -name "*.xy" \) 2>/dev/null | sort -t/ -k3 -n | tail -1)

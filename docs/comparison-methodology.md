@@ -72,11 +72,56 @@ Safety factor Fs = 1.25 (for 3 meshes), 3.0 (for 2 meshes).
 - Passed: E <= tolerance (from case.yaml)
 - Failed: E > tolerance
 
-Tolerance depends on the case type:
-- Analytical solution: L2 ~ 1e-6
-- MMS (with source terms): L2 ~ 1e-5
-- Experimental data: L2 ~ 1e-3 to 1e-1 (limited by measurement error)
-- DNS data: L2 ~ 0.05 (limited by statistical convergence)
+## Choosing Tolerances
+
+Tolerance should be set **larger than the expected discretization error** on the target mesh. A tolerance that is too tight will cause false failures; one that is too loose will mask real regressions.
+
+### Effect of mesh resolution
+
+For a second-order accurate scheme on a uniform mesh of size N (N×N in 2D), the discretization error in the L2 norm scales roughly as:
+
+```
+E_L2 ≈ C · (L/N)²
+```
+
+where L is the domain length scale and C is a problem-dependent constant (typically 1–50 for smooth flows). Halving the mesh spacing (doubling N) reduces the error by approximately 4×.
+
+### Rule-of-thumb estimates
+
+| Mesh N² | Estimated L2 range (smooth flow, 2nd order) | Typical usage |
+|---------|---------------------------------------------|--------------|
+| 32²     | 0.1 – 0.5                                   | Coarse scoping |
+| 64²     | 0.02 – 0.1                                  | Quick CI checks |
+| 128²    | 0.005 – 0.03                                | Standard verification |
+| 256²    | 0.001 – 0.008                               | High-precision |
+
+### Recommendations by case type
+
+| Case type | Typical L2 tolerance | Notes |
+|-----------|---------------------|-------|
+| Analytical solution, fine mesh (256²+) | 1e-6 – 1e-4 | Machine precision possible on matching grid |
+| MMS with source terms | 1e-5 – 1e-3 | Depends on quadrature accuracy |
+| Analytical, moderate mesh (128²) | 1e-4 – 1e-2 | 2nd-order schemes on uniform grid |
+| Analytical, coarse mesh (64²) | 0.01 – 0.1 | Allow for discretization error |
+| Experimental data | 1e-3 – 1e-1 | Limited by measurement uncertainty |
+| DNS reference data | 0.01 – 0.1 | Limited by statistical convergence |
+
+### Calibrating for your mesh
+
+1. **Run a mesh convergence study** on 3 levels (e.g., 32², 64², 128²).
+2. Compute the GCI (see above) to estimate the numerical error on the finest mesh.
+3. Set the **L2 tolerance to 2–3× the estimated error**. This guards against regressions without being overly strict.
+4. For a single mesh, compare with a known reference (e.g., a published benchmark) and set the tolerance 2× higher than your observed error.
+
+### Example: Lid-driven cavity at Re=100
+
+| Mesh | Observed L2 (vs Ghia 129²) | Recommended tolerance |
+|------|---------------------------|----------------------|
+| 32²  | ≈ 0.08                    | 0.1 – 0.2 |
+| 64²  | ≈ 0.03                    | 0.05 – 0.1 |
+| 128² | ≈ 0.005                   | 0.005 – 0.01 |
+
+The current `lid-driven-cavity/case.yaml` sets L2 = 1e-3, which is appropriate for 129² but too tight for the default 64² mesh used in the OpenFOAM template. Bin the tolerance to your actual mesh resolution.
 
 ## References
 

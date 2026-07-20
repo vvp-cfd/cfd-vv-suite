@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cfdvv"
-version = "0.3.2"
+version = "0.3.3"
 description = "CFD Verification & Validation Suite: open-source test cases and CLI tools for CFD code verification and validation."
 readme = "README.md"
 license = {text = "MIT"}

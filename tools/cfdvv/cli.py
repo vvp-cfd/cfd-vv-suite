@@ -839,7 +839,16 @@ def import_command(case_id: str, list_flag: bool, result_file: Optional[str],
 
 
 def _find_cases_root() -> str:
-    """Find the cases root directory relative to the package."""
+    """Find the cases root directory.
+
+    First checks inside the installed package (pip install),
+    then walks up from CWD (editable install / repo clone).
+    """
+    pkg_dir = os.path.dirname(__file__)
+    pkg_cases = os.path.join(pkg_dir, "cases")
+    if os.path.isdir(pkg_cases):
+        return pkg_dir
+
     current = Path.cwd()
     for parent in [current] + list(current.parents)[:-1]:
         cases_dir = parent / "cases"

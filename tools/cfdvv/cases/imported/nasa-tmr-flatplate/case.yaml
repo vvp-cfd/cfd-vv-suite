@@ -1,0 +1,29 @@
+id: nasa-tmr-flatplate
+name: "Flat Plate TBL (NASA TMR)"
+category: validation
+subcategory: turbulent
+tags: ['newtonian', 'turbulent', 'boundary-layer', 'experimental', 'rans-validation', 'nasa-tmr']
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+dimension: 2D
+reference:
+  type: experimental
+  source: "Flat Plate TBL (NASA TMR)"
+  doi: "https://turbmodels.larc.nasa.gov"
+quantities:
+  - name: Cf
+    type: profile
+    location: "plate surface"
+    norm: L2
+mesh:
+  type: "structured"
+  recommended: [200, 100]
+  wall_refinement: true
+  notes: "See source for grid details."
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+notes: "Incompressible ZPG turbulent flat plate. Re_theta up to 31000. Cf and velocity profiles. Imported from https://turbmodels.larc.nasa.gov"

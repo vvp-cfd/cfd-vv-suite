@@ -1,0 +1,33 @@
+id: masa-ns-2d
+name: "Navier-Stokes MMS 2D (MASA)"
+category: validation
+subcategory: turbulent
+tags: ['mms', 'manufactured-solution', 'newtonian', 'laminar', 'steady', 'navier-stokes', 'masa']
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+dimension: 2D
+reference:
+  type: experimental
+  source: "Navier-Stokes MMS 2D (MASA)"
+  doi: "https://github.com/manufactured-solutions/MASA"
+quantities:
+  - name: u
+    type: field
+    location: "domain"
+    norm: L2
+  - name: v
+    type: field
+    location: "domain"
+    norm: L2
+mesh:
+  type: "structured"
+  recommended: [200, 100]
+  wall_refinement: true
+  notes: "See source for grid details."
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+notes: "2D Navier-Stokes manufactured solution from MASA library. Imported from https://github.com/manufactured-solutions/MASA"

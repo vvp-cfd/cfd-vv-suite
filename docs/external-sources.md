@@ -4,8 +4,8 @@ cfd-vv-suite provides **two kinds** of test cases:
 
 | | Built-in (51 cases) | Imported (35 cases) |
 |---|---|---|
-| **Where data lives** | In this repository (`cases/.../reference/`) | In external databases |
-| **How you get it** | Already present after `git clone` | Downloaded on demand: `cfdvv import <case>` |
+| **Where data lives** | In this repository (`tools/cfdvv/cases/.../reference/`) | In external databases |
+| **How you get it** | Already present after `git clone` (or `pip install cfdvv`) | Downloaded on demand: `cfdvv import <case>` |
 | **Curation level** | Full: README, mesh specs, OpenFOAM files, scripts, 187 tests | Metadata: case.yaml + URL, auto-generated |
 | **Update frequency** | With new releases of cfd-vv-suite | Independently, when source database updates |
 | **Examples** | poiseuille-2d, cylinder-re100, beltrami-flow-3d | flatplate (NASA TMR), bfs-laminar (ERCOFTAC), sod (ExactPack) |
@@ -116,7 +116,7 @@ New sources can be added by creating a class in `tools/cfdvv/importers/__init__.
 ## Imported Case Structure
 
 ```
-cases/imported/nasa-tmr-flatplate/
+tools/cfdvv/cases/imported/nasa-tmr-flatplate/
 ├── case.yaml           # Auto-generated metadata
 ├── README.md           # Source description + links
 └── reference/

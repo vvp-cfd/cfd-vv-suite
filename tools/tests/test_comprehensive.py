@@ -5,10 +5,12 @@ from cfdvv.yaml_reader import parse, _parse_scalar
 from cfdvv.readers import read_csv, read_vtk, read_file
 from cfdvv.norms import compute_all_norms
 from cfdvv.schema import validate_case_dir
+from cfdvv.compare import _find_coordinate_columns, _find_field_column, _match_by_coordinates, compare_case, compare_field
+import cfdvv
 
 _THIS = os.path.dirname(os.path.abspath(__file__))
-_PROJ = os.path.dirname(os.path.dirname(_THIS))
-_CASES = os.path.join(_PROJ, 'cases')
+_CASES = os.path.join(os.path.dirname(cfdvv.__file__), 'cases')
+_PROJ = os.path.dirname(os.path.dirname(os.path.dirname(cfdvv.__file__)))  # repo root
 
 
 class TestYamlReader:
@@ -129,7 +131,8 @@ class TestCLIExists:
         from cfdvv.cli import main
         from click.testing import CliRunner
         runner = CliRunner()
-        result = runner.invoke(main, ['list', '--cases-root', _PROJ])
+        cases_root = os.path.dirname(cfdvv.__file__)  # tools/cfdvv/ containing cases/
+        result = runner.invoke(main, ['list', '--cases-root', cases_root])
         assert result.exit_code == 0
         assert 'poiseuille-2d' in result.output
 
@@ -1009,3 +1012,270 @@ class TestBenchmarkCommand:
         ])
         # Should run without crashing; exit code depends on whether all cases pass
         assert result.exit_code in (0, 1)
+
+
+class TestFindCasesRoot:
+    """Tests for _find_cases_root() — critical for pip install behaviour."""
+
+    def test_returns_package_dir_when_cases_inside(self, monkeypatch):
+        from cfdvv.cli import _find_cases_root
+        pkg_dir = os.path.dirname(cfdvv.__file__)
+        # The real package dir has cases/ — verify it's found
+        found = _find_cases_root()
+        assert os.path.isdir(os.path.join(found, 'cases')), \
+            f"_find_cases_root() returned {found}, but no cases/ inside"
+        assert os.path.isfile(os.path.join(found, 'cases', 'verification',
+            'incompressible', 'poiseuille-2d', 'case.yaml'))
+
+    def test_fallback_to_cwd_walk(self, tmp_path, monkeypatch):
+        from cfdvv.cli import _find_cases_root
+        # Create a fake cases tree outside the package
+        fake_cases = tmp_path / 'cases'
+        fake_cases.mkdir()
+        (fake_cases / 'verification').mkdir()
+        (fake_cases / 'verification' / 'incompressible').mkdir()
+        poiseuille = fake_cases / 'verification' / 'incompressible' / 'poiseuille-2d'
+        poiseuille.mkdir()
+        (poiseuille / 'case.yaml').write_text('id: fake\nname: Fake\ncategory: verification\ntags: []\nphysics:\n  type: incompressible\n  regime: laminar\n  equations: []\ndimension: 2D\nreference:\n  type: analytical\n  solution: ""\n  source: ""\nquantities: []\nmesh:\n  type: uniform\n  recommended: [10, 20]\n')
+
+        # Monkey-patch __file__ to a dir WITHOUT cases/
+        no_cases_dir = tmp_path / 'no_cases_here'
+        no_cases_dir.mkdir()
+        fake_init = no_cases_dir / '__init__.py'
+        fake_init.write_text('')
+
+        def fake_file():
+            return str(fake_init)
+        monkeypatch.setattr('cfdvv.cli.__file__', str(fake_init))
+
+        monkeypatch.chdir(tmp_path)
+        found = _find_cases_root()
+        assert os.path.isdir(os.path.join(found, 'cases'))
+
+    def test_gives_up_returns_cwd_when_no_cases_anywhere(self, tmp_path, monkeypatch):
+        from cfdvv.cli import _find_cases_root
+        empty = tmp_path / 'empty'
+        empty.mkdir()
+        fake_init = empty / '__init__.py'
+        fake_init.write_text('')
+
+        monkeypatch.setattr('cfdvv.cli.__file__', str(fake_init))
+        monkeypatch.chdir(empty)
+        found = _find_cases_root()
+        assert found == str(empty)
+
+
+class TestMatchByCoordinates:
+    """Tests for _match_by_coordinates — coordinate matching and interpolation."""
+
+    def test_identical_coords_fast_path(self):
+        ref = np.array([[0.0, 0.0], [1.0, 1.0], [2.0, 2.0]])
+        res = np.array([[0.0, 0.0], [1.0, 1.0], [2.0, 2.0]])
+        ref_vals = np.array([0.0, 1.0, 2.0])
+        res_vals = np.array([0.1, 1.1, 2.1])
+        mr, mref = _match_by_coordinates(res, ref, res_vals, ref_vals)
+        assert mr == pytest.approx(res_vals)
+        assert mref == pytest.approx(ref_vals)
+
+    def test_1d_profile_interpolation(self):
+        ref_coords = np.array([[0.0], [0.5], [1.0]])
+        res_coords = np.array([[0.0], [0.3], [0.6], [1.0]])
+        ref_vals = np.array([0.0, 2.5, 5.0])
+        res_vals = np.array([0.0, 1.5, 3.0, 5.0])
+        mr, mref = _match_by_coordinates(res_coords, ref_coords, res_vals, ref_vals)
+        assert len(mr) == 3
+        assert mr[0] == pytest.approx(0.0)
+        assert mr[1] == pytest.approx(2.5)  # at y=0.5: interpolated between 1.5@0.3 and 3.0@0.6
+        assert mr[2] == pytest.approx(5.0)
+
+    def test_1d_profile_unsorted_inputs(self):
+        ref_coords = np.array([[1.0], [0.0], [0.5]])
+        res_coords = np.array([[0.6], [0.0], [1.0], [0.3]])
+        ref_vals = np.array([5.0, 0.0, 2.5])
+        res_vals = np.array([3.0, 0.0, 5.0, 1.5])
+        mr, mref = _match_by_coordinates(res_coords, ref_coords, res_vals, ref_vals)
+        assert len(mr) == 3
+        assert mr[0] == pytest.approx(0.0)
+        assert mr[1] == pytest.approx(2.5)  # at y=0.5
+        assert mr[2] == pytest.approx(5.0)
+
+    def test_2d_no_matching_points_raises(self):
+        ref = np.array([[0.0, 0.0], [1.0, 1.0], [2.0, 2.0]])
+        res = np.array([[10.0, 10.0], [20.0, 20.0]])
+        ref_vals = np.array([0.0, 1.0, 2.0])
+        res_vals = np.array([5.0, 5.0])
+        with pytest.raises(ValueError, match="No matching coordinates"):
+            _match_by_coordinates(res, ref, res_vals, ref_vals)
+
+    def test_2d_repeated_points_not_1d_profile(self):
+        ref = np.array([[0.0, 0.0], [0.0, 1.0], [0.0, 2.0]])
+        res = np.array([[0.0, 0.0], [0.0, 1.0], [0.0, 2.0]])
+        ref_vals = np.array([1.0, 2.0, 3.0])
+        res_vals = np.array([1.0, 2.0, 3.0])
+        mr, mref = _match_by_coordinates(res, ref, res_vals, ref_vals)
+        assert len(mr) == 3  # exact match via identity check
+
+
+class TestFindFieldColumn:
+    """Tests for _find_field_column — OpenFOAM and standard field aliases."""
+
+    def test_standard_field_names(self):
+        assert _find_field_column(['x', 'y', 'u', 'v', 'p'], 'u') == 2
+        assert _find_field_column(['x', 'y', 'u', 'v', 'p'], 'v') == 3
+        assert _find_field_column(['x', 'y', 'u', 'v', 'p'], 'p') == 4
+
+    def test_unknown_field_returns_none(self):
+        assert _find_field_column(['x', 'y', 'z'], 'u') is None
+
+    @pytest.mark.parametrize('alias', ['U:0', 'U_x', 'Ux', 'U_0', 'u_x', 'u:0'])
+    def test_u_aliases(self, alias):
+        assert _find_field_column(['x', alias, 'v'], 'u') == 1
+
+    @pytest.mark.parametrize('alias', ['U:1', 'U_y', 'Uy', 'U_1', 'u_y', 'u:1'])
+    def test_v_aliases(self, alias):
+        assert _find_field_column(['x', alias, 'u'], 'v') == 1
+
+    @pytest.mark.parametrize('alias', ['U:2', 'U_z', 'Uz', 'U_2', 'u_z', 'u:2'])
+    def test_w_aliases(self, alias):
+        assert _find_field_column(['x', alias, 'u'], 'w') == 1
+
+    def test_cp_aliases(self):
+        assert _find_field_column(['x', 'Cp', 'CpTotal'], 'Cp') == 1
+        assert _find_field_column(['x', 'CpTotal'], 'Cp') == 1
+
+    def test_cf_alias(self):
+        assert _find_field_column(['x', 'Cf'], 'Cf') == 1
+
+    def test_quoted_column_headers(self):
+        assert _find_field_column(['"x"', "'u'", 'v'], 'u') == 1
+        assert _find_field_column([' x ', ' u ', ' v '], 'u') == 1
+
+
+class TestCompareCaseEdgeCases:
+    """Tests for compare_case — auto_generate, empty quantities, time dir matching."""
+
+    def test_compare_case_with_empty_quantities_auto_detect_fields(self, tmp_path):
+        # Create a minimal case.yaml without quantities
+        case_dir = tmp_path / 'auto_case'
+        case_dir.mkdir()
+        ref_dir = case_dir / 'reference' / 'analytical'
+        ref_dir.mkdir(parents=True)
+        (case_dir / 'case.yaml').write_text(
+            'id: auto-case\nname: Auto Case\ncategory: verification\n'
+            'tags: []\nphysics:\n  type: incompressible\n  regime: laminar\n'
+            '  equations: []\ndimension: 1D\n'
+            'reference:\n  type: analytical\n  solution: ""\n  source: ""\n'
+            'quantities: []\nmesh:\n  type: uniform\n  recommended: [10]\n'
+        )
+        ref_csv = ref_dir / 'solution.csv'
+        ref_csv.write_text('x,u,v\n0.0,0.0,0.0\n0.5,0.5,0.0\n1.0,1.0,0.0')
+        result_csv = tmp_path / 'result.csv'
+        result_csv.write_text('x,u,v\n0.0,0.0,0.0\n0.5,0.5,0.0\n1.0,1.0,0.0')
+
+        r = compare_case(str(case_dir), str(result_csv))
+        assert r['case_id'] == 'auto-case'
+        fields = [fr['field'] for fr in r['field_results'] if 'error' not in fr]
+        assert 'u' in fields
+        assert 'v' in fields
+
+    def test_compare_case_pass_fail(self, tmp_path):
+        case_dir = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        result_csv = tmp_path / 'result.csv'
+        # Create data that fails tolerance for all fields (both u and v wrong)
+        result_csv.write_text(
+            'y,u,v\n0.0,0.1,0.001\n0.25,0.2,0.001\n0.5,0.3,0.001\n0.75,0.2,0.001\n1.0,0.1,0.001')
+
+        r = compare_case(case_dir, str(result_csv), tolerance=1e-10)
+        assert r['passed'] is False
+        for fr in r['field_results']:
+            if 'error' not in fr:
+                assert fr.get('passed') is False, f"{fr['field']} unexpectedly passed"
+
+    def test_compare_case_openfoam_time_dir(self, tmp_path):
+        case_dir = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        # Simulate OpenFOAM result path: postProcessing/sets/0.5/centerline_U.xy
+        of_dir = tmp_path / 'postProcessing' / 'sets' / '0.5'
+        of_dir.mkdir(parents=True)
+        result_csv = of_dir / 'centerline_U.xy'
+        result_csv.write_text('y,u,v\n0.0,0.0,0.0\n0.5,0.125,0.0\n1.0,0.0,0.0')
+
+        r = compare_case(case_dir, str(result_csv))
+        assert r['case_id'] == 'poiseuille-2d'
+
+    def test_compare_case_nonexistent_result_file(self):
+        case_dir = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        with pytest.raises(FileNotFoundError):
+            compare_case(case_dir, 'nonexistent_file.csv')
+
+
+class TestReportEdgeCases:
+    """Tests for _generate_html_report — FAIL badge, custom title, errors."""
+
+    def test_generate_html_with_failed_result(self):
+        from cfdvv.cli import _generate_html_report
+        case_dir = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        result = {
+            'case_id': 'poiseuille-2d', 'case_name': 'Test Case',
+            'result_file': 'my.csv', 'ref_file': 'ref.csv',
+            'passed': False, 'tolerance': 1e-6,
+            'field_results': [
+                {'field': 'u', 'norm_type': 'L2', 'norm_value': 0.05,
+                 'all_norms': {'L1': 0.03, 'L2': 0.05, 'Linf': 0.07, 'Relative_L2': 0.1},
+                 'reference_range': [0.0, 0.125], 'result_range': [0.0, 0.13], 'passed': False},
+            ],
+        }
+        html = _generate_html_report(case_dir, result, title=None, norm_type='L2', plots=None)
+        assert 'FAILED' in html
+        assert 'class="fail">FAILED</span>' in html
+        assert 'Comparison Plot' not in html  # no plots
+
+    def test_generate_html_with_custom_title(self):
+        from cfdvv.cli import _generate_html_report
+        case_dir = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        result = {
+            'case_id': 'poiseuille-2d', 'case_name': 'Test Case',
+            'result_file': 'my.csv', 'ref_file': 'ref.csv',
+            'passed': True, 'tolerance': 1e-6,
+            'field_results': [
+                {'field': 'u', 'norm_type': 'L2', 'norm_value': 0.0,
+                 'all_norms': {'L1': 0.0, 'L2': 0.0, 'Linf': 0.0, 'Relative_L2': 0.0},
+                 'reference_range': [0.0, 0.125], 'result_range': [0.0, 0.125], 'passed': True},
+            ],
+        }
+        html = _generate_html_report(case_dir, result, title='My Custom Report', norm_type='L2', plots=None)
+        assert '<title>My Custom Report</title>' in html
+        assert '<h1>My Custom Report</h1>' in html
+
+    def test_generate_html_with_error_field(self):
+        from cfdvv.cli import _generate_html_report
+        case_dir = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        result = {
+            'case_id': 'poiseuille-2d', 'case_name': 'Test Case',
+            'result_file': 'my.csv', 'ref_file': 'ref.csv',
+            'passed': False, 'tolerance': 1e-6,
+            'field_results': [
+                {'field': 'u', 'error': 'Field not found in result', 'passed': False},
+                {'field': 'v', 'norm_type': 'L2', 'norm_value': 0.0,
+                 'all_norms': {'L1': 0.0, 'L2': 0.0, 'Linf': 0.0, 'Relative_L2': 0.0},
+                 'reference_range': [0.0, 0.0], 'result_range': [0.0, 0.0], 'passed': True},
+            ],
+        }
+        html = _generate_html_report(case_dir, result, title=None, norm_type='L2', plots=None)
+        assert 'Field not found in result' in html
+        assert 'class="error"' in html
+
+
+class TestFindCoordinateColumns:
+    """Tests for _find_coordinate_columns."""
+
+    def test_all_three_coords(self):
+        assert _find_coordinate_columns(['x', 'y', 'z', 'u', 'v']) == [0, 1, 2]
+
+    def test_quoted_columns(self):
+        assert _find_coordinate_columns(['"x"', "'y'", 'z']) == [0, 1, 2]
+
+    def test_no_coords(self):
+        assert _find_coordinate_columns(['a', 'b', 'c']) == []
+
+    def test_partial_coords(self):
+        assert _find_coordinate_columns(['x', 'z', 'u']) == [0, 1]

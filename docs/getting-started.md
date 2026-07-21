@@ -3,15 +3,15 @@
 ## 1. Install
 
 ```bash
-# From PyPI (recommended — no clone needed)
+# From PyPI (recommended — includes all test cases, no clone needed)
 pip install cfdvv
 
-# Or from source (includes cases + OpenFOAM templates)
+# Or from source (for development)
 git clone https://github.com/vvp-cfd/cfd-vv-suite.git
 cd cfd-vv-suite
 pip install -e tools/
 
-# Docker images (solver-agnostic CLI)
+# Docker images
 docker pull vvpcfd/cfdvv                          # Docker Hub
 docker pull ghcr.io/vvp-cfd/cfd-vv-suite           # GitHub Container Registry
 ```
@@ -28,7 +28,7 @@ cfdvv list -c verification -t 3d       # verification, 3D
 ## 3. Inspect a Case
 
 ```bash
-cfdvv info cases/verification/incompressible/poiseuille-2d
+cfdvv info tools/cfdvv/cases/verification/incompressible/poiseuille-2d
 ```
 
 Shows: physics, boundary conditions, **mesh requirements** (including recommended resolution and grids for convergence study), expected quantities, and tolerances.
@@ -52,29 +52,29 @@ x, y, u, v, p
 Five cases have complete OpenFOAM directories with `blockMeshDict` and `Allrun`:
 
 ```bash
-cd cases/verification/incompressible/poiseuille-2d/openfoam && ./Allrun
-cd cases/verification/incompressible/couette-2d/openfoam && ./Allrun
-cd cases/verification/incompressible/lid-driven-cavity/openfoam && ./Allrun
-cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam && ./Allrun
-cd cases/verification/compressible/sod-shock-tube/openfoam    # blockMesh + rhoCentralFoam
+cd tools/cfdvv/cases/verification/incompressible/poiseuille-2d/openfoam && ./Allrun
+cd tools/cfdvv/cases/verification/incompressible/couette-2d/openfoam && ./Allrun
+cd tools/cfdvv/cases/verification/incompressible/lid-driven-cavity/openfoam && ./Allrun
+cd tools/cfdvv/cases/verification/incompressible/taylor-green-vortex-2d/openfoam && ./Allrun
+cd tools/cfdvv/cases/verification/compressible/sod-shock-tube/openfoam    # blockMesh + rhoCentralFoam
 ```
 
 #### Using our Docker image
 
-Pull the pre-built OpenFOAM + cfdvv image from either registry:
+Pull the pre-built OpenFOAM + cfdvv image (cases are baked into the image):
 
 ```bash
 docker pull vvpcfd/cfdvv-openfoam                         # Docker Hub
 docker pull ghcr.io/vvp-cfd/cfd-vv-suite-openfoam          # GitHub Container Registry
 
-docker run --rm -v $(pwd)/cases:/cases vvpcfd/cfdvv-openfoam
+docker run --rm vvpcfd/cfdvv-openfoam
 ```
 
 Or build from the [Dockerfile](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/ci/Dockerfile.openfoam):
 
 ```bash
 docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
-docker run --rm -v $(pwd)/cases:/cases cfdvv-openfoam
+docker run --rm cfdvv-openfoam
 ```
 
 ### Option C: Generate analytical solution on your mesh
@@ -82,9 +82,9 @@ docker run --rm -v $(pwd)/cases:/cases cfdvv-openfoam
 For cases with analytical solutions, use `scripts/generate_solution.py`:
 
 ```bash
-python cases/verification/incompressible/poiseuille-2d/scripts/generate_solution.py <nx> <ny> output.csv
-python cases/verification/incompressible/taylor-green-vortex-2d/scripts/generate_solution.py 64 output.csv
-python cases/verification/incompressible/beltrami-flow-3d/scripts/generate_solution.py 21 beltrami.csv
+python tools/cfdvv/cases/verification/incompressible/poiseuille-2d/scripts/generate_solution.py <nx> <ny> output.csv
+python tools/cfdvv/cases/verification/incompressible/taylor-green-vortex-2d/scripts/generate_solution.py 64 output.csv
+python tools/cfdvv/cases/verification/incompressible/beltrami-flow-3d/scripts/generate_solution.py 21 beltrami.csv
 ```
 
 ## 5. Compare Results
@@ -92,7 +92,7 @@ python cases/verification/incompressible/beltrami-flow-3d/scripts/generate_solut
 ### Verification (analytical)
 
 ```bash
-cfdvv compare cases/verification/incompressible/poiseuille-2d \
+cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --result my_results.csv --norm L2 --plot
 ```
 
@@ -114,7 +114,7 @@ And a poor match (15% noise added to trigger a FAILED verdict):
 If your grid differs from the reference, use `--auto-generate`:
 
 ```bash
-cfdvv compare cases/verification/incompressible/poiseuille-2d \
+cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --result my_results.csv --auto-generate --plot
 ```
 
@@ -124,10 +124,10 @@ For MMS and experimental cases with CSV data, it falls back to nearest-neighbor 
 ### Validation (experimental/DNS)
 
 ```bash
-cfdvv compare cases/validation/laminar/cylinder-re20 \
+cfdvv compare tools/cfdvv/cases/validation/laminar/cylinder-re20 \
     --result my_results.csv --norm Relative_L2
 
-cfdvv compare cases/validation/turbulent/channel-flow-retau180 \
+cfdvv compare tools/cfdvv/cases/validation/turbulent/channel-flow-retau180 \
     --result my_uplus_profile.csv --norm L2
 ```
 
@@ -153,7 +153,7 @@ PASS/FAIL: the tolerance check compares matched points only.
 ## 6. Generate a Report
 
 ```bash
-cfdvv report cases/verification/incompressible/poiseuille-2d \
+cfdvv report tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --result my_results.csv --output report.html
 ```
 
@@ -174,7 +174,7 @@ Example outputs (open in your browser):
 For validation cases:
 
 ```bash
-cfdvv report cases/validation/turbulent/channel-flow-retau180 \
+cfdvv report tools/cfdvv/cases/validation/turbulent/channel-flow-retau180 \
     --result my_uplus.csv --output channel_report.html
 ```
 
@@ -192,18 +192,18 @@ Typical workflow:
 
 ```bash
 # Run your solver on 3 meshes, export results
-cfdvv compare cases/... -r coarse_results.csv   # Note the L2 value
-cfdvv compare cases/... -r medium_results.csv
-cfdvv compare cases/... -r fine_results.csv
+cfdvv compare tools/cfdvv/cases/... -r coarse_results.csv   # Note the L2 value
+cfdvv compare tools/cfdvv/cases/... -r medium_results.csv
+cfdvv compare tools/cfdvv/cases/... -r fine_results.csv
 
 # Then compute GCI
-cfdvv gci cases/... -r coarse_results.csv -r medium_results.csv -r fine_results.csv
+cfdvv gci tools/cfdvv/cases/... -r coarse_results.csv -r medium_results.csv -r fine_results.csv
 ```
 
 Real example using three grids (6, 11, and 21 points) against the Poiseuille analytical solution:
 
 ```bash
-cfdvv gci cases/verification/incompressible/poiseuille-2d \
+cfdvv gci tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --results gci-coarse.csv --results gci-medium.csv --results gci-fine.csv \
     --mesh-sizes 0.05,0.025,0.0125
 ```
@@ -211,7 +211,7 @@ cfdvv gci cases/verification/incompressible/poiseuille-2d \
 Output:
 
 ```
-GCI Analysis for: cases/verification/incompressible/poiseuille-2d
+GCI Analysis for: tools/cfdvv/cases/verification/incompressible/poiseuille-2d
 Mesh sizes: [0.05, 0.025, 0.0125]
 Refinement ratios: [2.0, 2.0]
 

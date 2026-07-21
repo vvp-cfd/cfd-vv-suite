@@ -1,0 +1,29 @@
+id: ercoftac-bfs-laminar
+name: "Backward-Facing Step, Laminar (ERCOFTAC)"
+category: validation
+subcategory: turbulent
+tags: ['newtonian', 'laminar', 'separation', 'experimental', 'ercoftac']
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+dimension: 2D
+reference:
+  type: experimental
+  source: "Backward-Facing Step, Laminar (ERCOFTAC)"
+  doi: "http://cfd.mace.manchester.ac.uk/ercoftac/doku.php?id=cases:case001"
+quantities:
+  - name: xr_h
+    type: scalar
+    location: "reattachment"
+    norm: Relative_L2
+mesh:
+  type: "structured"
+  recommended: [200, 100]
+  wall_refinement: true
+  notes: "See source for grid details."
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+notes: "Laminar BFS. ER=1.94, Re=100-800. Armaly et al. (1983). Imported from http://cfd.mace.manchester.ac.uk/ercoftac/doku.php?id=cases:case001"

@@ -27,12 +27,16 @@ theme:
 nav:
   - Home: index.md
   - Quick Start: getting-started.md
-  - Cases:
-      - Verification: cases/verification.md
-      - Validation: cases/validation.md
+  - Case Index: case-index.md
   - Methodology: comparison-methodology.md
+  - Jupyter: jupyter-guide.md
   - Integration: solver-integration.md
   - Format: case-format-spec.md
+  - External Sources: external-sources.md
+  - MMS Generation: mms-generation.md
+  - Data Provenance: data-provenance.md
+  - Digitization Guide: digitization-guide.md
+  - Glossary: glossary.md
 
 markdown_extensions:
   - admonition

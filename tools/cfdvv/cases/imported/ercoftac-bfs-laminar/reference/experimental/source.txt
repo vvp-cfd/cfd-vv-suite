@@ -1,0 +1,2 @@
+ERCOFTAC case: bfs-laminar
+URL: http://cfd.mace.manchester.ac.uk/ercoftac/doku.php?id=cases:case001

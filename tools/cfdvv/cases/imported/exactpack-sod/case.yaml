@@ -1,0 +1,37 @@
+id: exactpack-sod
+name: "Sod Shock Tube (ExactPack)"
+category: validation
+subcategory: turbulent
+tags: ['compressible', 'inviscid', 'unsteady', 'riemann', 'euler', 'exactpack']
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+dimension: 1D
+reference:
+  type: experimental
+  source: "Sod Shock Tube (ExactPack)"
+  doi: "https://github.com/lanl/ExactPack"
+quantities:
+  - name: rho
+    type: profile
+    location: "domain"
+    norm: L2
+  - name: u
+    type: profile
+    location: "domain"
+    norm: L2
+  - name: p
+    type: profile
+    location: "domain"
+    norm: L2
+mesh:
+  type: "structured"
+  recommended: [200, 100]
+  wall_refinement: true
+  notes: "See source for grid details."
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+notes: "Sod shock tube exact solution from LANL ExactPack. Imported from https://github.com/lanl/ExactPack"

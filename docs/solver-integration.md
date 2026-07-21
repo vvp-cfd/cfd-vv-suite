@@ -189,8 +189,8 @@ with open('results.csv', 'w', newline='') as f:
 After exporting, compare immediately:
 
 ```bash
-cfdvv example-output cases/verification/incompressible/poiseuille-2d  # see expected format
-cfdvv compare cases/verification/incompressible/poiseuille-2d -r results.csv --plot
+cfdvv example-output tools/cfdvv/cases/verification/incompressible/poiseuille-2d  # see expected format
+cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d -r results.csv --plot
 ```
 
 ## MMS: Special Requirements

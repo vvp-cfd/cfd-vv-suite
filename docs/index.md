@@ -9,14 +9,16 @@ An open test suite for CFD code verification & validation. 51 cases, solver-agno
 ## Contents
 
 - [Quick Start](getting-started.md)
+- [Case Index](case-index.md)
 - [Case Format Specification](case-format-spec.md)
 - [Comparison Methodology](comparison-methodology.md)
 - [Solver Integration](solver-integration.md)
-- [Case Index](case-index.md)
-- [Glossary](glossary.md)
+- [Jupyter Guide](jupyter-guide.md)
+- [External Sources](external-sources.md)
+- [MMS Generation Guide](mms-generation.md)
 - [Data Provenance](data-provenance.md)
 - [Digitization Guide](digitization-guide.md)
-- [MMS Generation Guide](mms-generation.md)
+- [Glossary](glossary.md)
 
 ## Related Projects
 

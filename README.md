@@ -1,4 +1,4 @@
-# cfd-vv-suite
+# cfd-vv-suite — CFD Verification & Validation Suite
 
 [![PyPI version](https://badgen.net/pypi/v/cfdvv)](https://pypi.org/project/cfdvv/)
 [![Python versions](https://badgen.net/pypi/python/cfdvv)](https://pypi.org/project/cfdvv/)
@@ -20,15 +20,15 @@ cfd-vv-suite provides a standardized, reproducible, solver-agnostic toolkit for 
 ### Installation
 
 ```bash
-# From PyPI (recommended — no clone needed)
+# From PyPI (recommended — no clone needed, all cases included)
 pip install cfdvv
 
-# Or from source (includes cases + OpenFOAM templates)
+# Or from source (for development)
 git clone https://github.com/vvp-cfd/cfd-vv-suite.git
 cd cfd-vv-suite
 pip install -e tools/
 
-# Docker images (solver-agnostic CLI)
+# Docker images
 docker pull vvpcfd/cfdvv                          # Docker Hub
 docker pull ghcr.io/vvp-cfd/cfd-vv-suite           # GitHub Container Registry
 ```
@@ -41,23 +41,23 @@ cfdvv list
 cfdvv list -c validation
 
 # Compare your results against reference
-cfdvv compare cases/verification/incompressible/poiseuille-2d \
+cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --result my_results.csv --norm L2 --plot
 
 # OpenFOAM: ready-to-run Poiseuille case (from cloned repo)
-cd cases/verification/incompressible/poiseuille-2d/openfoam && ./Allrun
+cd tools/cfdvv/cases/verification/incompressible/poiseuille-2d/openfoam && ./Allrun
 
 # Generate analytical solution on a given mesh
-python cases/verification/incompressible/poiseuille-2d/scripts/generate_solution.py 10 20 my.csv
+python tools/cfdvv/cases/verification/incompressible/poiseuille-2d/scripts/generate_solution.py 10 20 my.csv
 
 # See expected output format
-cfdvv example-output cases/verification/incompressible/poiseuille-2d
+cfdvv example-output tools/cfdvv/cases/verification/incompressible/poiseuille-2d
 
 # Run all verification self-tests
 cfdvv benchmark
 
 # Generate HTML report
-cfdvv report cases/verification/incompressible/poiseuille-2d \
+cfdvv report tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --result my_results.csv -o report.html
 ```
 
@@ -71,7 +71,7 @@ Verification cases include ready-to-run OpenFOAM setups. You need OpenFOAM 11+ i
 
 ```bash
 pip install cfdvv  # or pip install -e tools/ from the cloned repo
-cd cases/verification/incompressible/poiseuille-2d/openfoam
+cd tools/cfdvv/cases/verification/incompressible/poiseuille-2d/openfoam
 ./Allrun
 ```
 
@@ -83,14 +83,14 @@ Pull the pre-built image from either registry:
 docker pull vvpcfd/cfdvv-openfoam                         # Docker Hub
 docker pull ghcr.io/vvp-cfd/cfd-vv-suite-openfoam          # GitHub Container Registry
 
-docker run --rm -v $(pwd)/cases:/cases vvpcfd/cfdvv-openfoam
+docker run --rm vvpcfd/cfdvv-openfoam
 ```
 
 Or build from [ci/Dockerfile.openfoam](ci/Dockerfile.openfoam):
 
 ```bash
 docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
-docker run --rm -v $(pwd)/cases:/cases cfdvv-openfoam
+docker run --rm cfdvv-openfoam
 ```
 
 ## Case Categories

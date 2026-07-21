@@ -13,7 +13,7 @@ Project author: **Valeria Puzikova** (valeria.puzikova@gmail.com).
 
 ## Adding a New Test Case
 
-1. Copy the template: `cp -r templates/case-template cases/<category>/<case-name>`
+1. Copy the template: `cp -r templates/case-template tools/cfdvv/cases/<category>/<case-name>`
 2. Fill in `case.yaml` --- case metadata (including `mesh:` section)
 3. Write `README.md` with physics description, geometry, BCs, and expected results
 4. Add reference data to `reference/` (CSV format: `x, y, z, field1, field2, ...`)
@@ -25,7 +25,7 @@ Project author: **Valeria Puzikova** (valeria.puzikova@gmail.com).
 
 Each case README must include a **How to Cite** section listing the original publications for that case's reference data. Users of cfd-vv-suite should cite:
 
-1. The cfd-vv-suite project itself (see [CITATION.cff](../CITATION.cff))
+1. The cfd-vv-suite project itself (see [CITATION.cff](CITATION.cff))
 2. The original reference(s) for the specific test case used
 
 Example for a case README:

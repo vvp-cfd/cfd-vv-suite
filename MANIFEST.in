@@ -1,10 +1,10 @@
 include README.md
 include LICENSE
 include CITATION.cff
-recursive-include cases/verification *case.yaml
-recursive-include cases/verification *README.md
-recursive-include cases/verification *solution*.csv
-recursive-include cases/verification *source_terms*.csv
-recursive-include cases/verification *ghia*.csv
+recursive-include tools/cfdvv/cases/verification *case.yaml
+recursive-include tools/cfdvv/cases/verification *README.md
+recursive-include tools/cfdvv/cases/verification *solution*.csv
+recursive-include tools/cfdvv/cases/verification *source_terms*.csv
+recursive-include tools/cfdvv/cases/verification *ghia*.csv
 recursive-include templates/case-template *
 recursive-include docs *.md

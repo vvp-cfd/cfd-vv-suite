@@ -12,7 +12,7 @@ PASS=0
 FAIL=0
 
 # Self-compare analytical cases
-for CASE_DIR in $(find /opt/cfdvv/cases \( -path "*/reference/analytical" -o -path "*/reference/mms" \) | sed 's|/reference/.*||' | sort -u); do
+for CASE_DIR in $(find $(python3 -c "import cfdvv,os; print(os.path.join(os.path.dirname(cfdvv.__file__),'cases'))") \( -path "*/reference/analytical" -o -path "*/reference/mms" \) | sed 's|/reference/.*||' | sort -u); do
     if [ ! -f "$CASE_DIR/case.yaml" ]; then continue; fi
     
     CASE_ID=$(grep "^id:" "$CASE_DIR/case.yaml" | head -1 | awk '{print $2}')

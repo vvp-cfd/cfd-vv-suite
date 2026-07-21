@@ -36,11 +36,11 @@ jobs:
       - run: |
           cfdvv --version
           cfdvv list
-          cfdvv validate cases/verification/incompressible/poiseuille-2d
-          cfdvv info cases/verification/incompressible/poiseuille-2d
-          cfdvv example-output cases/verification/incompressible/poiseuille-2d
-          cfdvv compare cases/verification/incompressible/poiseuille-2d \
-            -r cases/verification/incompressible/poiseuille-2d/reference/analytical/solution.csv \
+          cfdvv validate tools/cfdvv/cases/verification/incompressible/poiseuille-2d
+          cfdvv info tools/cfdvv/cases/verification/incompressible/poiseuille-2d
+          cfdvv example-output tools/cfdvv/cases/verification/incompressible/poiseuille-2d
+          cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+            -r tools/cfdvv/cases/verification/incompressible/poiseuille-2d/reference/analytical/solution.csv \
             --no-plot --tolerance 1e-10
 
   openfoam-tests:
@@ -64,7 +64,7 @@ jobs:
           set +e
           EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
-          CASE=cases/verification/incompressible/poiseuille-2d/openfoam
+          CASE=tools/cfdvv/cases/verification/incompressible/poiseuille-2d/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
           cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
@@ -88,7 +88,7 @@ jobs:
           set +e
           EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
-          CASE=cases/verification/incompressible/couette-2d/openfoam
+          CASE=tools/cfdvv/cases/verification/incompressible/couette-2d/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
           cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
@@ -112,7 +112,7 @@ jobs:
           set +e
           EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
-          CASE=cases/verification/incompressible/lid-driven-cavity/openfoam
+          CASE=tools/cfdvv/cases/verification/incompressible/lid-driven-cavity/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && simpleFoam" || true
           cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
@@ -137,7 +137,7 @@ jobs:
           set +e
           EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
-          CASE=cases/verification/incompressible/taylor-green-vortex-2d/openfoam
+          CASE=tools/cfdvv/cases/verification/incompressible/taylor-green-vortex-2d/openfoam
           cd $CASE
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && blockMesh" || true
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD && icoFoam" || true
@@ -164,7 +164,7 @@ jobs:
           set +e
           EXIT_CODE=0
           . /opt/openfoam11/etc/bashrc
-          CASE=cases/verification/compressible/sod-shock-tube/openfoam
+          CASE=tools/cfdvv/cases/verification/compressible/sod-shock-tube/openfoam
           sudo -u ofuser bash -c "source /opt/openfoam11/etc/bashrc && cd $PWD/$CASE && blockMesh && setFields && rhoPimpleFoam" || true
           cd $CASE
           ls -R postProcessing 2>/dev/null || echo "no postProcessing dir"
@@ -202,5 +202,29 @@ jobs:
           echo "Expected: $EXPECTED  Got: $GOT"
           [ "$EXPECTED" = "$GOT" ] || { echo "Version mismatch!"; exit 1; }
           echo "Docker image OK (cfdvv v$GOT)"
+      - name: Smoke test (list cases)
+        run: docker run --rm cfdvv-test list
+      - name: Self-compare benchmark
+        run: docker run --rm cfdvv-test benchmark
       - name: Build OpenFOAM Docker image
         run: docker build -t cfdvv-openfoam-test -f ci/Dockerfile.openfoam .
+
+  pip-wheel-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Build wheel
+        run: |
+          pip install build
+          python -m build tools/
+      - name: Install from wheel
+        run: pip install tools/dist/cfdvv-*.whl
+      - name: Check version
+        run: cfdvv --version
+      - name: Smoke test (list cases)
+        run: cfdvv list
+      - name: Self-compare benchmark
+        run: cfdvv benchmark

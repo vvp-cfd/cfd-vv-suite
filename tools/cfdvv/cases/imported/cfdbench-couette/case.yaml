@@ -1,0 +1,29 @@
+id: cfdbench-couette
+name: "Couette Flow (CFDBench)"
+category: validation
+subcategory: turbulent
+tags: ['newtonian', 'laminar', 'steady', 'channel', 'analytical', 'cfdbench']
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+dimension: 2D
+reference:
+  type: experimental
+  source: "Couette Flow (CFDBench)"
+  doi: "https://github.com/ricardodpcosta/CFDBench"
+quantities:
+  - name: u
+    type: profile
+    location: "channel"
+    norm: L2
+mesh:
+  type: "structured"
+  recommended: [200, 100]
+  wall_refinement: true
+  notes: "See source for grid details."
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+notes: "Plane Couette analytical solution. Imported from https://github.com/ricardodpcosta/CFDBench"

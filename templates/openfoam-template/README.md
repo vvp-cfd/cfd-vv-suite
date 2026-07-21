@@ -61,7 +61,7 @@ Then: `postProcess -func sampleDict [-time <time>]`
 ## Comparing Results
 
 ```bash
-cfdvv compare cases/verification/incompressible/poiseuille-2d \
+cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
     --result postProcessing/sets/<time>/centerline_U.xy \
     --norm L2 --plot
 ```

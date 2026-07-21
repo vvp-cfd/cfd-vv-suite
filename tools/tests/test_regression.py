@@ -1,9 +1,11 @@
 import os, subprocess, sys, pytest
+import cfdvv
 
 _THIS = os.path.dirname(os.path.abspath(__file__))
-_PROJ = os.path.dirname(os.path.dirname(_THIS))
 TEST_DIR = os.path.join(_THIS, "integration_data")
-CASE = os.path.join(_PROJ, "cases", "verification", "incompressible", "poiseuille-2d")
+CFDVV_DIR = os.path.dirname(cfdvv.__file__)
+CASE = os.path.join(CFDVV_DIR, "cases", "verification", "incompressible", "poiseuille-2d")
+_PROJ = os.path.dirname(os.path.dirname(CFDVV_DIR))  # tools/ dir for cwd
 
 
 def run_cfdvv(*args):

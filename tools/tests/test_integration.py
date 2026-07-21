@@ -5,10 +5,11 @@ from cfdvv.compare import compare_case, compare_field
 from cfdvv.norms import l2_norm
 from cfdvv.gci import compute_gci
 from cfdvv.readers import read_file
+import cfdvv
 import numpy as np
 
-_PROJ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-ROOT = os.path.join(_PROJ, 'cases')
+CFDVV_DIR = os.path.dirname(cfdvv.__file__)
+ROOT = os.path.join(CFDVV_DIR, 'cases')
 INTEGRATION_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'integration_data')
 
 

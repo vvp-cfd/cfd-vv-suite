@@ -1,0 +1,29 @@
+id: jhtdb-channel180
+name: "Turbulent Channel Re_tau=180 (JHTDB)"
+category: validation
+subcategory: turbulent
+tags: ['newtonian', 'turbulent', 'channel', 'dns', 'jhtdb']
+physics:
+  type: incompressible
+  regime: turbulent
+  convective: true
+  equations: [continuity, rans]
+dimension: 3D
+reference:
+  type: experimental
+  source: "Turbulent Channel Re_tau=180 (JHTDB)"
+  doi: "https://turbulence.idies.jhu.edu"
+quantities:
+  - name: uplus
+    type: profile
+    location: "wall-normal"
+    norm: L2
+mesh:
+  type: "structured"
+  recommended: [200, 100]
+  wall_refinement: true
+  notes: "See source for grid details."
+tolerances:
+  L2: 0.05
+  Linf: 0.15
+notes: "DNS channel flow. Moser, Kim, Mansour (1999). 128x129x128. Imported from https://turbulence.idies.jhu.edu"

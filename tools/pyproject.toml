@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cfdvv"
-version = "0.4.0"
+version = "0.5.0"
 description = "CFD Verification & Validation Suite: open-source test cases and CLI tools for CFD code verification and validation."
 readme = "README.md"
 license = {text = "MIT"}
@@ -63,3 +63,6 @@ Issues = "https://github.com/vvp-cfd/cfd-vv-suite/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+cfdvv = ["cases/**/*"]

@@ -27,9 +27,9 @@ _OF_ALIASES = {
     "w": ["U_z", "U:2", "Uz", "U_2", "u_z", "u:2"],
     "p": ["p"],
     "rho": ["rho"],
-    "T": ["T"],
-    "Cp": ["Cp", "CpTotal", "CpTotal"],
-    "Cf": ["Cf"],
+    "t": ["T", "t"],
+    "cp": ["Cp", "CpTotal"],
+    "cf": ["Cf"],
 }
 
 

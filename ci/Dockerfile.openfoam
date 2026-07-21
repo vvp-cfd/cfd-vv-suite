@@ -13,7 +13,6 @@ COPY tools/ /opt/cfdvv/tools/
 WORKDIR /opt/cfdvv
 RUN pip3 install --upgrade pip && pip3 install tools/
 
-COPY cases/ /opt/cfdvv/cases/
 COPY ci/test_all.sh /opt/cfdvv/test_all.sh
 RUN chmod +x /opt/cfdvv/test_all.sh
 

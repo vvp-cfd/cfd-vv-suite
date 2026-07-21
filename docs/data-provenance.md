@@ -50,6 +50,6 @@ All reference CSV files in `reference/` are self-consistent: comparing `cfdvv co
 To verify a specific dataset:
 
 ```bash
-cfdvv compare cases/.../case-dir -r cases/.../case-dir/reference/analytical/solution.csv --no-plot
+cfdvv compare tools/cfdvv/cases/.../case-dir -r tools/cfdvv/cases/.../case-dir/reference/analytical/solution.csv --no-plot
 # All field errors should be 0.000000e+00
 ```

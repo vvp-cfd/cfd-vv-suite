@@ -4,10 +4,11 @@ import os
 import pytest
 import numpy as np
 from click.testing import CliRunner
+import cfdvv
 
 _THIS = os.path.dirname(os.path.abspath(__file__))
-_PROJ = os.path.dirname(os.path.dirname(_THIS))
-_CASES = os.path.join(_PROJ, "cases")
+_CFDVV_DIR = os.path.dirname(cfdvv.__file__)
+_CASES = os.path.join(_CFDVV_DIR, "cases")
 _POISEUILLE = os.path.join(_CASES, "verification", "incompressible", "poiseuille-2d")
 _POISEUILLE_REF = os.path.join(_POISEUILLE, "reference", "analytical", "solution.csv")
 

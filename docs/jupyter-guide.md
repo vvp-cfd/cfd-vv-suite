@@ -15,7 +15,7 @@ import numpy as np
 
 ```python
 result = compare_case(
-    "cases/verification/incompressible/poiseuille-2d",
+    "tools/cfdvv/cases/verification/incompressible/poiseuille-2d",
     "my_results.csv",
     norm_type="L2",
 )
@@ -30,7 +30,7 @@ for fr in result["field_results"]:
 
 ```python
 ref_data, ref_columns = read_file(
-    "cases/verification/incompressible/poiseuille-2d/reference/analytical/solution.csv"
+    "tools/cfdvv/cases/verification/incompressible/poiseuille-2d/reference/analytical/solution.csv"
 )
 
 filepath = plot_comparison(
@@ -54,7 +54,7 @@ Image("poiseuille-2d_u.png")
 
 ```python
 result = compute_gci(
-    "cases/verification/incompressible/poiseuille-2d",
+    "tools/cfdvv/cases/verification/incompressible/poiseuille-2d",
     ["coarse.csv", "medium.csv", "fine.csv"],
     mesh_sizes=[0.05, 0.025, 0.0125],
 )
@@ -68,7 +68,7 @@ for qr in result["quantity_results"]:
 ```python
 import glob, os
 
-for yaml_file in sorted(glob.glob("cases/**/case.yaml", recursive=True)):
+for yaml_file in sorted(glob.glob("tools/cfdvv/cases/**/case.yaml", recursive=True)):
     case_dir = os.path.dirname(yaml_file)
     # ... do something with each case
 ```

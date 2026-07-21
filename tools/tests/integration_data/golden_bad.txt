@@ -1,6 +1,6 @@
 
 Case: Plane Poiseuille Flow (2D) (poiseuille-2d)
-Result: tools\tests\integration_data\bad_poiseuille.csv
+Result: tools/tests/integration_data/bad_poiseuille.csv
 
 Field           Norm         Value          Min(ref)     Max(ref)    
 --------------------------------------------------------------------------------

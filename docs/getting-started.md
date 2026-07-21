@@ -231,6 +231,8 @@ Key observations:
 
 The [example CSVs](https://github.com/vvp-cfd/cfd-vv-suite/tree/main/tools/tests/integration_data) used above are available in `tools/tests/integration_data/`.
 
+See [jupyter-guide.md](jupyter-guide.md) for the Python API reference.
+
 See [comparison-methodology.md](comparison-methodology.md) for full mathematical details.
 
 ## Case Directory Structure

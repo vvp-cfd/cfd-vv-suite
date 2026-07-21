@@ -309,7 +309,8 @@ def compare_case(
                 pass  # Fall through to normal reference loading
 
     case_tolerances = case.get("tolerances", {})
-    effective_tolerance = tolerance or case_tolerances.get(norm_type)
+    raw_tolerance = tolerance or case_tolerances.get(norm_type)
+    effective_tolerance = float(raw_tolerance) if raw_tolerance is not None else None
 
     if reference_file:
         ref_data, ref_columns = read_file(reference_file)

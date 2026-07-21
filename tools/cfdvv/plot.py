@@ -50,7 +50,7 @@ def plot_comparison(
     res_values = result_data[:, res_field_idx]
 
     matched_res, matched_ref = _match_by_coordinates(
-        res_coords, ref_coords, ref_values, res_values
+        res_coords, ref_coords, res_values, ref_values
     )
 
     Path(output_dir).mkdir(parents=True, exist_ok=True)

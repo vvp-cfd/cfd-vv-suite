@@ -7,14 +7,10 @@ from . import yaml_reader
 
 
 def _parse_yaml_file(filepath: str) -> dict:
-    """Parse YAML file using built-in reader or pyyaml if available."""
+    """Parse YAML file using built-in reader."""
     with open(filepath, "r", encoding="utf-8") as f:
         content = f.read()
-    try:
-        import yaml
-        return yaml.safe_load(content)
-    except ImportError:
-        return yaml_reader.parse(content)
+    return yaml_reader.parse(content)
 
 
 REQUIRED_TOP_KEYS = ["id", "name", "category", "tags", "physics", "dimension", "reference", "quantities", "mesh"]

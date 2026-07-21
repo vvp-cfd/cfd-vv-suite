@@ -43,6 +43,12 @@ class TestGoodSolution:
             result = f.read()
         assert "poiseuille-2d" in result
         assert "Plane Poiseuille" in result
+        assert "Comparison Plot" in result, "report should contain embedded plot sections"
+        assert "Result (user)" in result, "report should show user result path"
+        assert "Reference" in result, "report should show reference path"
+        # Plots should appear after the comparison table
+        assert result.find("Comparison Plot") > result.find("Comparison Results"), \
+            "plot section must be after comparison results"
 
 
 class TestBadSolution:

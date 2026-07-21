@@ -9,6 +9,7 @@ import numpy as np
 
 _PROJ = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ROOT = os.path.join(_PROJ, 'cases')
+INTEGRATION_DATA = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'integration_data')
 
 
 def _find_cases():
@@ -65,6 +66,12 @@ class TestGCI:
 
     def test_gci_second_order(self):
         case = os.path.join(ROOT, 'verification', 'incompressible', 'poiseuille-2d')
-        ref = os.path.join(case, 'reference', 'analytical', 'solution.csv')
-        result = compute_gci(case, [ref, ref, ref], mesh_sizes=[0.1, 0.05, 0.025])
+        data = os.path.join(INTEGRATION_DATA)
+        coarse = os.path.join(data, 'gci-coarse.csv')
+        medium = os.path.join(data, 'gci-medium.csv')
+        fine = os.path.join(data, 'gci-fine.csv')
+        result = compute_gci(case, [coarse, medium, fine], mesh_sizes=[0.05, 0.025, 0.0125])
         assert 'error' not in result, f"GCI failed: {result.get('error')}"
+        q0 = result['quantity_results'][0]
+        assert q0['order_p'] is not None, "order_p should not be None"
+        assert 1.5 < q0['order_p'] < 2.5, f"expected p≈2, got {q0['order_p']}"

@@ -57,18 +57,21 @@ def plot_comparison(
 
     ndim = len(ref_coord_indices)
 
-    fig, axes = plt.subplots(1, 3 if ndim >= 1 else 1, figsize=(15, 5))
     if ndim == 1:
-        axes = [axes]
-    axes = list(axes)
-
-    if ndim == 1:
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+        axes = list(axes)
         x_ref = ref_coords[:, 0]
         x_res = res_coords[:, 0]
         axes[0].plot(x_ref, ref_values, "k-", linewidth=2, label="Reference")
         axes[0].plot(x_res, res_values, "ro", markersize=4, label="Computed")
         axes[0].set_xlabel("x")
-    elif ndim >= 2:
+        axes[0].set_ylabel(field_name)
+        axes[0].set_title("Profile comparison")
+        axes[0].legend()
+        scatter_ax = axes[1]
+    else:
+        fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+        axes = list(axes)
         sc = axes[0].scatter(
             ref_coords[:, 0], ref_coords[:, 1],
             c=ref_values, cmap="viridis", s=2,
@@ -81,16 +84,17 @@ def plot_comparison(
         )
         plt.colorbar(sc2, ax=axes[1])
         axes[1].set_title("Computed")
+        scatter_ax = axes[2]
 
-    axes[-1].scatter(matched_ref, matched_res, s=2, alpha=0.6)
+    scatter_ax.scatter(matched_ref, matched_res, s=2, alpha=0.6)
     min_val = min(matched_ref.min(), matched_res.min())
     max_val = max(matched_ref.max(), matched_res.max())
-    axes[-1].plot([min_val, max_val], [min_val, max_val], "k--", linewidth=1)
-    axes[-1].set_xlabel("Reference")
-    axes[-1].set_ylabel("Computed")
-    axes[-1].set_title(f"Scatter: {field_name}")
+    scatter_ax.plot([min_val, max_val], [min_val, max_val], "k--", linewidth=1)
+    scatter_ax.set_xlabel("Reference")
+    scatter_ax.set_ylabel("Computed")
+    scatter_ax.set_title(f"Scatter: {field_name}")
 
-    fig.suptitle(f"{case_id} - {field_name}")
+    fig.suptitle(f"{case_id}: {field_name}")
     plt.tight_layout()
 
     filename = f"{case_id}_{field_name}.png" if case_id else f"{field_name}.png"
@@ -122,7 +126,7 @@ def plot_profile(
     coord_map = {"x": 0, "y": 1, "z": 2}
     coord_idx = None
     for i, ci in enumerate(ref_coord_indices):
-        if ref_columns[ci].lower() == coord_lower:
+        if reference_columns[ci].lower() == coord_lower:
             coord_idx = i
             break
 

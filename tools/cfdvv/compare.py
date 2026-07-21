@@ -296,17 +296,11 @@ def compare_case(
                 for d in range(ndim):
                     unique_counts.append(len(set(res_data[:, d])))
                 
-                time_dir = os.path.basename(os.path.dirname(result_file))
-                try:
-                    t = float(time_dir)
-                except ValueError:
-                    t = 0.0
-                
                 nx = unique_counts[0] if len(unique_counts) > 0 else 32
                 ny = unique_counts[1] if len(unique_counts) > 1 else (32 if ndim >= 2 else 1)
                 
                 tmpfile = os.path.join(tempfile.gettempdir(), "cfdvv_autogen_" + case["id"] + ".csv")
-                gen_args = [sys.executable, gen_script, str(nx), str(ny), str(t), tmpfile]
+                gen_args = [sys.executable, gen_script, str(nx), str(ny), tmpfile]
                 
                 subprocess.run(gen_args, capture_output=True, timeout=30)
                 if os.path.isfile(tmpfile):
@@ -319,6 +313,7 @@ def compare_case(
 
     if reference_file:
         ref_data, ref_columns = read_file(reference_file)
+        ref_file = reference_file
     else:
         ref_dir = os.path.join(case_dir, "reference")
         ref_subdir = case["reference"]["type"]
@@ -347,6 +342,7 @@ def compare_case(
             ref_path = os.path.join(ref_full_dir, csv_files[0])
 
         ref_data, ref_columns = read_file(ref_path)
+        ref_file = ref_path
 
     # Detect scalar-table reference (integral quantities without coordinates)
     ref_has_coords = bool(_find_coordinate_columns(ref_columns))
@@ -359,6 +355,7 @@ def compare_case(
             "case_id": case["id"],
             "case_name": case["name"],
             "result_file": result_file,
+            "ref_file": ref_file,
             **scalar_result,
         }
 
@@ -415,6 +412,7 @@ def compare_case(
         "case_id": case["id"],
         "case_name": case["name"],
         "result_file": result_file,
+        "ref_file": ref_file,
         "passed": passed if effective_tolerance is not None else None,
         "tolerance": effective_tolerance,
         "field_results": results,

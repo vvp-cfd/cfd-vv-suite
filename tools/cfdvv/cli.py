@@ -4,7 +4,7 @@ import json
 import os
 import urllib.error
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional, Tuple
 
 import click
 
@@ -352,6 +352,50 @@ def _generate_plots(case_dir: str, result_file: str, result: dict, output_dir: s
             click.echo(f"  Plot error ({field_name}): {e}", err=True)
 
 
+def _generate_plot_base64(case_dir: str, result_file: str, result: dict) -> List[Tuple[str, str]]:
+    """Generate comparison plots for all fields; returns [(base64, field_name), ...]."""
+    import tempfile, base64
+    from .plot import plot_comparison
+    from .readers import read_file
+
+    try:
+        case = load_case_yaml(case_dir)
+        ref_dir = os.path.join(case_dir, "reference")
+        ref_type = case["reference"]["type"]
+        ref_full_dir = os.path.join(ref_dir, ref_type)
+        if not os.path.isdir(ref_full_dir):
+            for alt in ["analytical", "experimental", "dns-les"]:
+                alt_dir = os.path.join(ref_dir, alt)
+                if os.path.isdir(alt_dir):
+                    ref_full_dir = alt_dir
+                    break
+        csv_files = sorted([f for f in os.listdir(ref_full_dir) if f.endswith(".csv")])
+        if not csv_files:
+            return []
+
+        ref_data, ref_columns = read_file(os.path.join(ref_full_dir, csv_files[0]))
+        fields = [fr["field"] for fr in result.get("field_results", []) if "error" not in fr]
+        if not fields:
+            return []
+
+        case_id = case["id"]
+        result_list = []
+        with tempfile.TemporaryDirectory() as tmp:
+            for field_name in fields:
+                fp = plot_comparison(
+                    result_file, ref_data, ref_columns,
+                    field_name=field_name,
+                    output_dir=tmp,
+                    case_id=case_id,
+                )
+                with open(fp, "rb") as f:
+                    b64 = base64.b64encode(f.read()).decode("ascii")
+                result_list.append((b64, field_name))
+        return result_list
+    except Exception:
+        return []
+
+
 def _print_gci(result: dict):
     """Print GCI results."""
     click.echo(f"\nGCI Analysis for: {result.get('case_dir')}")
@@ -361,14 +405,14 @@ def _print_gci(result: dict):
 
     for qr in result.get("quantity_results", []):
         click.echo(f"  Quantity {qr['quantity_index']}:")
-        click.echo(f"    f1 (fine)  = {qr['f1']:.8f}")
-        click.echo(f"    f2 (med)   = {qr['f2']:.8f}")
-        click.echo(f"    f3 (coarse)= {qr['f3']:.8f}")
-        click.echo(f"    Order p    = {qr['order_p']}")
+        click.echo(f"    f1 (coarse) = {qr['f1']:.8f}")
+        click.echo(f"    f2 (med)    = {qr['f2']:.8f}")
+        click.echo(f"    f3 (fine)   = {qr['f3']:.8f}")
+        click.echo(f"    Order p     = {qr['order_p']}")
         if qr["extrapolated_value"] is not None:
             click.echo(f"    Extrapolated = {qr['extrapolated_value']:.8f}")
         if qr["gci21"] is not None:
-            click.echo(f"    GCI (fine/med) = {qr['gci21']:.6f}")
+            click.echo(f"    GCI            = {qr['gci21']:.6f}")
         click.echo()
 
 
@@ -404,21 +448,23 @@ def report_command(
     output: str,
     title: Optional[str],
 ):
-    """Generate an HTML verification report."""
+    """Generate an HTML verification report with embedded comparison plots."""
     try:
         result = compare_case(case_dir, result_file, norm_type=norm)
     except Exception as e:
         click.secho(f"Error: {e}", fg="red")
         raise SystemExit(1)
 
-    html = _generate_html_report(case_dir, result, title, norm)
+    plots = _generate_plot_base64(case_dir, result_file, result)
+    html = _generate_html_report(case_dir, result, title, norm, plots)
     with open(output, "w", encoding="utf-8") as f:
         f.write(html)
     click.secho(f"Report written: {output}", fg="green")
 
 
 def _generate_html_report(
-    case_dir: str, result: dict, title: Optional[str], norm_type: str
+    case_dir: str, result: dict, title: Optional[str], norm_type: str,
+    plots: Optional[List[Tuple[str, str]]] = None,
 ) -> str:
     """Generate a standalone HTML report."""
     from datetime import datetime
@@ -453,6 +499,15 @@ def _generate_html_report(
                 f'<td>{fr.get("reference_range", [0,0])[1]:.4f}</td></tr>'
             )
         rows_html += row
+
+    if plots:
+        plot_sections = ""
+        for b64, fname in plots:
+            plot_sections += f"""<h2>Comparison Plot — {fname}</h2>
+<img src="data:image/png;base64,{b64}" alt="Comparison plot - {fname}" style="max-width:100%; height:auto;">
+"""
+    else:
+        plot_sections = ""
 
     physics = case.get("physics", {})
     ref = case.get("reference", {})
@@ -506,7 +561,8 @@ tr:hover {{ background: #f1f3f5; }}
     <dt>Dimension</dt><dd>{case.get("dimension", "")}</dd>
     <dt>Physics</dt><dd>{physics.get("type", "")}, {physics.get("regime", "")}</dd>
     <dt>Reference</dt><dd>{ref.get("type", "")} — {ref.get("source", "")}</dd>
-    <dt>Result file</dt><dd>{result.get("result_file", "")}</dd>
+    <dt>Result (user)</dt><dd>{os.path.relpath(result.get("result_file", ""))}</dd>
+    <dt>Reference</dt><dd>{os.path.relpath(result.get("ref_file", ""))}</dd>
     <dt>Generated</dt><dd>{now}</dd>
 </dl>
 
@@ -519,6 +575,8 @@ tr:hover {{ background: #f1f3f5; }}
 </tr>
 {rows_html}
 </table>
+
+{plot_sections}
 
 <h2>Parameters</h2>
 <dl class="meta">

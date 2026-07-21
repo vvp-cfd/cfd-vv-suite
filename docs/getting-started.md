@@ -10,6 +10,10 @@ pip install cfdvv
 git clone https://github.com/vvp-cfd/cfd-vv-suite.git
 cd cfd-vv-suite
 pip install -e tools/
+
+# Docker images (solver-agnostic CLI)
+docker pull vvpcfd/cfdvv                          # Docker Hub
+docker pull ghcr.io/vvp-cfd/cfd-vv-suite           # GitHub Container Registry
 ```
 
 ## 2. Browse Cases
@@ -53,6 +57,24 @@ cd cases/verification/incompressible/couette-2d/openfoam && ./Allrun
 cd cases/verification/incompressible/lid-driven-cavity/openfoam && ./Allrun
 cd cases/verification/incompressible/taylor-green-vortex-2d/openfoam && ./Allrun
 cd cases/verification/compressible/sod-shock-tube/openfoam    # blockMesh + rhoCentralFoam
+```
+
+#### Using our Docker image
+
+Pull the pre-built OpenFOAM + cfdvv image from either registry:
+
+```bash
+docker pull vvpcfd/cfdvv-openfoam                         # Docker Hub
+docker pull ghcr.io/vvp-cfd/cfd-vv-suite-openfoam          # GitHub Container Registry
+
+docker run --rm -v $(pwd)/cases:/cases vvpcfd/cfdvv-openfoam
+```
+
+Or build from the [Dockerfile](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/ci/Dockerfile.openfoam):
+
+```bash
+docker build -t cfdvv-openfoam -f ci/Dockerfile.openfoam .
+docker run --rm -v $(pwd)/cases:/cases cfdvv-openfoam
 ```
 
 ### Option C: Generate analytical solution on your mesh
@@ -146,7 +168,7 @@ Example output (opened in browser):
 |  Dimension    2D                                             |
 |  Physics      incompressible, laminar                        |
 |  Reference    analytical --- White, F.M. Viscous Fluid Flow    |
-|  DOI          https://doi.org/10.1016/0021-9991(82)90058-4   |
+|  DOI                                                         |
 |  Result file  my_results.csv                                 |
 |  Generated    2026-07-19 22:30:00                            |
 |                                                              |

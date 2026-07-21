@@ -28,6 +28,23 @@ An open test suite for CFD code verification & validation. 51 cases, solver-agno
 - **JHTDB** ([turbulence.idies.jhu.edu](https://turbulence.idies.jhu.edu)) — DNS/LES turbulence databases
 - **fieldcompare** ([github.com/dglaeser/fieldcompare](https://github.com/dglaeser/fieldcompare)) — field comparison Python package
 
+## How to Cite
+
+If you use cfd-vv-suite in your research, please cite it as:
+
+```bibtex
+@misc{cfdvvsuite2026,
+  author       = {Puzikova, Valeria},
+  title        = {cfd-vv-suite: Open Test Suite for CFD Verification and Validation},
+  year         = {2026},
+  publisher    = {GitHub},
+  doi          = {10.5281/zenodo.21462233},
+  howpublished = {\\url{https://github.com/vvp-cfd/cfd-vv-suite}}
+}
+```
+
+See [CITATION.cff](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/CITATION.cff) for the Citation File Format version.
+
 ## Key Concepts
 
 - **Verification**: checking that equations are solved correctly (comparison with analytical/MMS solutions, grid convergence analysis).

@@ -16,6 +16,8 @@ docker pull vvpcfd/cfdvv                          # Docker Hub
 docker pull ghcr.io/vvp-cfd/cfd-vv-suite           # GitHub Container Registry
 ```
 
+See [jupyter-guide.md](jupyter-guide.md) for the Python API reference and [example/cfdvv-demo.ipynb](https://github.com/vvp-cfd/cfd-vv-suite/blob/main/example/cfdvv-demo.ipynb) for a runnable Jupyter notebook walkthrough.
+
 ## 2. Browse Cases
 
 ```bash
@@ -230,8 +232,6 @@ Key observations:
 - **Error ratio**: each mesh halving reduces error by ~4× (h² convergence)
 
 The [example CSVs](https://github.com/vvp-cfd/cfd-vv-suite/tree/main/tools/tests/integration_data) used above are available in `tools/tests/integration_data/`.
-
-See [jupyter-guide.md](jupyter-guide.md) for the Python API reference.
 
 See [comparison-methodology.md](comparison-methodology.md) for full mathematical details.
 

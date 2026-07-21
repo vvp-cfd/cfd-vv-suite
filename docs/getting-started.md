@@ -96,6 +96,15 @@ cfdvv compare cases/verification/incompressible/poiseuille-2d \
     --result my_results.csv --norm L2 --plot
 ```
 
+The `--plot` flag generates a 3-panel comparison figure for each field:
+
+- **1D cases**: reference profile (black line) vs computed values (red dots), plus a scatter plot of matched values
+- **2D cases**: filled scatter plots of reference and computed fields side-by-side, plus a correlation scatter
+
+Example output for a well-matching case (poiseuille-2d, u-velocity):
+
+![Good comparison: reference vs computed match closely](images/u.png)
+
 ### Auto-generate reference on your grid
 
 If your grid differs from the reference, use `--auto-generate`:

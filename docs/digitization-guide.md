@@ -27,6 +27,7 @@ Alternative: **PlotDigitizer** (https://plotdigitizer.com), **Engauge Digitizer*
 
 If you have access to Wolfram Mathematica, the built-in image processing tools provide a fast digitization workflow (2-3 minutes per graph):
 
+{% raw %}
 1. Import the graph image:
    ```mathematica
    img = Import["figure.png"];
@@ -56,6 +57,7 @@ If you have access to Wolfram Mathematica, the built-in image processing tools p
    ```mathematica
    Export["reference/experimental/profile.csv", data, "CSV"]
    ```
+{% endraw %}
 
 Tips for Mathematica digitization:
 - Use `ImageTake` to crop to the graph area before processing

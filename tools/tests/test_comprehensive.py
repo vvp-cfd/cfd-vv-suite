@@ -145,6 +145,70 @@ class TestCLIExists:
         assert result.exit_code == 0
         assert 'Poiseuille' in result.output
 
+    def test_info_by_case_id(self):
+        """'cfdvv info poiseuille-2d' resolves by case ID."""
+        from cfdvv.cli import main
+        from click.testing import CliRunner
+        runner = CliRunner()
+        cases_root = os.path.dirname(cfdvv.__file__)
+        result = runner.invoke(main, ['info', 'poiseuille-2d', '--cases-root', cases_root])
+        assert result.exit_code == 0
+        assert 'Poiseuille' in result.output
+
+    def test_info_by_case_id_autodetect_root(self):
+        """'cfdvv info poiseuille-2d' auto-detects cases root."""
+        from cfdvv.cli import main
+        from click.testing import CliRunner
+        runner = CliRunner()
+        result = runner.invoke(main, ['info', 'poiseuille-2d'])
+        assert result.exit_code == 0
+        assert 'Poiseuille' in result.output
+
+    def test_info_nonexistent_case(self):
+        """'cfdvv info nonexistent' gives a clear error."""
+        from cfdvv.cli import main
+        from click.testing import CliRunner
+        runner = CliRunner()
+        result = runner.invoke(main, ['info', 'nonexistent-case-xyz'])
+        assert result.exit_code != 0
+        assert 'not found' in result.output.lower()
+
+    def test_info_relative_path_still_works(self):
+        """'cfdvv info sub/path/' still works if path is a real directory."""
+        from cfdvv.cli import main
+        from click.testing import CliRunner
+        import cfdvv
+        runner = CliRunner()
+        case_rel = os.path.relpath(
+            os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d'),
+            os.getcwd(),
+        )
+        result = runner.invoke(main, ['info', case_rel])
+        assert result.exit_code == 0
+        assert 'Poiseuille' in result.output
+
+    def test_resolve_case_path_direct(self):
+        """Unit test for _resolve_case_path with existing directory."""
+        from cfdvv.cli import _resolve_case_path
+        case_abs = os.path.join(_CASES, 'verification', 'incompressible', 'poiseuille-2d')
+        resolved = _resolve_case_path(case_abs)
+        assert os.path.isdir(resolved)
+        assert resolved == case_abs
+
+    def test_resolve_case_path_by_id(self):
+        """Unit test for _resolve_case_path with a case ID."""
+        from cfdvv.cli import _resolve_case_path
+        cases_root = os.path.dirname(cfdvv.__file__)
+        resolved = _resolve_case_path('poiseuille-2d', cases_root=cases_root)
+        assert os.path.isdir(resolved)
+        assert 'poiseuille-2d' in resolved
+
+    def test_resolve_case_path_nonexistent(self):
+        """Unit test for _resolve_case_path returns original for unknown ID."""
+        from cfdvv.cli import _resolve_case_path
+        resolved = _resolve_case_path('no-such-case', cases_root=os.getcwd())
+        assert resolved == 'no-such-case'
+
     def test_validate_runs(self):
         from cfdvv.cli import main
         from click.testing import CliRunner

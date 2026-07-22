@@ -23,6 +23,46 @@ Recommended free tool: **WebPlotDigitizer** (https://automeris.io)
 
 Alternative: **PlotDigitizer** (https://plotdigitizer.com), **Engauge Digitizer**
 
+### Wolfram Mathematica
+
+If you have access to Wolfram Mathematica, the built-in image processing tools provide a fast digitization workflow (2-3 minutes per graph):
+
+1. Import the graph image:
+   ```mathematica
+   img = Import["figure.png"];
+   ```
+
+2. Use `LocatorPane` for interactive calibration — click known axis points:
+   ```mathematica
+   pts = {{x1, y1}, {x2, y2}};  (* replace with axis min/max coordinates *)
+   ```
+
+3. Extract the curve with `ImageLines` or manual tracing via `Graphics` + `Locator`:
+   ```mathematica
+   curve = ImageData[Binarize[img, 0.5]];
+   (* or use DynamicModule with Locator for interactive point selection *)
+   ```
+
+4. Transform pixel coordinates to physical units with `LinearModelFit` or a manual affine transform:
+   ```mathematica
+   transform[{px_, py_}] := {
+       a1 + b1*px + c1*py,
+       a2 + b2*px + c2*py
+   };
+   (* fit coefficients from calibration points *)
+   ```
+
+5. Export to CSV for cfd-vv-suite:
+   ```mathematica
+   Export["reference/experimental/profile.csv", data, "CSV"]
+   ```
+
+Tips for Mathematica digitization:
+- Use `ImageTake` to crop to the graph area before processing
+- `ColorNegate` and `Binarize` help isolate curves from the background
+- `FindPeaks` can automate extraction from profile plots
+- `ComponentMeasurements` is useful for scatter plot digitization
+
 ## Step-by-step workflow
 
 ### 1. Obtain a high-resolution image

@@ -237,39 +237,52 @@ def gci_command(
 
 
 @main.command("info")
-@click.argument("case_dir", type=click.Path(exists=True, file_okay=False))
-def info_command(case_dir: str):
-    """Show detailed info about a test case."""
+@click.argument("case", type=click.STRING)
+@click.option(
+    "--cases-root",
+    default=None,
+    help="Root directory for test cases.",
+    type=click.Path(exists=True, file_okay=False),
+)
+def info_command(case: str, cases_root: Optional[str]):
+    """Show detailed info about a test case.
+
+    CASE can be a path to a case directory or a case ID (e.g. 'poiseuille-2d').
+    """
+    case_dir = _resolve_case_path(case, cases_root)
+    if not os.path.isdir(case_dir):
+        click.secho(f"Error: case not found: {case}", fg="red")
+        raise SystemExit(1)
     try:
-        case = load_case_yaml(case_dir)
+        case_data = load_case_yaml(case_dir)
     except Exception as e:
         click.secho(f"Error: {e}", fg="red")
         raise SystemExit(1)
 
     click.echo(f"\n{'='*60}")
-    click.echo(f"  {case.get('name', case.get('id'))}")
+    click.echo(f"  {case_data.get('name', case_data.get('id'))}")
     click.echo(f"{'='*60}")
-    click.echo(f"  ID:         {case.get('id')}")
-    click.echo(f"  Category:   {case.get('category')}/{case.get('subcategory', '')}")
-    click.echo(f"  Dimension:  {case.get('dimension')}")
-    click.echo(f"  Tags:       {', '.join(case.get('tags', []))}")
+    click.echo(f"  ID:         {case_data.get('id')}")
+    click.echo(f"  Category:   {case_data.get('category')}/{case_data.get('subcategory', '')}")
+    click.echo(f"  Dimension:  {case_data.get('dimension')}")
+    click.echo(f"  Tags:       {', '.join(case_data.get('tags', []))}")
 
-    physics = case.get("physics", {})
+    physics = case_data.get("physics", {})
     click.echo(f"  Physics:")
     click.echo(f"    Type:       {physics.get('type')}")
     click.echo(f"    Regime:     {physics.get('regime', '—')}")
     click.echo(f"    Equations:  {', '.join(physics.get('equations', []))}")
     click.echo(f"    Convective: {physics.get('convective', '—')}")
 
-    ref = case.get("reference", {})
+    ref = case_data.get("reference", {})
     click.echo(f"  Reference:  {ref.get('type')} — {ref.get('source', '—')}")
-    click.echo(f"  Solution:   {ref.get('solution', case.get('description', '—'))}")
+    click.echo(f"  Solution:   {ref.get('solution', case_data.get('description', '—'))}")
 
     click.echo(f"\n  Quantities:")
-    for q in case.get("quantities", []):
+    for q in case_data.get("quantities", []):
         click.echo(f"    - {q.get('name'):<15} type={q.get('type'):<10} norm={q.get('norm', 'L2')}")
 
-    params = case.get("parameters", {})
+    params = case_data.get("parameters", {})
     if params:
         click.echo(f"\n  Parameters:")
         for p in params:
@@ -855,6 +868,30 @@ def _find_cases_root() -> str:
         if cases_dir.is_dir():
             return str(parent)
     return str(current)
+
+
+def _resolve_case_path(case_dir: str, cases_root: Optional[str] = None) -> str:
+    """Resolve a case directory from a path or case ID.
+
+    If case_dir is an existing directory, return it as-is.
+    Otherwise, search the cases directory for a matching case ID (the
+    directory basename of any case.yaml).
+    """
+    if os.path.isdir(case_dir):
+        return case_dir
+
+    if cases_root is None:
+        cases_root = _find_cases_root()
+    cases_path = Path(cases_root) / "cases"
+    if not cases_path.is_dir():
+        return case_dir
+
+    for yaml_path in cases_path.rglob("case.yaml"):
+        parent_dir = yaml_path.parent
+        if parent_dir.name == case_dir:
+            return str(parent_dir)
+
+    return case_dir
 
 
 if __name__ == "__main__":

@@ -197,12 +197,12 @@ Typical workflow:
 
 ```bash
 # Run your solver on 3 meshes, export results
-cfdvv compare tools/cfdvv/cases/... -r coarse_results.csv   # Note the L2 value
-cfdvv compare tools/cfdvv/cases/... -r medium_results.csv
-cfdvv compare tools/cfdvv/cases/... -r fine_results.csv
+cfdvv compare poiseuille-2d -r coarse_results.csv   # Note the L2 value
+cfdvv compare poiseuille-2d -r medium_results.csv
+cfdvv compare poiseuille-2d -r fine_results.csv
 
 # Then compute GCI
-cfdvv gci tools/cfdvv/cases/... -r coarse_results.csv -r medium_results.csv -r fine_results.csv
+cfdvv gci poiseuille-2d -r coarse_results.csv -r medium_results.csv -r fine_results.csv
 ```
 
 Real example using three grids (6, 11, and 21 points) against the Poiseuille analytical solution:

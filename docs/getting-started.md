@@ -30,8 +30,11 @@ cfdvv list -c verification -t 3d       # verification, 3D
 ## 3. Inspect a Case
 
 ```bash
-cfdvv info tools/cfdvv/cases/verification/incompressible/poiseuille-2d
+cfdvv info poiseuille-2d       # short ID — resolves automatically
+cfdvv info tools/cfdvv/cases/verification/incompressible/poiseuille-2d  # full path also works
 ```
+
+All commands accept both case IDs and full paths.
 
 Shows: physics, boundary conditions, **mesh requirements** (including recommended resolution and grids for convergence study), expected quantities, and tolerances.
 
@@ -94,7 +97,7 @@ python tools/cfdvv/cases/verification/incompressible/beltrami-flow-3d/scripts/ge
 ### Verification (analytical)
 
 ```bash
-cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+cfdvv compare poiseuille-2d \
     --result my_results.csv --norm L2 --plot
 ```
 
@@ -116,7 +119,7 @@ And a poor match (15% noise added to trigger a FAILED verdict):
 If your grid differs from the reference, use `--auto-generate`:
 
 ```bash
-cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+cfdvv compare poiseuille-2d \
     --result my_results.csv --auto-generate --plot
 ```
 
@@ -126,10 +129,10 @@ For MMS and experimental cases with CSV data, it falls back to nearest-neighbor 
 ### Validation (experimental/DNS)
 
 ```bash
-cfdvv compare tools/cfdvv/cases/validation/laminar/cylinder-re20 \
+cfdvv compare cylinder-re20 \
     --result my_results.csv --norm Relative_L2
 
-cfdvv compare tools/cfdvv/cases/validation/turbulent/channel-flow-retau180 \
+cfdvv compare channel-flow-retau180 \
     --result my_uplus_profile.csv --norm L2
 ```
 
@@ -155,7 +158,7 @@ PASS/FAIL: the tolerance check compares matched points only.
 ## 6. Generate a Report
 
 ```bash
-cfdvv report tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+cfdvv report poiseuille-2d \
     --result my_results.csv --output report.html
 ```
 
@@ -176,7 +179,7 @@ Example outputs (open in your browser):
 For validation cases:
 
 ```bash
-cfdvv report tools/cfdvv/cases/validation/turbulent/channel-flow-retau180 \
+cfdvv report channel-flow-retau180 \
     --result my_uplus.csv --output channel_report.html
 ```
 
@@ -205,7 +208,7 @@ cfdvv gci tools/cfdvv/cases/... -r coarse_results.csv -r medium_results.csv -r f
 Real example using three grids (6, 11, and 21 points) against the Poiseuille analytical solution:
 
 ```bash
-cfdvv gci tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+cfdvv gci poiseuille-2d \
     --results gci-coarse.csv --results gci-medium.csv --results gci-fine.csv \
     --mesh-sizes 0.05,0.025,0.0125
 ```
@@ -213,7 +216,7 @@ cfdvv gci tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
 Output:
 
 ```
-GCI Analysis for: tools/cfdvv/cases/verification/incompressible/poiseuille-2d
+GCI Analysis for: poiseuille-2d
 Mesh sizes: [0.05, 0.025, 0.0125]
 Refinement ratios: [2.0, 2.0]
 

@@ -87,9 +87,22 @@ def list_cases(category: str, tag: tuple, cases_root: Optional[str]):
 
 
 @main.command("validate")
-@click.argument("case_dir", type=click.Path(exists=True, file_okay=False))
-def validate_command(case_dir: str):
-    """Validate a case YAML file."""
+@click.argument("case", type=click.STRING)
+@click.option(
+    "--cases-root",
+    default=None,
+    help="Root directory for test cases.",
+    type=click.Path(exists=True, file_okay=False),
+)
+def validate_command(case: str, cases_root: Optional[str]):
+    """Validate a case YAML file.
+
+    CASE can be a path to a case directory or a case ID (e.g. 'poiseuille-2d').
+    """
+    case_dir = _resolve_case_path(case, cases_root)
+    if not os.path.isdir(case_dir):
+        click.secho(f"Error: case not found: {case}", fg="red")
+        raise SystemExit(1)
     errors = validate_case_dir(case_dir)
     if errors:
         click.secho(f"Validation failed for {case_dir}:", fg="red")
@@ -101,7 +114,13 @@ def validate_command(case_dir: str):
 
 
 @main.command("compare")
-@click.argument("case_dir", type=click.Path(exists=True, file_okay=False))
+@click.argument("case", type=click.STRING)
+@click.option(
+    "--cases-root",
+    default=None,
+    help="Root directory for test cases.",
+    type=click.Path(exists=True, file_okay=False),
+)
 @click.option(
     "--result", "-r", "result_file",
     required=True,
@@ -149,7 +168,8 @@ def validate_command(case_dir: str):
     help="Auto-generate analytical solution on result grid.",
 )
 def compare_command(
-    case_dir: str,
+    case: str,
+    cases_root: Optional[str],
     result_file: str,
     reference_file: Optional[str],
     norm: str,
@@ -159,7 +179,14 @@ def compare_command(
     output_json: bool,
     auto_generate: bool = False,
 ):
-    """Compare user results against reference data for a test case."""
+    """Compare user results against reference data for a test case.
+
+    CASE can be a path to a case directory or a case ID (e.g. 'poiseuille-2d').
+    """
+    case_dir = _resolve_case_path(case, cases_root)
+    if not os.path.isdir(case_dir):
+        click.secho(f"Error: case not found: {case}", fg="red")
+        raise SystemExit(1)
     try:
         result = compare_case(
             case_dir, result_file,
@@ -170,7 +197,7 @@ def compare_command(
         )
     except ValueError as e:
         click.secho(f"Error: {e}", fg="red")
-        click.echo(f"\nTip: run 'cfdvv info {case_dir}' to see expected CSV format and mesh requirements.")
+        click.echo(f"\nTip: run 'cfdvv info {case}' to see expected CSV format and mesh requirements.")
         raise SystemExit(1)
     except Exception as e:
         click.secho(f"Error: {e}", fg="red")
@@ -193,7 +220,13 @@ def compare_command(
 
 
 @main.command("gci")
-@click.argument("case_dir", type=click.Path(exists=True, file_okay=False))
+@click.argument("case", type=click.STRING)
+@click.option(
+    "--cases-root",
+    default=None,
+    help="Root directory for test cases.",
+    type=click.Path(exists=True, file_okay=False),
+)
 @click.option(
     "--results", "-r", "result_files",
     required=True, multiple=True,
@@ -211,12 +244,20 @@ def compare_command(
     help="Specific quantity to analyze.",
 )
 def gci_command(
-    case_dir: str,
+    case: str,
+    cases_root: Optional[str],
     result_files: tuple,
     mesh_sizes_str: str,
     quantity: Optional[str],
 ):
-    """Compute Grid Convergence Index (GCI)."""
+    """Compute Grid Convergence Index (GCI).
+
+    CASE can be a path to a case directory or a case ID (e.g. 'poiseuille-2d').
+    """
+    case_dir = _resolve_case_path(case, cases_root)
+    if not os.path.isdir(case_dir):
+        click.secho(f"Error: case not found: {case}", fg="red")
+        raise SystemExit(1)
     try:
         mesh_sizes = [float(x.strip()) for x in mesh_sizes_str.split(",")]
     except ValueError:
@@ -430,7 +471,13 @@ def _print_gci(result: dict):
 
 
 @main.command("report")
-@click.argument("case_dir", type=click.Path(exists=True, file_okay=False))
+@click.argument("case", type=click.STRING)
+@click.option(
+    "--cases-root",
+    default=None,
+    help="Root directory for test cases.",
+    type=click.Path(exists=True, file_okay=False),
+)
 @click.option(
     "--result", "-r", "result_file",
     required=True,
@@ -455,13 +502,21 @@ def _print_gci(result: dict):
     help="Custom report title.",
 )
 def report_command(
-    case_dir: str,
+    case: str,
+    cases_root: Optional[str],
     result_file: str,
     norm: str,
     output: str,
     title: Optional[str],
 ):
-    """Generate an HTML verification report with embedded comparison plots."""
+    """Generate an HTML verification report with embedded comparison plots.
+
+    CASE can be a path to a case directory or a case ID (e.g. 'poiseuille-2d').
+    """
+    case_dir = _resolve_case_path(case, cases_root)
+    if not os.path.isdir(case_dir):
+        click.secho(f"Error: case not found: {case}", fg="red")
+        raise SystemExit(1)
     try:
         result = compare_case(case_dir, result_file, norm_type=norm)
     except Exception as e:
@@ -692,21 +747,34 @@ def benchmark_command(category: str, cases_root: Optional[str], tolerance: float
 
 
 @main.command("example-output")
-@click.argument("case_dir", type=click.Path(exists=True, file_okay=False))
-def example_output_command(case_dir: str):
-    """Show expected CSV output format for a test case."""
-    case = load_case_yaml(case_dir)
+@click.argument("case", type=click.STRING)
+@click.option(
+    "--cases-root",
+    default=None,
+    help="Root directory for test cases.",
+    type=click.Path(exists=True, file_okay=False),
+)
+def example_output_command(case: str, cases_root: Optional[str]):
+    """Show expected CSV output format for a test case.
 
-    click.secho(f"\n=== {case['name']} — Expected CSV Format ===\n", bold=True)
-    click.echo(f"Case: {case['id']} ({case['dimension']})")
-    click.echo(f"Reference type: {case['reference']['type']}")
-    click.echo(f"Physics: {case['physics']['type']}, {case['physics']['regime']}")
+    CASE can be a path to a case directory or a case ID (e.g. 'poiseuille-2d').
+    """
+    case_dir = _resolve_case_path(case, cases_root)
+    if not os.path.isdir(case_dir):
+        click.secho(f"Error: case not found: {case}", fg="red")
+        raise SystemExit(1)
+    case_data = load_case_yaml(case_dir)
+
+    click.secho(f"\n=== {case_data['name']} — Expected CSV Format ===\n", bold=True)
+    click.echo(f"Case: {case_data['id']} ({case_data['dimension']})")
+    click.echo(f"Reference type: {case_data['reference']['type']}")
+    click.echo(f"Physics: {case_data['physics']['type']}, {case_data['physics']['regime']}")
     click.echo()
 
     # Build expected CSV header
-    dim = case['dimension'].upper()
+    dim = case_data['dimension'].upper()
     coord_cols = ['x', 'y', 'z'] if '3D' in dim else (['x', 'y'] if '2D' in dim else ['x'])
-    field_names = [q['name'] for q in case.get('quantities', [])]
+    field_names = [q['name'] for q in case_data.get('quantities', [])]
     if not field_names:
         field_names = ['u', 'v', 'w', 'p']
 
@@ -743,7 +811,7 @@ def example_output_command(case_dir: str):
     click.echo()
 
     # Show mesh requirements
-    mesh = case.get('mesh', {})
+    mesh = case_data.get('mesh', {})
     if mesh:
         click.secho("Mesh requirements:", fg="green")
         click.echo(f"  Type:    {mesh.get('type', 'unspecified')}")
@@ -756,7 +824,7 @@ def example_output_command(case_dir: str):
         click.echo()
 
     # Show tolerances
-    tols = case.get('tolerances', {})
+    tols = case_data.get('tolerances', {})
     if tols:
         click.secho("Tolerances (pass/fail thresholds):", fg="green")
         for k, v in tols.items():

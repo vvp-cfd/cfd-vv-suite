@@ -598,12 +598,12 @@ def _generate_html_report(
 body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
        max-width: 900px; margin: 40px auto; padding: 0 20px; color: #333;
        background: #f8f9fa; }}
-h1 {{ color: #1a1a2e; border-bottom: 3px solid #16213e; padding-bottom: 10px; }}
-h2 {{ color: #0f3460; margin-top: 30px; }}
+h1 {{ color: #2d1b4e; border-bottom: 3px solid #3d1f6e; padding-bottom: 10px; }}
+h2 {{ color: #4a2872; margin-top: 30px; }}
 table {{ width: 100%; border-collapse: collapse; margin: 15px 0; background: white;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
 th, td {{ padding: 10px 14px; text-align: left; border-bottom: 1px solid #e0e0e0; }}
-th {{ background: #16213e; color: white; font-weight: 600; }}
+th {{ background: #3d1f6e; color: white; font-weight: 600; }}
 tr:hover {{ background: #f1f3f5; }}
 .meta {{ display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; margin: 15px 0; }}
 .meta dt {{ font-weight: 600; color: #555; }}

@@ -40,8 +40,8 @@ docker pull ghcr.io/vvp-cfd/cfd-vv-suite           # GitHub Container Registry
 cfdvv list
 cfdvv list -c validation
 
-# Compare your results against reference
-cfdvv compare tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+# Compare your results against reference (use case ID — full path also works)
+cfdvv compare poiseuille-2d \
     --result my_results.csv --norm L2 --plot
 
 # OpenFOAM: ready-to-run Poiseuille case (from cloned repo)
@@ -51,13 +51,13 @@ cd tools/cfdvv/cases/verification/incompressible/poiseuille-2d/openfoam && ./All
 python tools/cfdvv/cases/verification/incompressible/poiseuille-2d/scripts/generate_solution.py 10 20 my.csv
 
 # See expected output format
-cfdvv example-output tools/cfdvv/cases/verification/incompressible/poiseuille-2d
+cfdvv example-output poiseuille-2d
 
 # Run all verification self-tests
 cfdvv benchmark
 
 # Generate HTML report
-cfdvv report tools/cfdvv/cases/verification/incompressible/poiseuille-2d \
+cfdvv report poiseuille-2d \
     --result my_results.csv -o report.html
 ```
 
